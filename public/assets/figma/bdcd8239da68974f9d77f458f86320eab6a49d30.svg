@@ -1,0 +1,5 @@
+<svg preserveAspectRatio="none" width="100%" height="100%" overflow="visible" style="display: block;" viewBox="0 0 23 23" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="ProgressIndicator">
+<path id="SetProgressHere" d="M11.5 1.5C13.4778 1.5 15.4112 2.08649 17.0557 3.1853C18.7002 4.28412 19.9819 5.8459 20.7388 7.67316C21.4957 9.50043 21.6937 11.5111 21.3079 13.4509C20.922 15.3907 19.9696 17.1725 18.5711 18.5711C17.1725 19.9696 15.3907 20.922 13.4509 21.3079C11.5111 21.6937 9.50043 21.4957 7.67317 20.7388C5.84591 19.9819 4.28412 18.7002 3.1853 17.0557C2.08649 15.4112 1.5 13.4778 1.5 11.5" stroke="var(--stroke-0, #0C0D10)" stroke-width="3" stroke-linecap="round"/>
+</g>
+</svg>
