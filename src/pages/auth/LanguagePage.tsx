@@ -72,7 +72,7 @@ export function LanguagePage() {
         style={{ height: 230, paddingTop: 12 }}
         initial={{ y: 60, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
+        transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] as const }}
       >
         <motion.p
           className="text-content-primary text-sm font-medium text-left"
