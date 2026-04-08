@@ -1,0 +1,20 @@
+---
+description: Prevent iOS Safari/PWA zoom on input focus (16px minimum)
+alwaysApply: true
+---
+
+# Form controls and iOS viewport zoom
+
+Safari on iPhone and standalone PWAs **zoom the whole page** when the user focuses an `input`, `textarea`, or `select` whose **computed font-size is below 16px**.
+
+## Requirements
+
+1. **Project safeguard**: `src/styles/globals.css` includes a `max-width: 48rem` media query that forces **16px** on text-entry fields (with `!important` so Tailwind utilities like `text-sm` cannot override it). Do not remove without replacing with another guaranteed ≥16px strategy.
+
+2. **Components**: Prefer **`text-base` (1rem / 16px)** on the **actual** `<input>`, `<textarea>`, and `<select>` elements—not only on labels. Avoid `text-xs` / `text-sm` on those nodes for mobile-first flows.
+
+3. **Do not** “fix” zoom by setting `user-scalable=no` or `maximum-scale=1` on the viewport meta tag; that hurts accessibility and is unnecessary if font-size rules are correct.
+
+4. **Exceptions**: Decorative or non-text inputs (`checkbox`, `radio`, `range`, `file`, etc.) are excluded from the global rule via `:not(...)` selectors.
+
+When adding new form fields, verify on iPhone or Safari responsive mode that focus does not zoom the viewport.

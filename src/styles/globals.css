@@ -161,16 +161,6 @@
     outline-offset: 2px;
     border-radius: var(--radius-xs);
   }
-
-  /*
-   * iOS Safari / PWA: inputs with computed font-size < 16px trigger viewport zoom on focus.
-   * Keep this as a global guardrail; components should still use text-base (16px) on inputs.
-   */
-  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]):not([type="hidden"]),
-  textarea,
-  select {
-    font-size: max(16px, 1em);
-  }
 }
 
 /* ── Utility extensions ──────────────────────────────────────────────────── */
@@ -210,5 +200,18 @@
   }
   .gradient-up-surface {
     background: linear-gradient(to top, var(--color-surface-0) 0%, transparent 100%);
+  }
+}
+
+/*
+ * iOS Safari & standalone PWA: focused inputs with computed font-size < 16px trigger
+ * viewport zoom. !important wins over utility classes (e.g. text-sm) on the same node.
+ * Touch/narrow viewports only so desktop typography stays unchanged.
+ */
+@media (max-width: 48rem) {
+  input:not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]),
+  textarea,
+  select {
+    font-size: 16px !important;
   }
 }

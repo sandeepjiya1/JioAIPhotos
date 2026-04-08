@@ -27,6 +27,7 @@ export function OnboardingPage() {
   const t = useTranslation()
   const [current, setCurrent] = useState(0)
 
+  // 3 slides (4th "Get more storage" is hidden per product decision)
   const slides = t.onboarding_slides
 
   const finish = () => {
@@ -51,40 +52,33 @@ export function OnboardingPage() {
       className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden select-none"
       {...swipeHandlers}
     >
-      {/* Top bar: keeps skip out of the image area so art never overlaps the control */}
-      <header
-        className="relative z-20 flex shrink-0 justify-end items-center px-6"
-        style={{
-          paddingTop: 'max(12px, env(safe-area-inset-top, 0px))',
-          minHeight: 48,
-          paddingBottom: 8,
-        }}
+      {/* Skip */}
+      <motion.button
+        type="button"
+        onClick={finish}
+        className="absolute z-20 flex items-center gap-1 text-white text-sm font-bold"
+        style={{ top: 56, right: 24, height: 32 }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.4 }}
+        whileTap={{ scale: 0.95 }}
+        aria-label="Skip onboarding"
       >
-        <motion.button
-          type="button"
-          onClick={finish}
-          className="flex items-center gap-1 text-white text-sm font-bold h-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.4 }}
-          whileTap={{ scale: 0.95 }}
-          aria-label="Skip onboarding"
-        >
-          {t.onboarding_skip}
-          <ChevronRight className="w-4 h-4" />
-        </motion.button>
-      </header>
+        {t.onboarding_skip}
+        <ChevronRight className="w-4 h-4" />
+      </motion.button>
 
-      {/* Image region sits below the header only */}
+      {/* PNGs ship with solid black; screen-blend maps black → surface-0 underneath */}
       <div
-        className="flex-1 min-h-0 w-full overflow-hidden bg-surface-0 flex flex-col"
+        className="flex-shrink-0 w-full overflow-hidden bg-surface-0"
+        style={{ flex: '1 1 0', minHeight: 0 }}
       >
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
             src={SLIDE_IMAGES[current]}
             alt={slide.title}
-            className="w-full flex-1 min-h-0 object-contain object-center mix-blend-screen"
+            className="w-full h-full object-contain object-top mix-blend-screen"
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -95,11 +89,8 @@ export function OnboardingPage() {
 
       {/* Content panel */}
       <div
-        className="shrink-0 flex flex-col px-6"
-        style={{
-          paddingTop: 16,
-          paddingBottom: 'max(40px, env(safe-area-inset-bottom, 0px))',
-        }}
+        className="flex-shrink-0 flex flex-col px-6"
+        style={{ paddingTop: 16, paddingBottom: 40 }}
       >
         <AnimatePresence mode="wait">
           <motion.div
