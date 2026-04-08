@@ -77,7 +77,7 @@ export function OTPInput({
             aria-label={`OTP digit ${i + 1}`}
             className={cn(
               'flex-1 h-[52px] min-w-0 bg-transparent border rounded-sm',
-              'text-center text-content-primary text-sm font-medium',
+              'text-center text-content-primary text-base font-semibold',
               'focus:outline-none transition-colors caret-primary-600',
               'disabled:opacity-50',
               error

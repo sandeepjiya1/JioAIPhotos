@@ -37,7 +37,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             placeholder="Enter 10-digit number"
             className={cn(
               'flex-1 h-[52px] bg-transparent border rounded-sm px-4',
-              'text-content-primary text-sm placeholder:text-content-tertiary',
+              'text-content-primary text-base placeholder:text-content-tertiary',
               'focus:outline-none transition-colors',
               error
                 ? 'border-error focus:border-error'

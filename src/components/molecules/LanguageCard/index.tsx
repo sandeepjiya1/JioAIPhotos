@@ -15,10 +15,11 @@ export function LanguageCard({ label, selected, onSelect, className }: LanguageC
       role="radio"
       aria-checked={selected}
       className={cn(
-        'rounded-xl py-8 text-center text-xl font-black transition-colors border w-full',
+        'min-h-12 rounded-pill px-6 py-3 text-center text-base font-semibold transition-colors border w-full',
+        'inline-flex items-center justify-center',
         selected
-          ? 'bg-surface-0 border-content-primary text-content-primary'
-          : 'bg-transparent border-on-border text-content-secondary',
+          ? 'bg-primary-600 border-primary-600 text-white'
+          : 'bg-transparent border-on-border text-content-secondary hover:bg-surface-2',
         className,
       )}
     >

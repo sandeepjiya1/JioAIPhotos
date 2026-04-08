@@ -4,21 +4,29 @@ import { motion } from 'framer-motion'
 import { Button } from '@/components/atoms'
 import { LanguageCard } from '@/components/molecules'
 import { useAuthStore } from '@/store/authStore'
-import { useTranslation } from '@/hooks/useTranslation'
+import { translations } from '@/lib/i18n'
 import { staggerContainer, fadeUp, fadeIn } from '@/components/layout/PageTransition'
-
-type Lang = 'en' | 'hi'
 
 const imgCollage = '/assets/figma/5231a1f39ecdafc99e093e11726249b642313aab.png'
 
+type Lang = 'en' | 'hi'
+
 export function LanguagePage() {
   const navigate = useNavigate()
-  const { setLanguage } = useAuthStore()
-  const [selected, setSelected] = useState<Lang>('en')
-  const t = useTranslation()
+  const setLanguage = useAuthStore((s) => s.setLanguage)
+
+  /** Local preview updates synchronously on tap so copy always matches the card (store + FM quirks). */
+  const [uiLang, setUiLang] = useState<Lang>(() => useAuthStore.getState().selectedLanguage)
+
+  const pickLang = (lang: Lang) => {
+    setUiLang(lang)
+    setLanguage(lang)
+  }
+
+  const t = translations[uiLang] ?? translations.en
 
   const handleContinue = () => {
-    setLanguage(selected)
+    setLanguage(uiLang)
     navigate('/login')
   }
 
@@ -51,18 +59,20 @@ export function LanguagePage() {
         animate="show"
       >
         <div style={{ paddingTop: 10 }} className="flex flex-col gap-2 text-center items-center">
-          <motion.h1
-            className="text-content-primary text-[28px] font-black leading-[1.15] text-center w-full"
+          <motion.div
+            key={uiLang}
+            className="flex flex-col gap-2 text-center items-center w-full"
             variants={fadeUp}
+            initial="hidden"
+            animate="show"
           >
-            {t.language_headline}
-          </motion.h1>
-          <motion.p
-            className="text-content-secondary text-sm leading-snug text-center w-full"
-            variants={fadeUp}
-          >
-            {t.language_subtitle}
-          </motion.p>
+            <h1 className="text-content-primary text-[28px] font-black leading-[1.15] text-center w-full">
+              {t.language_headline}
+            </h1>
+            <p className="text-content-secondary text-sm leading-snug text-center w-full">
+              {t.language_subtitle}
+            </p>
+          </motion.div>
         </div>
       </motion.div>
 
@@ -74,30 +84,42 @@ export function LanguagePage() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] as const }}
       >
-        <motion.p
-          className="text-content-primary text-sm font-medium text-left"
-          style={{ marginBottom: 16 }}
+        <motion.div
+          key={uiLang}
           variants={fadeUp}
           initial="hidden"
           animate="show"
         >
-          {t.language_choose}
-        </motion.p>
+          <p
+            className="text-content-primary text-sm font-medium text-left"
+            style={{ marginBottom: 16 }}
+          >
+            {t.language_choose}
+          </p>
 
-        <div
-          className="grid grid-cols-2 gap-3"
-          role="radiogroup"
-          aria-label="Language selection"
-          style={{ marginBottom: 16 }}
-        >
-          <LanguageCard label="English" selected={selected === 'en'} onSelect={() => setSelected('en')} />
-          <LanguageCard label="हिन्दी"   selected={selected === 'hi'} onSelect={() => setSelected('hi')} />
-        </div>
+          <div
+            className="grid grid-cols-2 gap-3"
+            role="radiogroup"
+            aria-label="Language selection"
+            style={{ marginBottom: 16 }}
+          >
+            <LanguageCard
+              label="English"
+              selected={uiLang === 'en'}
+              onSelect={() => pickLang('en')}
+            />
+            <LanguageCard
+              label="हिन्दी"
+              selected={uiLang === 'hi'}
+              onSelect={() => pickLang('hi')}
+            />
+          </div>
 
-        <motion.div whileTap={{ scale: 0.98 }}>
-          <Button variant="primary" size="pill" fullWidth onClick={handleContinue}>
-            {t.language_continue}
-          </Button>
+          <motion.div whileTap={{ scale: 0.98 }}>
+            <Button variant="primary" size="pill" fullWidth onClick={handleContinue}>
+              {t.language_continue}
+            </Button>
+          </motion.div>
         </motion.div>
       </motion.div>
     </div>
