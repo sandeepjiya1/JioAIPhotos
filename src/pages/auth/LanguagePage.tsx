@@ -50,15 +50,15 @@ export function LanguagePage() {
         initial="hidden"
         animate="show"
       >
-        <div style={{ paddingTop: 10 }} className="flex flex-col gap-2">
+        <div style={{ paddingTop: 10 }} className="flex flex-col gap-2 text-center items-center">
           <motion.h1
-            className="text-content-primary text-[28px] font-black leading-[1.15]"
+            className="text-content-primary text-[28px] font-black leading-[1.15] text-center w-full"
             variants={fadeUp}
           >
             {t.language_headline}
           </motion.h1>
           <motion.p
-            className="text-content-secondary text-sm leading-snug"
+            className="text-content-secondary text-sm leading-snug text-center w-full"
             variants={fadeUp}
           >
             {t.language_subtitle}
@@ -75,7 +75,7 @@ export function LanguagePage() {
         transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] }}
       >
         <motion.p
-          className="text-content-primary text-sm font-medium"
+          className="text-content-primary text-sm font-medium text-left"
           style={{ marginBottom: 16 }}
           variants={fadeUp}
           initial="hidden"

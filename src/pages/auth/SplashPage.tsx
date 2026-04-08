@@ -45,7 +45,9 @@ export function SplashPage() {
         <img
           src={imgProductLogo}
           alt="JioAI Photos"
-          className="w-48 h-auto"
+          className="w-32 h-32 object-contain"
+          width={128}
+          height={128}
           draggable={false}
         />
       </motion.div>

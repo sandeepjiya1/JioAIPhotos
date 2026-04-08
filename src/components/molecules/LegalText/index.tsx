@@ -6,7 +6,7 @@ export interface LegalTextProps {
 
 export function LegalText({ className }: LegalTextProps) {
   return (
-    <p className={cn('text-content-secondary text-xs leading-[18px]', className)}>
+    <p className={cn('text-content-secondary text-sm font-medium leading-5', className)}>
       By continuing, you agree to our{' '}
       <span className="font-bold text-content-primary">Terms &amp; Conditions</span>
       {' '}and{' '}

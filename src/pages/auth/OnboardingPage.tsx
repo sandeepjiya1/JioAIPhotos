@@ -16,9 +16,9 @@ function ChevronRight({ className = 'w-5 h-5' }: { className?: string }) {
 }
 
 const SLIDE_IMAGES = [
-  '/assets/figma/c17c9682e3a8f521d6c87db31a79d22ed5cfb0eb.png',
-  '/assets/figma/7e9e56a0b64002229e435b4ad7cbca2ea41af288.png',
-  '/assets/figma/be35d34a24d15524a9c0126750ae432b82dab795.png',
+  '/assets/figma/onboarding-slide-1.png',
+  '/assets/figma/onboarding-slide-2.png',
+  '/assets/figma/onboarding-slide-3.png',
 ]
 
 export function OnboardingPage() {
@@ -52,11 +52,11 @@ export function OnboardingPage() {
       className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden select-none"
       {...swipeHandlers}
     >
-      {/* Skip — Figma: y=56 right=24 */}
+      {/* Skip */}
       <motion.button
         type="button"
         onClick={finish}
-        className="absolute z-20 flex items-center gap-1 text-content-primary text-sm font-bold"
+        className="absolute z-20 flex items-center gap-1 text-white text-sm font-bold"
         style={{ top: 56, right: 24, height: 32 }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -68,57 +68,52 @@ export function OnboardingPage() {
         <ChevronRight className="w-4 h-4" />
       </motion.button>
 
-      {/* Hero image — Figma: y=80 h=405 */}
+      {/* PNGs ship with solid black; screen-blend maps black → surface-0 underneath */}
       <div
-        className="absolute left-0 right-0 overflow-hidden"
-        style={{ top: 80, height: 405 }}
+        className="flex-shrink-0 w-full overflow-hidden bg-surface-0"
+        style={{ flex: '1 1 0', minHeight: 0 }}
       >
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
             src={SLIDE_IMAGES[current]}
             alt={slide.title}
-            className="w-full h-full object-cover object-center"
+            className="w-full h-full object-contain object-top mix-blend-screen"
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.35 }}
           />
         </AnimatePresence>
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-surface-0 to-transparent" />
       </div>
 
-      {/* Content panel — Figma: bottom-0 h=313 */}
+      {/* Content panel */}
       <div
-        className="absolute left-0 right-0 bottom-0 flex flex-col"
-        style={{ height: 313, paddingLeft: 24, paddingRight: 24 }}
+        className="flex-shrink-0 flex flex-col px-6"
+        style={{ paddingTop: 16, paddingBottom: 40 }}
       >
-        <div style={{ paddingTop: 24, flex: 1 }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              className="flex flex-col gap-2 mb-4"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
-            >
-              <h2 className="text-content-primary text-[26px] font-black leading-[1.2]">
-                {slide.title}
-              </h2>
-              <p className="text-content-secondary text-sm leading-snug">
-                {slide.subtitle}
-              </p>
-            </motion.div>
-          </AnimatePresence>
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={current}
+            className="flex flex-col gap-2 mb-4 text-center items-center"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.28 }}
+          >
+            <h2 className="text-content-primary text-[26px] font-black leading-[1.2] text-center w-full">
+              {slide.title}
+            </h2>
+            <p className="text-content-secondary text-sm leading-snug text-center w-full">
+              {slide.subtitle}
+            </p>
+          </motion.div>
+        </AnimatePresence>
 
-          <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} />
-        </div>
+        <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} className="justify-center mb-6" />
 
-        {/* CTA row — Figma: y=225 relative, h=48 */}
         <motion.div
           className="flex items-center gap-3"
-          style={{ marginBottom: 40, paddingTop: 8 }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
