@@ -9,5 +9,4 @@ export type { TopBarProps } from './TopBar'
 export { AppTabPlaceholderLayout } from './AppTabPlaceholderLayout'
 export type { AppTabPlaceholderLayoutProps } from './AppTabPlaceholderLayout'
 
-export { PageContainer } from './PageContainer'
 export * from './PageTransition'

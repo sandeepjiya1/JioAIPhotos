@@ -66,7 +66,6 @@ export interface User {
 
 export type Theme = 'dark' | 'light' | 'system'
 export type ViewMode = 'grid' | 'list' | 'masonry'
-export type BottomTabId = 'home' | 'albums' | 'search' | 'memories' | 'profile'
 export type Language = 'en' | 'hi'
 
 // ─── Onboarding ──────────────────────────────────────────────────────────────
@@ -76,14 +75,6 @@ export interface OnboardingSlide {
   title: string
   subtitle: string
   cta: string
-}
-
-// ─── Navigation ──────────────────────────────────────────────────────────────
-
-export interface NavItemConfig {
-  id: BottomTabId
-  label: string
-  to: string
 }
 
 // ─── Media ───────────────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 /**
  * IPL team logo assets — order matches Figma `IPLTeam_Logos` (node 488:9286), left → right.
- * Paths align with `scripts/download-figma-assets.mjs` / `figma-assets.ts`.
+ * Paths under `public/assets/figma/` (design exports).
  */
 export const IPL_TEAM_LOGO_PATHS: readonly string[] = [
   '/assets/figma/277f1a1038cf4600b17f6723a28c11133b9c42a5.png',

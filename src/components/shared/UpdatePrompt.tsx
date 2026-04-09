@@ -1,5 +1,5 @@
 import { useServiceWorker } from '@/hooks'
-import { Button } from '@/components/ui'
+import { Button } from '@/components/atoms'
 import { cn } from '@/lib'
 
 export function UpdatePrompt() {
