@@ -64,7 +64,7 @@ export function HomePage() {
         </div>
 
         <section className="mt-6 px-4 flex flex-col gap-3">
-          <SectionHeader title={HOME_MEMORIES_SECTION.title} variant="display" />
+          <SectionHeader title={HOME_MEMORIES_SECTION.title} variant="heading" titleAs="h3" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             {HOME_MEMORIES_SECTION.items.map((item) => (
               <MediaCard
@@ -82,7 +82,7 @@ export function HomePage() {
         </section>
 
         <section className="mt-6 px-4 flex flex-col gap-3">
-          <SectionHeader title={HOME_GREETINGS_SECTION.title} variant="display" />
+          <SectionHeader title={HOME_GREETINGS_SECTION.title} variant="heading" titleAs="h3" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             {HOME_GREETINGS_SECTION.items.map((item) => (
               <MediaCard key={item.id} variant="greeting" image={item.image} />
@@ -94,7 +94,7 @@ export function HomePage() {
         </section>
 
         <section className="mt-6 px-4 flex flex-col gap-3">
-          <SectionHeader title={HOME_TRENDING_SECTION.title} variant="display" />
+          <SectionHeader title={HOME_TRENDING_SECTION.title} variant="heading" titleAs="h3" />
           <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4">
             {HOME_TRENDING_SECTION.items.map((item) => (
               <MediaCard
@@ -108,7 +108,7 @@ export function HomePage() {
         </section>
 
         <section className="mt-6 px-4 flex flex-col gap-3">
-          <SectionHeader title={HOME_PHOTOS_SECTION.title} variant="display" />
+          <SectionHeader title={HOME_PHOTOS_SECTION.title} variant="heading" titleAs="h3" />
           <div className="grid grid-cols-3 gap-1 rounded-image overflow-hidden">
             {HOME_PHOTOS_SECTION.items.map((tile) => (
               <div key={tile.id} className="relative aspect-square">

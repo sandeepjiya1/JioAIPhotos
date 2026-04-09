@@ -78,7 +78,7 @@ export const HOME_STORY_RINGS: readonly HomeStoryRing[] = [
 
 /** Figma Memories rail (488:9299), left → right */
 export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
-  title: 'Memories',
+  title: 'My Memories',
   subtitle: 'Your photos and videos come together to watch and share anytime.',
   items: [
     {
@@ -97,14 +97,14 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
       id: 'mem-3',
       image: '/assets/figma/e5ed6df5cb304c15b0443f6e03cd8446e5b2b912.png',
       title: 'Happy\nAnniversary',
-      date: '29/June/2026',
+      date: '26 June 2026',
     },
   ],
 }
 
 /** Order: Holi → Good morning → Hanuman ji */
 export const HOME_GREETINGS_SECTION: HomeRichSection<HomeGreetingCard> = {
-  title: 'Greetings',
+  title: 'Send Wishes',
   subtitle: 'Get ready-to-share greetings for every day and every moment.',
   items: [
     { id: 'greet-holi', image: '/assets/figma/2e6ff07eac6f4148a03df5e6ae992fbdd23c2f3e.png' },
@@ -118,7 +118,7 @@ const TRENDING_MIDDLE_CROP =
 
 /** Figma TrendingPhotoLooks_Section (488:9337); middle tile → 488:9345 */
 export const HOME_TRENDING_SECTION: HomeRichSection<HomeTrendingCard> = {
-  title: 'Trending photo looks',
+  title: 'Trending Themes',
   items: [
     { id: 'trend-1', image: '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png' },
     {
@@ -132,7 +132,7 @@ export const HOME_TRENDING_SECTION: HomeRichSection<HomeTrendingCard> = {
 
 /** Figma Photos_Section (488:9353) */
 export const HOME_PHOTOS_SECTION: HomeRichSection<HomePhotoTile> = {
-  title: 'Photos',
+  title: 'My Photos',
   subtitle: 'Your photos safe with us',
   items: [
     { id: 'ph-1', src: '/assets/figma/b69e1f2044286b5156fd1d8b21a96c5656bdbd30.png' },

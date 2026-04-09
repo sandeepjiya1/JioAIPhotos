@@ -56,10 +56,10 @@ export function MediaCard({
           <div className="absolute inset-0 gradient-up-black" />
           <div className="absolute bottom-3 left-3 flex flex-col gap-2">
             {title && (
-              <p className="text-content-primary text-[32px] font-black leading-8 whitespace-pre-line">{title}</p>
+              <p className="text-content-primary text-2xl font-black leading-7 whitespace-pre-line">{title}</p>
             )}
             {date && (
-              <p className="text-content-primary text-[10px] font-light">{date}</p>
+              <p className="text-content-primary text-xs font-medium leading-snug">{date}</p>
             )}
           </div>
         </>

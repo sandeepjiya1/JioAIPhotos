@@ -41,7 +41,7 @@ export function StoryRing({ image, label, isCreate = false, hasNew = false, onCl
         </div>
       </div>
 
-      <span className="text-content-primary text-[9px] font-medium text-center leading-none w-14 truncate">
+      <span className="inline-block max-w-[4.5rem] truncate text-center text-xs font-medium leading-tight text-content-primary">
         {label}
       </span>
     </button>

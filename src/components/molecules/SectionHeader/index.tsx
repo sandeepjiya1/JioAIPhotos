@@ -6,6 +6,8 @@ export interface SectionHeaderProps {
   description?: string
   action?: ReactNode
   variant?: 'display' | 'heading'
+  /** Semantic level for the title (default `h2`). Home rails use `h3` with `variant="heading"`. */
+  titleAs?: 'h2' | 'h3'
   /** `start` (default) — use on HomePage section rails. `center` only for non-home layouts that explicitly need centered headings. */
   titleAlign?: 'start' | 'center'
   className?: string
@@ -16,10 +18,12 @@ export function SectionHeader({
   description,
   action,
   variant = 'heading',
+  titleAs = 'h2',
   titleAlign = 'start',
   className,
 }: SectionHeaderProps) {
   const centered = titleAlign === 'center'
+  const TitleTag = titleAs
 
   return (
     <div
@@ -35,7 +39,7 @@ export function SectionHeader({
           centered ? 'justify-center' : 'justify-between',
         )}
       >
-        <h2
+        <TitleTag
           className={cn(
             'font-black leading-tight text-content-primary',
             variant === 'display' ? 'text-[28px]' : 'text-[22px]',
@@ -43,7 +47,7 @@ export function SectionHeader({
           )}
         >
           {title}
-        </h2>
+        </TitleTag>
         {action && <div className="shrink-0">{action}</div>}
       </div>
       {description && (
