@@ -34,6 +34,9 @@ const imgTrend3 = '/assets/figma/bb58655a57d80a328c43b89c58da982691332c16.png'
 const imgTrend2FigmaCrop =
   'h-[115.79%] w-[158.61%] max-w-none object-cover -left-[37.04%] -top-[2.9%]'
 
+/** Subtitles under Memories, Greetings, and Photos — hidden for now. */
+const SHOW_HOME_SECTION_SUBS = false
+
 /* Photos grid — Figma Photos_Section (488:9353); last tile shows +216 over 7e9e56a0… */
 const photoGrid = [
   '/assets/figma/b69e1f2044286b5156fd1d8b21a96c5656bdbd30.png',
@@ -95,9 +98,11 @@ export function HomePage() {
             <MediaCard variant="memory" image={imgMem2} title={"Ruhi's\nB'Day"} date="22 June 2026" />
             <MediaCard variant="memory" image={imgMem3} title={'Happy\nAnniversary'} date="29/June/2026" />
           </div>
-          <p className="text-home-section-sub text-balance">
-            Your photos and videos come together to watch and share anytime.
-          </p>
+          {SHOW_HOME_SECTION_SUBS && (
+            <p className="text-home-section-sub text-balance">
+              Your photos and videos come together to watch and share anytime.
+            </p>
+          )}
         </section>
 
         {/* Greetings */}
@@ -108,9 +113,11 @@ export function HomePage() {
             <MediaCard variant="greeting" image={imgGreetGoodMorning} />
             <MediaCard variant="greeting" image={imgGreetHanuman} />
           </div>
-          <p className="text-home-section-sub text-balance">
-            Get ready-to-share greetings for every day and every moment.
-          </p>
+          {SHOW_HOME_SECTION_SUBS && (
+            <p className="text-home-section-sub text-balance">
+              Get ready-to-share greetings for every day and every moment.
+            </p>
+          )}
         </section>
 
         {/* Trending photo looks */}
@@ -139,7 +146,9 @@ export function HomePage() {
               </div>
             ))}
           </div>
-          <p className="text-home-section-sub text-balance">Your photos safe with us</p>
+          {SHOW_HOME_SECTION_SUBS && (
+            <p className="text-home-section-sub text-balance">Your photos safe with us</p>
+          )}
         </section>
 
         {/* Storage invite banner */}
