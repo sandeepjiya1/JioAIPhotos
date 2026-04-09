@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react'
 import { cn } from '@/lib'
+import { useTranslation } from '@/hooks/useTranslation'
 
 export interface OTPInputProps {
   length?: number
@@ -7,9 +8,16 @@ export interface OTPInputProps {
   onChange: (value: string[]) => void
   disabled?: boolean
   error?: string
-  /** Countdown in seconds; 0 = show resend button */
   countdown?: number
   onResend?: () => void
+}
+
+function formatCountdown(template: string, count: number) {
+  return template.replace(/\{count\}/g, String(count))
+}
+
+function formatDigitAria(template: string, n: number) {
+  return template.replace(/\{n\}/g, String(n))
 }
 
 export function OTPInput({
@@ -21,9 +29,9 @@ export function OTPInput({
   countdown = 0,
   onResend,
 }: OTPInputProps) {
+  const t = useTranslation()
   const inputRefs = useRef<Array<HTMLInputElement | null>>([])
 
-  // Auto-focus the first empty box on mount
   useEffect(() => {
     const firstEmpty = value.findIndex((d) => !d)
     const idx = firstEmpty === -1 ? 0 : firstEmpty
@@ -59,9 +67,8 @@ export function OTPInput({
 
   return (
     <div className="flex flex-col gap-3">
-      <label className="text-sm font-medium text-content-primary">OTP number</label>
+      <label className="text-sm font-medium text-content-primary">{t.otp_field_label}</label>
 
-      {/* Boxes */}
       <div className="flex gap-3 w-full" onPaste={handlePaste}>
         {Array.from({ length }).map((_, i) => (
           <input
@@ -74,7 +81,7 @@ export function OTPInput({
             disabled={disabled}
             onChange={(e) => handleChange(i, e.target.value)}
             onKeyDown={(e) => handleKeyDown(i, e)}
-            aria-label={`OTP digit ${i + 1}`}
+            aria-label={formatDigitAria(t.otp_digit_aria, i + 1)}
             className={cn(
               'flex-1 h-[52px] min-w-0 bg-transparent border rounded-sm',
               'text-center text-content-primary text-base font-medium leading-none',
@@ -88,18 +95,17 @@ export function OTPInput({
         ))}
       </div>
 
-      {/* Countdown / Resend */}
       {!error && (
         <p className="text-sm text-content-secondary">
           {countdown > 0 ? (
-            <>Request OTP in <span className="font-semibold">{countdown} secs</span></>
+            <span className="font-semibold">{formatCountdown(t.otp_resend_countdown, countdown)}</span>
           ) : (
             <button
               type="button"
               onClick={onResend}
               className="text-primary-600 font-bold focus:outline-none focus-visible:underline"
             >
-              Resend OTP
+              {t.otp_resend_cta}
             </button>
           )}
         </p>

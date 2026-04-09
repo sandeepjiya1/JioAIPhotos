@@ -1,48 +1,54 @@
+import { useNavigate } from 'react-router-dom'
 import { AppHeader, HeroMomentCard, MediaCard, StorageBanner } from '@/components/organisms'
 import { SectionHeader, StoryRing } from '@/components/molecules'
+import { IPL_TEAM_LOGO_PATHS } from '@/lib/iplTeamLogos'
 
 /* ── Figma assets ─────────────────────────────────────────────────────────── */
-const imgHero        = '/assets/figma/973c3b8c0dd37d2ff37f9479e563cabfa2a227de.png'
-const imgHeroOverlay = '/assets/figma/c17c9682e3a8f521d6c87db31a79d22ed5cfb0eb.png'
-const imgHeroTag     = '/assets/figma/be12d4260d4d66bf2dec1b208ca3099fe511e0da.png'
-
+const imgHero = '/assets/figma/ipl-hero-moment.png'
 const imgAvatar0 = '/assets/figma/6cd0e6362a73050667423418aae84ecb14f0f736.png'
 const imgAvatar1 = '/assets/figma/973c3b8c0dd37d2ff37f9479e563cabfa2a227de.png'
 const imgAvatar2 = '/assets/figma/c17c9682e3a8f521d6c87db31a79d22ed5cfb0eb.png'
 const imgAvatar3 = '/assets/figma/5c60231921be44e81e983732d227140b2bc4ab2c.png'
 const imgAvatar4 = '/assets/figma/defd24b0ba2543a683d1c21866cf1b5c65c558aa.png'
 
-const imgMem1   = '/assets/figma/9d6d5c6ff44924f668f3e336b96bd4380d7c1ec2.png'
-const imgMem2   = '/assets/figma/705537c0d3b7be60ebf845f2184b6902e544f36e.png'
+/* Memories — Figma Memories_Section (488:9296) */
+const imgMem1 = '/assets/figma/939127241329aed177882aa617dc4b47d1e350c2.png'
+const imgMem2 = '/assets/figma/3f96c7e59b759adb3311f89c719da75feaca6a0c.png'
+const imgMem3 = '/assets/figma/49c1ec69ffc199a3c1886a818113552c623a18fe.png'
+
+/* Greetings — Figma Greetings_Section (488:9319), first three portrait slots */
 const imgGreet1 = '/assets/figma/2e155351b3c6de50454338cb8b24304fadf71ae7.png'
 const imgGreet2 = '/assets/figma/a0354aeef93930d0e1ee44cc1bbc74f70bebb187.png'
 const imgGreet3 = '/assets/figma/a506e2f729dc458b242fd0aa15182a5797f22294.png'
-const imgTrend1 = '/assets/figma/341ab9dd02d861ee02055e75893b9a057df23021.png'
-const imgTrend2 = '/assets/figma/b69e1f2044286b5156fd1d8b21a96c5656bdbd30.png'
-const imgTrend3 = '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png'
 
+/* Trending — Figma TrendingPhotoLooks_Section (488:9337) */
+const imgTrend1 = '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png'
+const imgTrend2 = '/assets/figma/d0dcd90132612641a0109cc9bb9b63ddd311016b.png'
+const imgTrend3 = '/assets/figma/bb58655a57d80a328c43b89c58da982691332c16.png'
+
+/* Photos grid — Figma Photos_Section (488:9353); last tile shows +216 over 7e9e56a0… */
 const photoGrid = [
-  '/assets/figma/5e18319f2a491e8950e8e7903851e0c43db912ab.png',
-  '/assets/figma/939127241329aed177882aa617dc4b47d1e350c2.png',
-  '/assets/figma/3f96c7e59b759adb3311f89c719da75feaca6a0c.png',
-  '/assets/figma/49c1ec69ffc199a3c1886a818113552c623a18fe.png',
-  '/assets/figma/80a7afb26cde0512ec08a60d2a1b2765396fabb4.png',
-  '/assets/figma/74416f5acde65a0356ae4afadffc010a242e4de2.png',
-  '/assets/figma/c29d63c27e7df36494d7f3aff59b372f9c9f583a.png',
+  '/assets/figma/b69e1f2044286b5156fd1d8b21a96c5656bdbd30.png',
+  '/assets/figma/ba5499929917b59556aca9b4ac04748a9d601413.png',
+  '/assets/figma/2f1009afcdf759e231a041ad0daafab2cff622d0.png',
+  '/assets/figma/263f23cec5aa0022aa6b0a0858fd7a55f0cc68b9.png',
+  '/assets/figma/a4cf20229701efce127d8f1db9b04fa938ab5fa9.png',
+  '/assets/figma/5100247fb8aac48ecff86bb2e97b8dbbb989f11d.png',
+  '/assets/figma/be35d34a24d15524a9c0126750ae432b82dab795.png',
   '/assets/figma/588e358e5eb2165638e4d156e06e5987b2b02be8.png',
   '/assets/figma/7e9e56a0b64002229e435b4ad7cbca2ea41af288.png',
 ]
 
-const heroThumbnails = [imgMem1, imgMem2, imgGreet1, imgGreet2, imgGreet3, imgTrend1]
-
 export function HomePage() {
+  const navigate = useNavigate()
+
   return (
     <div className="flex flex-col w-full min-h-dvh bg-surface-0">
-      {/* Shared app header from AppLayout via AppHeader organism */}
       <AppHeader
         avatarSrc={imgAvatar0}
         avatarFallback="U"
-        onNotification={() => {}}
+        trailingIcon="search"
+        onNotification={() => navigate('/home/search')}
         onProfile={() => {}}
       />
 
@@ -62,24 +68,16 @@ export function HomePage() {
 
         {/* Hero moment card */}
         <div className="px-4 mt-2">
-          <HeroMomentCard
-            image={imgHero}
-            overlayImage={imgHeroOverlay}
-            tagImage={imgHeroTag}
-            thumbnails={heroThumbnails}
-          />
+          <HeroMomentCard image={imgHero} iplTeamLogos={IPL_TEAM_LOGO_PATHS} />
         </div>
 
         {/* Memories */}
         <section className="mt-6 px-4 flex flex-col gap-6">
-          <SectionHeader
-            title="Memories"
-            variant="display"
-            className="text-center"
-          />
+          <SectionHeader title="Memories" variant="display" titleAlign="center" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="memory" image={imgMem1} title={'Varanasi\ntrip'} date="20 June 2026" />
             <MediaCard variant="memory" image={imgMem2} title={"Ruhi's\nB'Day"} date="22 June 2026" />
+            <MediaCard variant="memory" image={imgMem3} title={'Happy\nAnniversary'} date="29/June/2026" />
           </div>
           <p className="text-content-tertiary text-sm text-center leading-snug">
             Your photos and videos come together to watch and share anytime.
@@ -88,39 +86,20 @@ export function HomePage() {
 
         {/* Greetings */}
         <section className="mt-6 px-4 flex flex-col gap-6">
-          <SectionHeader
-            title="Greetings"
-            variant="display"
-            action={
-              <button
-                type="button"
-                className="flex items-center gap-1.5 h-10 px-4 rounded-full glass text-content-primary text-sm font-bold"
-              >
-                Share
-              </button>
-            }
-          />
+          <SectionHeader title="Greetings" variant="display" titleAlign="center" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="greeting" image={imgGreet1} />
             <MediaCard variant="greeting" image={imgGreet2} />
             <MediaCard variant="greeting" image={imgGreet3} />
           </div>
           <p className="text-content-tertiary text-sm text-center leading-snug">
-            See yourself in your favourite movie style.
+            See yourself in your favourite team jersey.
           </p>
         </section>
 
         {/* Trending photo looks */}
         <section className="mt-6 px-4 flex flex-col gap-4">
-          <SectionHeader
-            title="Trending photo looks"
-            description="See and try the looks people are loving right now."
-            action={
-              <button type="button" className="text-on-tinted text-sm font-medium">
-                See all
-              </button>
-            }
-          />
+          <SectionHeader title="Trending photo looks" titleAlign="center" />
           <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="trending" image={imgTrend1} />
             <MediaCard variant="trending" image={imgTrend2} />
@@ -130,20 +109,21 @@ export function HomePage() {
 
         {/* Photos grid */}
         <section className="mt-6 px-4 flex flex-col gap-4">
-          <SectionHeader title="Photos" />
+          <SectionHeader title="Photos" titleAlign="center" />
           <div className="grid grid-cols-3 gap-1 rounded-xl overflow-hidden">
             {photoGrid.map((src, i) => (
               <div key={i} className="relative aspect-square">
                 <img src={src} alt="" className="absolute inset-0 size-full object-cover" />
                 {i === photoGrid.length - 1 && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <span className="text-content-primary font-black text-lg">+216</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-0.5 bg-black/50 text-center text-white">
+                    <span className="font-black text-xl leading-none">+216</span>
+                    <span className="text-[8px] font-normal leading-none opacity-90">Photos</span>
                   </div>
                 )}
               </div>
             ))}
           </div>
-          <p className="text-content-tertiary text-sm text-center">Your photos are with us</p>
+          <p className="text-content-tertiary text-sm text-center">Your photos safe with us</p>
         </section>
 
         {/* Storage invite banner */}

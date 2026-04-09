@@ -1,5 +1,5 @@
 export { AppHeader } from './AppHeader'
-export type { AppHeaderProps } from './AppHeader'
+export type { AppHeaderProps, AppHeaderTrailingIcon } from './AppHeader'
 
 export { BottomNavBar } from './BottomNavBar'
 export type { BottomNavBarProps, NavItem } from './BottomNavBar'

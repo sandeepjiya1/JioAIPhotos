@@ -1,7 +1,8 @@
 import { forwardRef, type InputHTMLAttributes } from 'react'
 import { cn } from '@/lib'
+import { useTranslation } from '@/hooks/useTranslation'
 
-export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value'> {
+export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'onChange' | 'value' | 'placeholder'> {
   value: string
   onChange: (value: string) => void
   error?: string
@@ -10,23 +11,23 @@ export interface PhoneInputProps extends Omit<InputHTMLAttributes<HTMLInputEleme
 
 export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
   ({ value, onChange, error, countryCode = '+91', className, ...props }, ref) => {
+    const t = useTranslation()
     return (
       <div className="flex flex-col gap-2">
         <label className="text-sm font-medium text-content-primary">
-          Enter your phone number
+          {t.phone_label}
         </label>
         <div className="flex gap-3">
-          {/* Country code badge */}
           <div
             className={cn(
               'flex items-center justify-center px-1 border rounded-sm w-[49px] h-[52px] shrink-0 transition-colors',
               error ? 'border-error' : 'border-content-secondary',
             )}
+            aria-label={countryCode}
           >
-            <span className="text-content-primary text-sm font-medium">{countryCode}</span>
+            <span className="text-content-primary text-sm font-medium tabular-nums">{countryCode}</span>
           </div>
 
-          {/* Number input */}
           <input
             ref={ref}
             type="tel"
@@ -34,7 +35,6 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             maxLength={10}
             value={value}
             onChange={(e) => onChange(e.target.value.replace(/\D/g, ''))}
-            placeholder="Enter 10-digit number"
             className={cn(
               'flex-1 h-[52px] bg-transparent border rounded-sm px-4',
               'text-content-primary text-base placeholder:text-content-tertiary',
@@ -47,6 +47,7 @@ export const PhoneInput = forwardRef<HTMLInputElement, PhoneInputProps>(
             aria-invalid={Boolean(error)}
             aria-describedby={error ? 'phone-error' : undefined}
             {...props}
+            placeholder={t.phone_placeholder}
           />
         </div>
         {error && (

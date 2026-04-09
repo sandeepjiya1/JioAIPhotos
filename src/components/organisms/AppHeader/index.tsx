@@ -4,11 +4,15 @@ import { Avatar } from '@/components/atoms'
 import { Icon } from '@/components/atoms'
 
 const imgProductLogo = '/assets/figma/3a1e52ece350c3cd3815a476bdd9c3ac93f6cc2f.svg'
-const imgTempLogo    = '/assets/figma/b5227f239659a5a7d59a309a71035853050ce485.png'
+
+export type AppHeaderTrailingIcon = 'bell' | 'search'
 
 export interface AppHeaderProps {
   avatarSrc?: string
   avatarFallback?: string
+  /** Icon before profile; default bell (notifications). */
+  trailingIcon?: AppHeaderTrailingIcon
+  /** Called when the trailing icon (bell or search) is pressed */
   onNotification?: () => void
   onProfile?: () => void
   /** Slot for additional right-side actions */
@@ -19,11 +23,13 @@ export interface AppHeaderProps {
 export function AppHeader({
   avatarSrc,
   avatarFallback,
+  trailingIcon = 'bell',
   onNotification,
   onProfile,
   rightSlot,
   className,
 }: AppHeaderProps) {
+  const trailingAria = trailingIcon === 'search' ? 'Search' : 'Notifications'
   return (
     <header
       className={cn(
@@ -33,9 +39,16 @@ export function AppHeader({
       )}
     >
       {/* Logo */}
-      <div className="flex items-center gap-1.5" aria-label="JioAI Photos">
-        <img src={imgProductLogo} alt="Jio" className="size-8" />
-        <img src={imgTempLogo}    alt="AI Photos" className="h-5 w-auto" />
+      <div className="flex items-center gap-1.5" aria-label="Jio AI Photos">
+        <img src={imgProductLogo} alt="" className="size-8 shrink-0" />
+        <span
+          className={cn(
+            'text-xl font-black leading-none tracking-tight text-content-primary',
+            '[font-family:var(--font-jio)]',
+          )}
+        >
+          AIPhotos
+        </span>
       </div>
 
       {/* Actions */}
@@ -44,10 +57,10 @@ export function AppHeader({
         <button
           type="button"
           onClick={onNotification}
-          aria-label="Notifications"
+          aria-label={trailingAria}
           className="size-8 flex items-center justify-center rounded-full active:bg-surface-2 transition-colors"
         >
-          <Icon name="bell" size="sm" className="text-content-primary" />
+          <Icon name={trailingIcon} size="sm" className="text-content-primary" />
         </button>
         <button
           type="button"

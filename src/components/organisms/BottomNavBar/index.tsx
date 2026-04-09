@@ -8,8 +8,6 @@ export interface NavItem {
   label: string
   to: string
   icon: IconName
-  /** Render as a prominent "add" FAB in the centre */
-  isFab?: boolean
 }
 
 export interface BottomNavBarProps {
@@ -17,53 +15,56 @@ export interface BottomNavBarProps {
   className?: string
 }
 
+/**
+ * Bottom navigation — solid surface from DS (`surface-3`), on-colour text tokens for states.
+ */
 export function BottomNavBar({ items, className }: BottomNavBarProps) {
   return (
     <nav
       aria-label="Main navigation"
       className={cn(
         'fixed bottom-0 left-0 right-0 z-nav',
-        'bg-surface-0/90 backdrop-blur-md border-t border-on-border/30',
+        'bg-surface-3',
+        'border-t border-on-border',
         'safe-bottom',
+        'font-jio',
         className,
       )}
     >
-      <ul className="flex items-center justify-around h-16 px-2">
+      <ul className="flex min-h-16 items-stretch px-4">
         {items.map((item) => (
-          <li key={item.id} className="flex-1">
-            {item.isFab ? (
-              /* Centre FAB — not a NavLink, just a button */
-              <NavLink
-                to={item.to}
-                className="flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl mx-1 min-h-[56px]"
-                aria-label={item.label}
-              >
-                <span className="size-12 rounded-full bg-primary-600 flex items-center justify-center shadow-lg">
-                  <Icon name={item.icon} size="md" className="text-white" />
-                </span>
-              </NavLink>
-            ) : (
-              <NavLink
-                to={item.to}
-                end={item.to === '/home'}
-                className={({ isActive }) =>
-                  cn(
-                    'flex flex-col items-center justify-center gap-0.5 py-2 rounded-xl mx-1 transition-colors min-h-[56px]',
-                    isActive ? 'text-primary-600' : 'text-content-tertiary',
-                  )
-                }
-                aria-label={item.label}
-              >
-                {({ isActive }) => (
-                  <>
-                    <span className="size-6 flex items-center justify-center">
-                      <Icon name={item.icon} size="md" active={isActive} />
-                    </span>
-                    <span className="text-[10px] font-medium leading-none">{item.label}</span>
-                  </>
-                )}
-              </NavLink>
-            )}
+          <li key={item.id} className="flex min-w-0 flex-1">
+            <NavLink
+              to={item.to}
+              end={item.to === '/home'}
+              className={cn(
+                'flex w-full min-h-16 flex-col items-center justify-center gap-1.5 rounded-md px-0.5 py-1',
+                'transition-colors',
+                'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-400 focus-visible:ring-offset-2 focus-visible:ring-offset-surface-3',
+              )}
+              aria-label={item.label}
+            >
+              {({ isActive }) => (
+                <>
+                  <span
+                    className={cn(
+                      'flex size-5 shrink-0 items-center justify-center',
+                      isActive ? 'text-on-high' : 'text-on-medium',
+                    )}
+                  >
+                    <Icon name={item.icon} size="sm" forceFilled />
+                  </span>
+                  <span
+                    className={cn(
+                      'max-w-full truncate text-center text-xs leading-3',
+                      isActive ? 'text-on-high font-semibold' : 'text-on-medium font-medium',
+                    )}
+                  >
+                    {item.label}
+                  </span>
+                </>
+              )}
+            </NavLink>
           </li>
         ))}
       </ul>

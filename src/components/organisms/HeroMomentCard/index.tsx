@@ -12,8 +12,8 @@ export interface HeroAction {
 export interface HeroMomentCardProps {
   image: string
   overlayImage?: string
-  tagImage?: string
-  thumbnails?: string[]
+  /** IPL team logo strip — Figma `IPLTeam_Logos` (488:9286): 56×56, gap 11px, radius 14px */
+  iplTeamLogos?: readonly string[]
   onShare?: () => void
   onEdit?: () => void
   onMore?: () => void
@@ -23,8 +23,7 @@ export interface HeroMomentCardProps {
 export function HeroMomentCard({
   image,
   overlayImage,
-  tagImage,
-  thumbnails,
+  iplTeamLogos,
   onShare,
   onEdit,
   onMore,
@@ -47,13 +46,6 @@ export function HeroMomentCard({
 
         {/* Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(34,64,157,0.9)] via-[rgba(68,97,176,0.3)] to-transparent" />
-
-        {/* Tag */}
-        {tagImage && (
-          <div className="absolute top-1/2 left-8 right-8">
-            <img src={tagImage} alt="" aria-hidden="true" className="w-full object-contain max-h-24" />
-          </div>
-        )}
 
         {/* Action buttons */}
         <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2">
@@ -86,15 +78,28 @@ export function HeroMomentCard({
         </div>
       </div>
 
-      {/* Thumbnail strip */}
-      {thumbnails && thumbnails.length > 0 && (
-        <div className="flex gap-2.5 overflow-x-auto scrollbar-hide">
-          {thumbnails.map((src, i) => (
+      {/* IPL team logos — Figma IPLTeam_Logos */}
+      {iplTeamLogos && iplTeamLogos.length > 0 && (
+        <div
+          className="-mx-4 flex gap-[11px] overflow-x-auto px-4 scrollbar-hide"
+          role="list"
+          aria-label="IPL team logos"
+        >
+          {iplTeamLogos.map((src, i) => (
             <div
-              key={i}
-              className="shrink-0 size-14 rounded-[14px] overflow-hidden border border-on-border"
+              key={`${src}-${i}`}
+              role="listitem"
+              className={cn(
+                'relative h-14 w-14 shrink-0 overflow-hidden rounded-[14px] bg-surface-3',
+                i === 0 ? 'border border-primary-400/40' : 'border border-on-border',
+              )}
             >
-              <img src={src} alt="" className="size-full object-cover" />
+              <img
+                src={src}
+                alt=""
+                className="size-full object-contain p-2"
+                loading="lazy"
+              />
             </div>
           ))}
         </div>

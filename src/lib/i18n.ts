@@ -19,16 +19,27 @@ export interface Translations {
   login_placeholder: string
   login_error:       string
 
+  /** Phone field (label + input placeholder; +91 stays numeric) */
+  phone_label:        string
+  phone_placeholder:  string
+
   // OTP page
   otp_heading:       string
   otp_sent_to:       string
   otp_change:        string
   otp_hint:          string
   otp_verifying:     string
+  otp_field_label:   string
+  /** Use `{count}` for seconds remaining */
+  otp_resend_countdown: string
+  otp_resend_cta:    string
+  /** Use `{n}` for 1-based digit index */
+  otp_digit_aria:    string
 
-  // Legal
+  // Legal (inline T&C — matches login/OTP footer)
   legal_text:        string
   legal_tos:         string
+  legal_and:         string
   legal_privacy:     string
 
   // Onboarding
@@ -45,6 +56,13 @@ export interface Translations {
   notif_perm_subtitle: string
   notif_perm_allow:    string
   notif_perm_skip:     string
+
+  // Main app bottom navigation
+  nav_home:       string
+  nav_photos:     string
+  nav_ai_camera:  string
+  nav_files:      string
+  nav_create:     string
 }
 
 const en: Translations = {
@@ -59,15 +77,23 @@ const en: Translations = {
   login_placeholder: 'Mobile number',
   login_error:       'Please enter a valid 10-digit number',
 
+  phone_label:       'Enter your phone number',
+  phone_placeholder: 'Enter 10-digit number',
+
   otp_heading:   'Verify your mobile number',
   otp_sent_to:   'Enter the OTP sent to',
   otp_change:    'Change my number',
   otp_hint:      'Enter all 4 digits to continue automatically',
   otp_verifying: 'Verifying…',
+  otp_field_label:   'OTP number',
+  otp_resend_countdown: 'Request OTP in {count} secs',
+  otp_resend_cta:    'Resend OTP',
+  otp_digit_aria:    'OTP digit {n}',
 
-  legal_text:    'By continuing you agree to our ',
-  legal_tos:     'Terms of Service',
-  legal_privacy: 'Privacy Policy',
+  legal_text:    'By continuing, you agree to our ',
+  legal_tos:     'Terms & Conditions',
+  legal_and:     ' and ',
+  legal_privacy: 'Privacy Policy.',
 
   onboarding_skip: 'Skip',
   onboarding_slides: [
@@ -85,6 +111,12 @@ const en: Translations = {
   notif_perm_subtitle: 'Allow notifications to get updates on your AI-enhanced photos, memories, and more.',
   notif_perm_allow:    'Enable Notifications',
   notif_perm_skip:     'Not now',
+
+  nav_home:      'Home',
+  nav_photos:    'Photos',
+  nav_ai_camera: 'AI Camera',
+  nav_files:     'Files',
+  nav_create:    'Create',
 }
 
 const hi: Translations = {
@@ -99,15 +131,23 @@ const hi: Translations = {
   login_placeholder: 'मोबाइल नंबर',
   login_error:       'कृपया 10 अंकों का सही नंबर दर्ज करें',
 
+  phone_label:       'अपना फ़ोन नंबर दर्ज करें',
+  phone_placeholder: '10 अंकों का नंबर दर्ज करें',
+
   otp_heading:   'अपना मोबाइल नंबर सत्यापित करें',
   otp_sent_to:   'OTP भेजा गया',
   otp_change:    'नंबर बदलें',
   otp_hint:      'जारी रखने के लिए सभी 4 अंक दर्ज करें',
   otp_verifying: 'सत्यापित हो रहा है…',
+  otp_field_label:   'OTP नंबर',
+  otp_resend_countdown: '{count} सेकंड में OTP फिर से माँगें',
+  otp_resend_cta:    'OTP फिर से भेजें',
+  otp_digit_aria:    'OTP अंक {n}',
 
-  legal_text:    'जारी रखने पर आप हमारी ',
-  legal_tos:     'सेवा की शर्तें',
-  legal_privacy: 'गोपनीयता नीति',
+  legal_text:    'जारी रखकर, आप हमारे ',
+  legal_tos:     'नियम व शर्तों',
+  legal_and:     ' तथा ',
+  legal_privacy: 'गोपनीयता नीति से सहमत होते हैं।',
 
   onboarding_skip: 'छोड़ें',
   onboarding_slides: [
@@ -125,6 +165,12 @@ const hi: Translations = {
   notif_perm_subtitle: 'AI-बेहतर फ़ोटो, यादें और अधिक के अपडेट के लिए नोटिफ़िकेशन की अनुमति दें।',
   notif_perm_allow:    'नोटिफ़िकेशन चालू करें',
   notif_perm_skip:     'अभी नहीं',
+
+  nav_home:      'होम',
+  nav_photos:    'फ़ोटो',
+  nav_ai_camera: 'AI कैमरा',
+  nav_files:     'फ़ाइलें',
+  nav_create:    'बनाएं',
 }
 
 export const translations: Record<Locale, Translations> = { en, hi }

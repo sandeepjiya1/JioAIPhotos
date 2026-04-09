@@ -6,17 +6,40 @@ export interface SectionHeaderProps {
   description?: string
   action?: ReactNode
   variant?: 'display' | 'heading'
+  /** Center title (and description) — e.g. home section rails */
+  titleAlign?: 'start' | 'center'
   className?: string
 }
 
-export function SectionHeader({ title, description, action, variant = 'heading', className }: SectionHeaderProps) {
+export function SectionHeader({
+  title,
+  description,
+  action,
+  variant = 'heading',
+  titleAlign = 'start',
+  className,
+}: SectionHeaderProps) {
+  const centered = titleAlign === 'center'
+
   return (
-    <div className={cn('flex flex-col gap-1', className)}>
-      <div className="flex items-center justify-between gap-3">
+    <div
+      className={cn(
+        'flex flex-col gap-1',
+        centered && 'items-center text-center',
+        className,
+      )}
+    >
+      <div
+        className={cn(
+          'flex w-full items-center gap-3',
+          centered ? 'justify-center' : 'justify-between',
+        )}
+      >
         <h2
           className={cn(
             'font-black leading-tight text-content-primary',
             variant === 'display' ? 'text-[28px]' : 'text-[22px]',
+            centered && 'text-center',
           )}
         >
           {title}
@@ -24,7 +47,14 @@ export function SectionHeader({ title, description, action, variant = 'heading',
         {action && <div className="shrink-0">{action}</div>}
       </div>
       {description && (
-        <p className="text-content-tertiary text-sm leading-snug">{description}</p>
+        <p
+          className={cn(
+            'text-content-tertiary text-sm leading-snug',
+            centered && 'max-w-sm text-center',
+          )}
+        >
+          {description}
+        </p>
       )}
     </div>
   )

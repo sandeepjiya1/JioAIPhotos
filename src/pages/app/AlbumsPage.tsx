@@ -1,5 +1,6 @@
 import { TopBar } from '@/components/layout'
 import { SectionHeader } from '@/components/molecules'
+import { useTranslation } from '@/hooks/useTranslation'
 
 const MOCK_ALBUMS = [
   { id: '1', name: 'Varanasi Trip', photoCount: 42, cover: '/assets/figma/9d6d5c6ff44924f668f3e336b96bd4380d7c1ec2.png' },
@@ -9,9 +10,10 @@ const MOCK_ALBUMS = [
 ]
 
 export function AlbumsPage() {
+  const t = useTranslation()
   return (
     <div className="flex flex-col min-h-dvh bg-surface-0">
-      <TopBar title="Albums" />
+      <TopBar title={t.nav_photos} />
 
       <div className="flex-1 overflow-y-auto pb-24 px-4 pt-4 scrollbar-hide">
         <SectionHeader title="My Albums" description={`${MOCK_ALBUMS.length} albums`} className="mb-4" />

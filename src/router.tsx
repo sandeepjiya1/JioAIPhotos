@@ -1,5 +1,5 @@
 import { lazy, Suspense } from 'react'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '@/components/layout'
 import { Spinner } from '@/components/atoms'
 
@@ -16,6 +16,9 @@ const NotificationPermissionPage = lazy(() => import('@/pages/auth/NotificationP
 const HomePage     = lazy(() => import('@/pages/app/HomePage').then((m)     => ({ default: m.HomePage })))
 const AlbumsPage   = lazy(() => import('@/pages/app/AlbumsPage').then((m)   => ({ default: m.AlbumsPage })))
 const SearchPage   = lazy(() => import('@/pages/app/SearchPage').then((m)   => ({ default: m.SearchPage })))
+const AiCameraPage = lazy(() => import('@/pages/app/AiCameraPage').then((m) => ({ default: m.AiCameraPage })))
+const FilesPage    = lazy(() => import('@/pages/app/FilesPage').then((m)    => ({ default: m.FilesPage })))
+const CreatePage   = lazy(() => import('@/pages/app/CreatePage').then((m)   => ({ default: m.CreatePage })))
 const MemoriesPage = lazy(() => import('@/pages/app/MemoriesPage').then((m) => ({ default: m.MemoriesPage })))
 const ProfilePage  = lazy(() => import('@/pages/app/ProfilePage').then((m)  => ({ default: m.ProfilePage })))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m)     => ({ default: m.NotFoundPage })))
@@ -55,11 +58,15 @@ export const router = createBrowserRouter([
     path: '/home',
     element: <AppLayout />,
     children: [
-      { index: true,      element: wrap(HomePage) },
-      { path: 'albums',   element: wrap(AlbumsPage) },
-      { path: 'search',   element: wrap(SearchPage) },
-      { path: 'memories', element: wrap(MemoriesPage) },
-      { path: 'profile',  element: wrap(ProfilePage) },
+      { index: true,       element: wrap(HomePage) },
+      { path: 'photos',    element: wrap(AlbumsPage) },
+      { path: 'albums',    element: <Navigate to="/home/photos" replace /> },
+      { path: 'ai-camera', element: wrap(AiCameraPage) },
+      { path: 'files',     element: wrap(FilesPage) },
+      { path: 'create',    element: wrap(CreatePage) },
+      { path: 'search',    element: wrap(SearchPage) },
+      { path: 'memories',  element: wrap(MemoriesPage) },
+      { path: 'profile',   element: wrap(ProfilePage) },
     ],
   },
 

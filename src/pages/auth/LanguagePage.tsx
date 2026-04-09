@@ -5,7 +5,7 @@ import { Button } from '@/components/atoms'
 import { LanguageCard } from '@/components/molecules'
 import { useAuthStore } from '@/store/authStore'
 import { translations } from '@/lib/i18n'
-import { staggerContainer, fadeUp, fadeIn } from '@/components/layout/PageTransition'
+import { staggerContainer, fadeUp, imageReveal } from '@/components/layout/PageTransition'
 
 const imgCollage = '/assets/figma/5231a1f39ecdafc99e093e11726249b642313aab.png'
 
@@ -33,47 +33,45 @@ export function LanguagePage() {
   return (
     <div className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden">
 
-      {/* Collage image — Figma: container y=199 h=371, img y=-34 h=405 */}
+      {/* Headline + collage — staggered top → middle, same motion language as onboarding */}
       <motion.div
-        className="absolute left-0 right-0 overflow-hidden pointer-events-none"
-        style={{ top: 199, height: 371 }}
-        variants={fadeIn}
-        initial="hidden"
-        animate="show"
-        aria-hidden="true"
-      >
-        <img
-          src={imgCollage}
-          alt="Photo collage preview"
-          className="absolute left-0 right-0 w-full object-cover object-center"
-          style={{ top: -34, height: 405 }}
-        />
-      </motion.div>
-
-      {/* Header — Figma: y=71, text at y=81 */}
-      <motion.div
-        className="absolute left-0 right-0 z-10 px-6"
-        style={{ top: 71 }}
+        className="absolute left-0 right-0 z-10 pointer-events-none"
+        style={{ top: 0, bottom: 230 }}
         variants={staggerContainer}
         initial="hidden"
         animate="show"
       >
-        <div style={{ paddingTop: 10 }} className="flex flex-col gap-2 text-center items-center">
-          <motion.div
-            key={uiLang}
-            className="flex flex-col gap-2 text-center items-center w-full"
-            variants={fadeUp}
-            initial="hidden"
-            animate="show"
-          >
+        {/* Header — Figma: y=71, text at y=81 */}
+        <motion.div
+          className="absolute left-0 right-0 px-6 pointer-events-auto"
+          style={{ top: 71 }}
+          variants={fadeUp}
+        >
+          <div key={uiLang} style={{ paddingTop: 10 }} className="flex flex-col gap-2 text-center items-center">
             <h1 className="text-content-primary text-[28px] font-black leading-[1.15] text-center w-full">
               {t.language_headline}
             </h1>
             <p className="text-content-secondary text-sm leading-snug text-center w-full">
               {t.language_subtitle}
             </p>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
+
+        {/* Collage image — Figma: container y=199 h=371, img y=-34 h=405 */}
+        <motion.div
+          className="absolute left-0 right-0 overflow-hidden bg-surface-0"
+          style={{ top: 199, height: 371 }}
+          variants={imageReveal}
+          aria-hidden="true"
+        >
+          <img
+            src={imgCollage}
+            alt="Photo collage preview"
+            className="absolute left-0 right-0 w-full object-cover object-center mix-blend-screen"
+            style={{ top: -34, height: 405 }}
+            draggable={false}
+          />
+        </motion.div>
       </motion.div>
 
       {/* Bottom sheet — Figma: y=570 h=230 */}

@@ -4,12 +4,17 @@ import { Input, Icon } from '@/components/atoms'
 
 const RECENT_SEARCHES = ['Birthday', 'Varanasi', 'Ruhi', 'Greetings']
 
-export function SearchPage() {
+export interface SearchPageProps {
+  /** Top bar title (e.g. AI Camera tab reuses this screen) */
+  topBarTitle?: string
+}
+
+export function SearchPage({ topBarTitle = 'Search' }: SearchPageProps) {
   const [query, setQuery] = useState('')
 
   return (
     <div className="flex flex-col min-h-dvh bg-surface-0">
-      <TopBar title="Search" />
+      <TopBar title={topBarTitle} />
 
       <div className="flex-1 overflow-y-auto pb-24 px-4 pt-4 scrollbar-hide">
         {/* Search input */}
