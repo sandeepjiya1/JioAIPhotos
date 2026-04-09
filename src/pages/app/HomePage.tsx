@@ -90,8 +90,8 @@ export function HomePage() {
           />
         </div>
 
-        {/* Memories */}
-        <section className="mt-6 px-4 flex flex-col gap-6">
+        {/* Memories — display titles + tight title↔content gap (match all rails below) */}
+        <section className="mt-6 px-4 flex flex-col gap-3">
           <SectionHeader title="Memories" variant="display" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="memory" image={imgMem1} title={'Varanasi\ntrip'} date="20 June 2026" />
@@ -106,7 +106,7 @@ export function HomePage() {
         </section>
 
         {/* Greetings */}
-        <section className="mt-6 px-4 flex flex-col gap-6">
+        <section className="mt-6 px-4 flex flex-col gap-3">
           <SectionHeader title="Greetings" variant="display" />
           <div className="flex gap-4 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="greeting" image={imgGreetHoli} />
@@ -121,8 +121,8 @@ export function HomePage() {
         </section>
 
         {/* Trending photo looks */}
-        <section className="mt-6 px-4 flex flex-col gap-4">
-          <SectionHeader title="Trending photo looks" />
+        <section className="mt-6 px-4 flex flex-col gap-3">
+          <SectionHeader title="Trending photo looks" variant="display" />
           <div className="flex gap-3 overflow-x-auto scrollbar-hide -mx-4 px-4">
             <MediaCard variant="trending" image={imgTrend1} />
             <MediaCard variant="trending" image={imgTrend2} imageClassName={imgTrend2FigmaCrop} />
@@ -131,8 +131,8 @@ export function HomePage() {
         </section>
 
         {/* Photos grid */}
-        <section className="mt-6 px-4 flex flex-col gap-4">
-          <SectionHeader title="Photos" />
+        <section className="mt-6 px-4 flex flex-col gap-3">
+          <SectionHeader title="Photos" variant="display" />
           <div className="grid grid-cols-3 gap-1 rounded-image overflow-hidden">
             {photoGrid.map((src, i) => (
               <div key={i} className="relative aspect-square">
