@@ -2,7 +2,7 @@ export { AppHeader } from './AppHeader'
 export type { AppHeaderProps, AppHeaderTrailingIcon } from './AppHeader'
 
 export { BottomNavBar } from './BottomNavBar'
-export type { BottomNavBarProps, NavItem } from './BottomNavBar'
+export type { BottomNavBarProps, BottomNavGlyph, NavItem } from './BottomNavBar'
 
 export { MediaCard } from './MediaCard'
 export type { MediaCardProps, MediaCardVariant } from './MediaCard'

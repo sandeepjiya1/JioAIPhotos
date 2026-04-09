@@ -19,7 +19,7 @@ export function ProfilePage() {
     <div className="flex flex-col min-h-dvh bg-surface-0">
       <TopBar title="Profile" />
 
-      <div className="flex-1 overflow-y-auto pb-24 px-4 pt-6 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto pb-36 px-4 pt-6 scrollbar-hide">
         {/* Profile card */}
         <div className="flex flex-col items-center gap-4 py-6 bg-surface-2 rounded-2xl px-4">
           <Avatar

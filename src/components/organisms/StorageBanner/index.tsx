@@ -1,46 +1,46 @@
 import { cn } from '@/lib'
-import { Button } from '@/components/atoms'
 import { StorageBar } from '@/components/molecules'
 
-const imgInvite = '/assets/figma/032bfe46a059793c4196f19fa0f01e723545dd87.png'
+const imgStoragePromo = '/assets/figma/storage-promotion-banner.png'
 
 export interface StorageBannerProps {
   used: number
   total: number
   unit?: string
+  /** Optional: makes the promotion banner tappable (e.g. invite flow). */
   onInvite?: () => void
   className?: string
 }
 
 export function StorageBanner({ used, total, unit = 'GB', onInvite, className }: StorageBannerProps) {
+  const banner = (
+    <div className="w-full overflow-hidden rounded-image aspect-[328/203]">
+      <img
+        src={imgStoragePromo}
+        alt="Invite family and get 50GB free storage"
+        className="size-full object-cover"
+      />
+    </div>
+  )
+
   return (
     <section
-      className={cn(
-        'rounded-2xl overflow-hidden bg-surface-0 border border-on-border/50',
-        className,
-      )}
+      className={cn('flex flex-col gap-[27px]', className)}
       aria-label="Storage information"
     >
-      <div className="flex items-center gap-4 p-4">
-        <div className="flex-1 flex flex-col gap-3">
-          <p className="text-content-primary text-sm font-bold leading-snug">
-            Invite family member and get extra 50GB free
-          </p>
-          <Button
-            variant="primary"
-            size="sm"
-            onClick={onInvite}
-            className="self-start rounded-pill h-9 px-5"
-          >
-            Invite Now
-          </Button>
-        </div>
-        <img src={imgInvite} alt="50GB free" className="h-24 w-auto object-contain shrink-0" />
-      </div>
+      {onInvite ? (
+        <button
+          type="button"
+          onClick={onInvite}
+          className="w-full cursor-pointer border-0 bg-transparent p-0 text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600"
+        >
+          {banner}
+        </button>
+      ) : (
+        banner
+      )}
 
-      <div className="px-4 pb-4">
-        <StorageBar used={used} total={total} unit={unit} />
-      </div>
+      <StorageBar used={used} total={total} unit={unit} variant="indicator" />
     </section>
   )
 }

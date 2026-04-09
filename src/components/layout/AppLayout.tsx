@@ -1,8 +1,7 @@
 import { useMemo } from 'react'
 import { Outlet } from 'react-router-dom'
 import { BottomNavBar } from '@/components/organisms'
-import type { NavItem } from '@/components/organisms'
-import type { IconName } from '@/components/atoms'
+import type { BottomNavGlyph, NavItem } from '@/components/organisms'
 import { useTranslation } from '@/hooks/useTranslation'
 import type { Translations } from '@/lib/i18n'
 
@@ -14,14 +13,14 @@ type NavLabelKey = keyof Pick<
 const NAV_CONFIG: readonly {
   id: string
   to: string
-  icon: IconName
+  glyph: BottomNavGlyph
   labelKey: NavLabelKey
 }[] = [
-  { id: 'home', to: '/home', icon: 'home', labelKey: 'nav_home' },
-  { id: 'photos', to: '/home/photos', icon: 'albums', labelKey: 'nav_photos' },
-  { id: 'ai-camera', to: '/home/ai-camera', icon: 'sparkles', labelKey: 'nav_ai_camera' },
-  { id: 'files', to: '/home/files', icon: 'folder', labelKey: 'nav_files' },
-  { id: 'create', to: '/home/create', icon: 'plus-circle', labelKey: 'nav_create' },
+  { id: 'home', to: '/home', glyph: 'home', labelKey: 'nav_home' },
+  { id: 'photos', to: '/home/photos', glyph: 'photos', labelKey: 'nav_photos' },
+  { id: 'ai-camera', to: '/home/ai-camera', glyph: 'ai-camera', labelKey: 'nav_ai_camera' },
+  { id: 'files', to: '/home/files', glyph: 'files', labelKey: 'nav_files' },
+  { id: 'create', to: '/home/create', glyph: 'create', labelKey: 'nav_create' },
 ]
 
 /**
@@ -37,8 +36,9 @@ export function AppLayout() {
       NAV_CONFIG.map((row) => ({
         id: row.id,
         to: row.to,
-        icon: row.icon,
+        glyph: row.glyph,
         label: t[row.labelKey],
+        featured: row.id === 'ai-camera',
       })),
     [t],
   )

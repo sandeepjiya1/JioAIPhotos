@@ -6,5 +6,8 @@ export { AppLayout } from './AppLayout'
 export { TopBar } from './TopBar'
 export type { TopBarProps } from './TopBar'
 
+export { AppTabPlaceholderLayout } from './AppTabPlaceholderLayout'
+export type { AppTabPlaceholderLayoutProps } from './AppTabPlaceholderLayout'
+
 export { PageContainer } from './PageContainer'
 export * from './PageTransition'

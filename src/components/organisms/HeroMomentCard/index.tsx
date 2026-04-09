@@ -11,9 +11,16 @@ export interface HeroAction {
 
 export interface HeroMomentCardProps {
   image: string
+  /** Alt for the hero image (e.g. theme or moment description). */
+  imageAlt?: string
   overlayImage?: string
   /** IPL team logo strip — Figma `IPLTeam_Logos` (488:9286): 56×56, gap 11px, radius 14px */
   iplTeamLogos?: readonly string[]
+  /** With `onIplLogoSelect`, each logo is a control and this index shows the active border. */
+  iplSelectedLogoIndex?: number
+  onIplLogoSelect?: (index: number) => void
+  /** Same length as `iplTeamLogos` — used for `aria-label` when logos are interactive. */
+  iplTeamLogoLabels?: readonly string[]
   onShare?: () => void
   onEdit?: () => void
   onMore?: () => void
@@ -22,8 +29,12 @@ export interface HeroMomentCardProps {
 
 export function HeroMomentCard({
   image,
+  imageAlt = 'Moment',
   overlayImage,
   iplTeamLogos,
+  iplSelectedLogoIndex = 0,
+  onIplLogoSelect,
+  iplTeamLogoLabels,
   onShare,
   onEdit,
   onMore,
@@ -32,8 +43,8 @@ export function HeroMomentCard({
   return (
     <div className={cn('flex flex-col gap-3', className)}>
       {/* Main card */}
-      <div className="relative w-full aspect-[3/4] rounded-2xl overflow-hidden">
-        <img src={image} alt="Moment" className="absolute inset-0 size-full object-cover" />
+      <div className="relative w-full aspect-[3/4] rounded-image overflow-hidden">
+        <img src={image} alt={imageAlt} className="absolute inset-0 size-full object-cover" />
 
         {overlayImage && (
           <img
@@ -85,23 +96,51 @@ export function HeroMomentCard({
           role="list"
           aria-label="IPL team logos"
         >
-          {iplTeamLogos.map((src, i) => (
-            <div
-              key={`${src}-${i}`}
-              role="listitem"
-              className={cn(
-                'relative h-14 w-14 shrink-0 overflow-hidden rounded-[14px] bg-surface-3',
-                i === 0 ? 'border border-primary-400/40' : 'border border-on-border',
-              )}
-            >
-              <img
-                src={src}
-                alt=""
-                className="size-full object-contain p-2"
-                loading="lazy"
-              />
-            </div>
-          ))}
+          {iplTeamLogos.map((src, i) => {
+            const selected = i === iplSelectedLogoIndex
+            const label =
+              iplTeamLogoLabels?.[i] ?? `IPL team ${i + 1}`
+            const frameClass = cn(
+              'relative h-14 w-14 shrink-0 overflow-hidden rounded-[14px] bg-surface-3 border transition-colors',
+              selected ? 'border-primary-400/40' : 'border-on-border',
+            )
+
+            if (onIplLogoSelect) {
+              return (
+                <div key={`${src}-${i}`} role="listitem" className="shrink-0">
+                  <button
+                    type="button"
+                    aria-label={`Show ${label} hero theme`}
+                    aria-pressed={selected}
+                    onClick={() => onIplLogoSelect(i)}
+                    className={cn(frameClass, 'cursor-pointer p-0 size-14')}
+                  >
+                    <img
+                      src={src}
+                      alt=""
+                      className="size-full object-contain p-2 pointer-events-none"
+                      loading="lazy"
+                    />
+                  </button>
+                </div>
+              )
+            }
+
+            return (
+              <div
+                key={`${src}-${i}`}
+                role="listitem"
+                className={frameClass}
+              >
+                <img
+                  src={src}
+                  alt=""
+                  className="size-full object-contain p-2"
+                  loading="lazy"
+                />
+              </div>
+            )
+          })}
         </div>
       )}
     </div>

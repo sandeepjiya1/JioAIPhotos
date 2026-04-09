@@ -15,7 +15,7 @@ export function MemoriesPage() {
     <div className="flex flex-col min-h-dvh bg-surface-0">
       <TopBar title="Memories" />
 
-      <div className="flex-1 overflow-y-auto pb-24 px-4 pt-4 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto pb-36 px-4 pt-4 scrollbar-hide">
         {isLoading ? (
           /* Skeleton loading state */
           <div className="grid grid-cols-2 gap-3">

@@ -1,7 +1,7 @@
-import { SearchPage } from '@/pages/app/SearchPage'
+import { AppTabPlaceholderLayout } from '@/components/layout'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export function AiCameraPage() {
   const t = useTranslation()
-  return <SearchPage topBarTitle={t.nav_ai_camera} />
+  return <AppTabPlaceholderLayout title={t.nav_ai_camera} />
 }

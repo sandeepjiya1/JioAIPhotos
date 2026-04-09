@@ -6,7 +6,7 @@ export interface SectionHeaderProps {
   description?: string
   action?: ReactNode
   variant?: 'display' | 'heading'
-  /** Center title (and description) — e.g. home section rails */
+  /** `start` (default) — use on HomePage section rails. `center` only for non-home layouts that explicitly need centered headings. */
   titleAlign?: 'start' | 'center'
   className?: string
 }

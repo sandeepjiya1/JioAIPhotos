@@ -5,6 +5,8 @@ export type MediaCardVariant = 'memory' | 'greeting' | 'trending' | 'square'
 export interface MediaCardProps {
   variant?: MediaCardVariant
   image: string
+  /** Override default `object-cover` + `inset-0` framing (e.g. Figma 488:9345 crop). */
+  imageClassName?: string
   title?: string
   date?: string
   className?: string
@@ -18,7 +20,15 @@ const variantDimensions: Record<MediaCardVariant, string> = {
   square:   'aspect-square',
 }
 
-export function MediaCard({ variant = 'square', image, title, date, className, onClick }: MediaCardProps) {
+export function MediaCard({
+  variant = 'square',
+  image,
+  imageClassName,
+  title,
+  date,
+  className,
+  onClick,
+}: MediaCardProps) {
   return (
     <div
       role={onClick ? 'button' : undefined}
@@ -26,12 +36,19 @@ export function MediaCard({ variant = 'square', image, title, date, className, o
       onClick={onClick}
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
       className={cn(
-        'relative rounded-2xl overflow-hidden cursor-pointer',
+        'relative rounded-image overflow-hidden cursor-pointer',
         variantDimensions[variant],
         className,
       )}
     >
-      <img src={image} alt={title ?? ''} className="absolute inset-0 size-full object-cover" />
+      <img
+        src={image}
+        alt={title ?? ''}
+        className={cn(
+          'absolute max-w-none pointer-events-none',
+          imageClassName ?? 'inset-0 size-full object-cover',
+        )}
+      />
 
       {/* Overlay gradient for memory variant */}
       {(variant === 'memory' && (title || date)) && (

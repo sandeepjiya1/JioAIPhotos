@@ -1,0 +1,16 @@
+---
+description: Home page section titles must be left-aligned (SectionHeader)
+globs: src/pages/app/HomePage.tsx
+alwaysApply: false
+---
+
+# Home page section titles
+
+On **`HomePage`**, every **`SectionHeader`** for main content rails (e.g. Memories, Greetings, Trending photo looks, Photos) must be **left-aligned**.
+
+## Requirements
+
+1. Do **not** pass **`titleAlign="center"`** on those headers. Omit **`titleAlign`** so the default **`start`** (left) alignment from **`SectionHeader`** applies.
+2. If a new section is added on the home scroll with **`SectionHeader`**, keep the same pattern unless product explicitly requests centered headings for that block.
+
+Other screens may still use **`titleAlign="center"`** when the design calls for it.

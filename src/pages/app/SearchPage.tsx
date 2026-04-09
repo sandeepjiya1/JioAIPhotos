@@ -16,7 +16,7 @@ export function SearchPage({ topBarTitle = 'Search' }: SearchPageProps) {
     <div className="flex flex-col min-h-dvh bg-surface-0">
       <TopBar title={topBarTitle} />
 
-      <div className="flex-1 overflow-y-auto pb-24 px-4 pt-4 scrollbar-hide">
+      <div className="flex-1 overflow-y-auto pb-36 px-4 pt-4 scrollbar-hide">
         {/* Search input */}
         <Input
           placeholder="Search photos, people, places…"
