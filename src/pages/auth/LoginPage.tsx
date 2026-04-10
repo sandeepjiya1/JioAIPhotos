@@ -22,7 +22,30 @@ export function LoginPage() {
   }
 
   return (
-    <AuthLayout>
+    <AuthLayout
+      keyboardAwareFooter
+      footerSlot={
+        <motion.div
+          className="flex flex-col gap-6"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.35, duration: 0.3 }}
+        >
+          <LegalText />
+          <motion.div whileTap={tapScale}>
+            <Button
+              variant="primary"
+              size="pill"
+              fullWidth
+              disabled={phone.length !== 10}
+              onClick={handleSubmit}
+            >
+              {t.login_cta}
+            </Button>
+          </motion.div>
+        </motion.div>
+      }
+    >
       <motion.div
         className="flex flex-col gap-7"
         variants={staggerContainer}
@@ -57,26 +80,6 @@ export function LoginPage() {
             error={error}
             autoFocus
           />
-        </motion.div>
-      </motion.div>
-
-      <motion.div
-        className="flex flex-col gap-6"
-        initial={{ opacity: 0, y: 16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.35, duration: 0.3 }}
-      >
-        <LegalText />
-        <motion.div whileTap={tapScale}>
-          <Button
-            variant="primary"
-            size="pill"
-            fullWidth
-            disabled={phone.length !== 10}
-            onClick={handleSubmit}
-          >
-            {t.login_cta}
-          </Button>
         </motion.div>
       </motion.div>
     </AuthLayout>
