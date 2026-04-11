@@ -67,15 +67,14 @@ export function OnboardingPage() {
         <ChevronRight className="w-4 h-4" />
       </motion.button>
 
-      {/* PNGs ship with solid black; screen-blend maps black → surface-0 underneath */}
-      {/* ~2/3 height for art — bottom panel keeps CTAs pinned to safe-area bottom */}
-      <div className="min-h-0 w-full flex-[2] overflow-hidden bg-surface-0">
+      {/* Art sits low in this band (justify-end + object-bottom) so it meets the copy — same assets/URLs */}
+      <div className="flex min-h-0 w-full flex-[2] flex-col justify-end overflow-hidden bg-surface-0">
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
             src={SLIDE_IMAGES[current]}
             alt={slide.title}
-            className="h-full w-full object-contain object-top mix-blend-screen"
+            className="max-h-full w-full object-contain object-bottom mix-blend-screen"
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
