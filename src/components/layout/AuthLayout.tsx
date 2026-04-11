@@ -2,17 +2,13 @@ import { type ReactNode } from 'react'
 import { cn } from '@/lib'
 import { useVisualViewportBottomInset } from '@/hooks/useVisualViewportBottomInset'
 
-const footerPadClass =
-  'pb-[max(2.5rem,env(safe-area-inset-bottom,0px))]' as const
-
 function KeyboardLiftFooter({ children }: { children: ReactNode }) {
   const keyboardInset = useVisualViewportBottomInset()
 
   return (
     <div
       className={cn(
-        'shrink-0 px-6 pt-2 bg-surface-0',
-        footerPadClass,
+        'auth-screen-px auth-cta-bottom-pad shrink-0 bg-surface-0 pt-2',
         keyboardInset > 0 && 'transition-[transform] duration-150 ease-out',
       )}
       style={
@@ -28,7 +24,7 @@ function KeyboardLiftFooter({ children }: { children: ReactNode }) {
 
 function StaticAuthFooter({ children }: { children: ReactNode }) {
   return (
-    <div className={cn('shrink-0 px-6 pt-2 bg-surface-0', footerPadClass)}>
+    <div className="auth-screen-px auth-cta-bottom-pad shrink-0 bg-surface-0 pt-2">
       {children}
     </div>
   )
@@ -53,7 +49,7 @@ export interface AuthLayoutProps {
  *
  * Provides:
  *   - Full-screen dark surface
- *   - Safe-area top spacer (h-14)
+ *   - Safe-area-aware top spacer (`auth-top-spacer`)
  *   - Flex column with content area + optional pinned footer
  */
 export function AuthLayout({
@@ -65,18 +61,17 @@ export function AuthLayout({
 }: AuthLayoutProps) {
   return (
     <div className={cn('flex flex-col w-full h-dvh min-h-0 bg-surface-0', className)}>
-      {/* Status bar / safe area top spacer */}
-      <div className="h-14 shrink-0" aria-hidden="true" />
+      <div className="auth-top-spacer" aria-hidden="true" />
 
       {headerSlot && (
-        <div className="px-6 shrink-0">{headerSlot}</div>
+        <div className="auth-screen-px shrink-0">{headerSlot}</div>
       )}
 
       {/* Main scrollable content — min-h-0 so flex child can shrink on mobile */}
       <div
         className={cn(
-          'flex flex-1 flex-col min-h-0 overflow-y-auto px-6',
-          footerSlot ? 'pb-4' : 'justify-between pb-10',
+          'auth-screen-px flex min-h-0 flex-1 flex-col overflow-y-auto',
+          footerSlot ? 'pb-4' : 'auth-cta-bottom-pad justify-between',
         )}
       >
         {children}

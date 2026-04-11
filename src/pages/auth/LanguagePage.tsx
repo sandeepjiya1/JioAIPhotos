@@ -31,75 +31,59 @@ export function LanguagePage() {
   }
 
   return (
-    <div className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden">
-
-      {/* Headline + collage — staggered top → middle, same motion language as onboarding */}
+    <div className="flex h-dvh min-h-0 w-full flex-col overflow-hidden bg-surface-0">
+      {/* Hero: headline + flexible collage — all flow + flex, no absolute Figma px */}
       <motion.div
-        className="absolute left-0 right-0 z-10 pointer-events-none"
-        style={{ top: 0, bottom: 230 }}
+        className="relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden"
         variants={staggerContainer}
         initial="hidden"
         animate="show"
       >
-        {/* Header — Figma: y=71, text at y=81 */}
         <motion.div
-          className="absolute left-0 right-0 px-6 pointer-events-auto"
-          style={{ top: 71 }}
           variants={fadeUp}
+          className="auth-hero-top-pad auth-screen-px shrink-0 pb-3 sm:pb-4"
         >
-          <div key={uiLang} style={{ paddingTop: 10 }} className="flex flex-col gap-2 text-center items-center">
-            <h1 className="text-content-primary text-[28px] font-black leading-[1.15] text-center w-full">
-              {t.language_headline}
-            </h1>
-            <p className="text-content-secondary text-sm leading-snug text-center w-full">
+          <div className="mx-auto flex w-full max-w-lg flex-col gap-2 text-center">
+            <h1 className="text-auth-display text-content-primary">{t.language_headline}</h1>
+            <p className="text-sm leading-snug text-content-secondary sm:text-base">
               {t.language_subtitle}
             </p>
           </div>
         </motion.div>
 
-        {/* Collage image — Figma: container y=199 h=371, img y=-34 h=405 */}
         <motion.div
-          className="absolute left-0 right-0 overflow-hidden bg-surface-0"
-          style={{ top: 199, height: 371 }}
           variants={imageReveal}
+          className="relative min-h-0 w-full flex-1 overflow-hidden"
           aria-hidden="true"
         >
           <img
             src={imgCollage}
-            alt="Photo collage preview"
-            className="absolute left-0 right-0 w-full object-cover object-center mix-blend-screen"
-            style={{ top: -34, height: 405 }}
+            alt=""
+            className="h-full w-full object-cover object-center mix-blend-screen"
             draggable={false}
           />
         </motion.div>
       </motion.div>
 
-      {/* Bottom sheet — Figma: y=570 h=230 */}
       <motion.div
-        className="absolute left-0 right-0 bottom-0 z-20 bg-surface-0 rounded-t-[32px] px-6"
-        style={{ height: 230, paddingTop: 12 }}
-        initial={{ y: 60, opacity: 0 }}
+        className="auth-screen-px auth-cta-bottom-pad z-20 flex shrink-0 flex-col rounded-t-[var(--radius-2xl)] bg-surface-0 pt-3"
+        initial={{ y: '100%', opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] as const }}
       >
         <motion.div
           key={uiLang}
+          className="flex flex-col gap-4"
           variants={fadeUp}
           initial="hidden"
           animate="show"
         >
-          <p
-            className="text-content-primary text-sm font-medium text-left"
-            style={{ marginBottom: 16 }}
-          >
-            {t.language_choose}
-          </p>
+          <p className="text-left text-sm font-medium text-content-primary">{t.language_choose}</p>
 
           <div
             className="grid grid-cols-2 gap-3"
             role="radiogroup"
             aria-label="Language selection"
-            style={{ marginBottom: 16 }}
           >
             <LanguageCard
               label="English"

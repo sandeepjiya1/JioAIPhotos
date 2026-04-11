@@ -39,10 +39,10 @@ export function GalleryPermissionPage() {
   const handleSkip = () => navigate('/permission/notifications', { replace: true })
 
   return (
-    <div className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden">
+    <div className="relative flex h-dvh min-h-0 w-full flex-col overflow-hidden bg-surface-0">
       {/* Background gradient */}
       <div
-        className="absolute inset-0 pointer-events-none"
+        className="pointer-events-none absolute inset-0"
         style={{
           background:
             'radial-gradient(ellipse 70% 50% at 50% 20%, rgba(39,139,193,0.12) 0%, transparent 70%)',
@@ -51,7 +51,7 @@ export function GalleryPermissionPage() {
       />
 
       <motion.div
-        className="relative z-10 flex flex-col items-center justify-center flex-1 px-8 text-center"
+        className="auth-screen-px relative z-10 flex min-h-0 flex-1 flex-col items-center justify-center overflow-y-auto text-center"
         variants={staggerContainer}
         initial="hidden"
         animate="show"
@@ -61,23 +61,22 @@ export function GalleryPermissionPage() {
         </motion.div>
 
         <motion.h1
-          className="text-content-primary text-2xl font-black leading-tight mb-3"
+          className="mb-3 text-2xl font-black leading-tight text-content-primary"
           variants={fadeUp}
         >
           {t.gallery_perm_title}
         </motion.h1>
 
         <motion.p
-          className="text-content-secondary text-sm leading-relaxed max-w-xs"
+          className="max-w-xs text-sm leading-relaxed text-content-secondary"
           variants={fadeUp}
         >
           {t.gallery_perm_subtitle}
         </motion.p>
       </motion.div>
 
-      {/* Bottom actions */}
       <motion.div
-        className="relative z-10 px-6 pb-12 flex flex-col gap-3"
+        className="auth-screen-px auth-cta-bottom-pad relative z-10 mt-auto flex w-full shrink-0 flex-col gap-3 pt-2"
         initial={{ opacity: 0, y: 24 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.35 }}

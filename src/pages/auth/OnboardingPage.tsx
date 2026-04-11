@@ -49,15 +49,14 @@ export function OnboardingPage() {
 
   return (
     <div
-      className="relative flex flex-col w-full h-dvh bg-surface-0 overflow-hidden select-none"
+      className="relative flex h-dvh min-h-0 w-full flex-col bg-surface-0 overflow-hidden select-none"
       {...swipeHandlers}
     >
       {/* Skip */}
       <motion.button
         type="button"
         onClick={finish}
-        className="absolute z-20 flex items-center gap-1 text-white text-sm font-bold"
-        style={{ top: 56, right: 24, height: 32 }}
+        className="auth-skip-corner flex min-h-11 items-center gap-1 py-2 text-sm font-bold text-white"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.4 }}
@@ -69,16 +68,14 @@ export function OnboardingPage() {
       </motion.button>
 
       {/* PNGs ship with solid black; screen-blend maps black → surface-0 underneath */}
-      <div
-        className="flex-shrink-0 w-full overflow-hidden bg-surface-0"
-        style={{ flex: '1 1 0', minHeight: 0 }}
-      >
+      {/* ~2/3 height for art — bottom panel keeps CTAs pinned to safe-area bottom */}
+      <div className="min-h-0 w-full flex-[2] overflow-hidden bg-surface-0">
         <AnimatePresence mode="wait">
           <motion.img
             key={current}
             src={SLIDE_IMAGES[current]}
             alt={slide.title}
-            className="w-full h-full object-contain object-top mix-blend-screen"
+            className="h-full w-full object-contain object-top mix-blend-screen"
             initial={{ opacity: 0, scale: 1.04 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0 }}
@@ -87,33 +84,37 @@ export function OnboardingPage() {
         </AnimatePresence>
       </div>
 
-      {/* Content panel */}
-      <div
-        className="flex-shrink-0 flex flex-col px-6"
-        style={{ paddingTop: 16, paddingBottom: 40 }}
-      >
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={current}
-            className="flex flex-col gap-2 mb-4 text-center items-center"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.28 }}
-          >
-            <h2 className="text-content-primary text-[26px] font-black leading-[1.2] text-center w-full">
-              {slide.title}
-            </h2>
-            <p className="text-content-secondary text-sm leading-snug text-center w-full">
-              {slide.subtitle}
-            </p>
-          </motion.div>
-        </AnimatePresence>
+      {/* Copy + dots top of panel; Try Now + chevron bottom-aligned */}
+      <div className="auth-screen-px auth-cta-bottom-pad flex min-h-0 flex-1 flex-col justify-between pt-4">
+        <div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={current}
+              className="mb-4 flex flex-col items-center gap-2 text-center"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              transition={{ duration: 0.28 }}
+            >
+              <h2 className="text-auth-onboarding-title w-full text-center text-content-primary">
+                {slide.title}
+              </h2>
+              <p className="w-full text-center text-sm leading-snug text-content-secondary">
+                {slide.subtitle}
+              </p>
+            </motion.div>
+          </AnimatePresence>
 
-        <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} className="justify-center mb-6" />
+          <ProgressDots
+            total={slides.length}
+            current={current}
+            onDotPress={setCurrent}
+            className="justify-center"
+          />
+        </div>
 
         <motion.div
-          className="flex items-center gap-3"
+          className="flex items-center gap-3 pt-4"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.3 }}
@@ -121,7 +122,7 @@ export function OnboardingPage() {
           <motion.button
             type="button"
             onClick={goNext}
-            className="flex-1 h-12 rounded-full bg-primary-600 text-white font-bold text-base border-0"
+            className="h-12 flex-1 rounded-full border-0 bg-primary-600 text-base font-bold text-white"
             whileTap={tapScale}
           >
             {slide.cta}
@@ -130,10 +131,10 @@ export function OnboardingPage() {
             type="button"
             onClick={goNext}
             aria-label="Next slide"
-            className="w-12 h-12 rounded-full bg-surface-3 flex items-center justify-center shrink-0 border border-surface-4 text-white"
+            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-surface-4 bg-surface-3 text-white"
             whileTap={tapScale}
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="h-5 w-5" />
           </motion.button>
         </motion.div>
       </div>

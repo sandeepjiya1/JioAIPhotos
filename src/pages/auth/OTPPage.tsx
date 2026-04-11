@@ -60,7 +60,7 @@ export function OTPPage() {
 
           <div className="flex flex-col gap-2.5">
             <motion.h1
-              className="text-white text-[28px] font-black leading-8"
+              className="text-auth-display text-white"
               variants={fadeUp}
             >
               {t.otp_heading}
