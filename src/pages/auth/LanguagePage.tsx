@@ -31,7 +31,7 @@ export function LanguagePage() {
   }
 
   return (
-    <div className="flex h-dvh min-h-0 w-full flex-col overflow-hidden bg-surface-0">
+    <div className="flex h-dvh min-h-0 min-h-svh w-full flex-col overflow-hidden bg-surface-0">
       {/* Hero: headline + flexible collage — all flow + flex, no absolute Figma px */}
       <motion.div
         className="relative z-10 flex min-h-0 flex-1 flex-col overflow-hidden"
@@ -65,11 +65,12 @@ export function LanguagePage() {
         </motion.div>
       </motion.div>
 
+      {/* No translateY(100%) — % resolves wrong on first mobile paint; sheet stays in flow at bottom */}
       <motion.div
         className="auth-screen-px auth-cta-bottom-pad z-20 flex shrink-0 flex-col rounded-t-[var(--radius-2xl)] bg-surface-0 pt-3"
-        initial={{ y: '100%', opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4, delay: 0.15, ease: [0.4, 0, 0.2, 1] as const }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, delay: 0.08, ease: [0.4, 0, 0.2, 1] as const }}
       >
         <motion.div
           key={uiLang}
