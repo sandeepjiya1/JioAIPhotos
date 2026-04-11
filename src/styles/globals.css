@@ -222,6 +222,21 @@
     font-weight: 900;
   }
 
+  /**
+   * FlowViewportScreen: until the fixed footer is measured, reserve space with
+   * viewport-relative + rem caps (no TS magic numbers).
+   */
+  .flow-main-fallback-pad {
+    padding-bottom: max(
+      min(42svh, 24rem),
+      calc(env(safe-area-inset-bottom, 0px) + 2.5rem)
+    );
+  }
+
+  .flow-footer-dock-elevated {
+    box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.35);
+  }
+
   /* Scrollbar */
   .scrollbar-hide {
     -ms-overflow-style: none;

@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ProgressDots } from '@/components/molecules'
+import { FlowViewportScreen } from '@/components/layout'
 import { useSwipe } from '@/hooks/useSwipe'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -48,95 +49,98 @@ export function OnboardingPage() {
   const slide = slides[current]
 
   return (
-    <div
-      className="relative flex h-dvh min-h-0 w-full flex-col bg-surface-0 overflow-hidden select-none"
-      {...swipeHandlers}
-    >
-      {/* Skip */}
-      <motion.button
-        type="button"
-        onClick={finish}
-        className="auth-skip-corner flex min-h-11 items-center gap-1 py-2 text-sm font-bold text-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        whileTap={{ scale: 0.95 }}
-        aria-label="Skip onboarding"
-      >
-        {t.onboarding_skip}
-        <ChevronRight className="w-4 h-4" />
-      </motion.button>
+    <FlowViewportScreen
+      className="select-none"
+      rootProps={swipeHandlers}
+      mainClassName="relative"
+      footerClassName="auth-screen-px auth-cta-bottom-pad pt-4"
+      main={
+        <div className="flex min-h-0 flex-1 flex-col">
+          <motion.button
+            type="button"
+            onClick={finish}
+            className="auth-skip-corner flex min-h-11 items-center gap-1 py-2 text-sm font-bold text-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            whileTap={{ scale: 0.95 }}
+            aria-label="Skip onboarding"
+          >
+            {t.onboarding_skip}
+            <ChevronRight className="w-4 h-4" />
+          </motion.button>
 
-      {/* Art sits low in this band (justify-end + object-bottom) so it meets the copy — same assets/URLs */}
-      <div className="flex min-h-0 w-full flex-[2] flex-col justify-end overflow-hidden bg-surface-0">
-        <AnimatePresence mode="wait">
-          <motion.img
-            key={current}
-            src={SLIDE_IMAGES[current]}
-            alt={slide.title}
-            className="max-h-full w-full object-contain object-bottom mix-blend-screen"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.35 }}
-          />
-        </AnimatePresence>
-      </div>
-
-      {/* Copy + dots top of panel; Try Now + chevron bottom-aligned */}
-      <div className="auth-screen-px auth-cta-bottom-pad flex min-h-0 flex-1 flex-col justify-between pt-4">
-        <div>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={current}
-              className="mb-4 flex flex-col items-center gap-2 text-center"
-              initial={{ opacity: 0, y: 16 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.28 }}
-            >
-              <h2 className="text-auth-onboarding-title w-full text-center text-content-primary">
-                {slide.title}
-              </h2>
-              <p className="w-full text-center text-sm leading-snug text-content-secondary">
-                {slide.subtitle}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-
-          <ProgressDots
-            total={slides.length}
-            current={current}
-            onDotPress={setCurrent}
-            className="justify-center"
-          />
+          <div className="flex min-h-0 w-full flex-1 flex-col justify-end overflow-hidden bg-surface-0">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={current}
+                src={SLIDE_IMAGES[current]}
+                alt={slide.title}
+                className="max-h-full w-full object-contain object-bottom mix-blend-screen"
+                initial={{ opacity: 0, scale: 1.04 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.35 }}
+              />
+            </AnimatePresence>
+          </div>
         </div>
+      }
+      footer={
+        <div className="flex flex-col justify-between gap-4">
+          <div>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={current}
+                className="mb-4 flex flex-col items-center gap-2 text-center"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.28 }}
+              >
+                <h2 className="text-auth-onboarding-title w-full text-center text-content-primary">
+                  {slide.title}
+                </h2>
+                <p className="w-full text-center text-sm leading-snug text-content-secondary">
+                  {slide.subtitle}
+                </p>
+              </motion.div>
+            </AnimatePresence>
 
-        <motion.div
-          className="flex items-center gap-3 pt-4"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.3 }}
-        >
-          <motion.button
-            type="button"
-            onClick={goNext}
-            className="h-12 flex-1 rounded-full border-0 bg-primary-600 text-base font-bold text-white"
-            whileTap={tapScale}
+            <ProgressDots
+              total={slides.length}
+              current={current}
+              onDotPress={setCurrent}
+              className="justify-center"
+            />
+          </div>
+
+          <motion.div
+            className="flex items-center gap-3 pt-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.3 }}
           >
-            {slide.cta}
-          </motion.button>
-          <motion.button
-            type="button"
-            onClick={goNext}
-            aria-label="Next slide"
-            className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-surface-4 bg-surface-3 text-white"
-            whileTap={tapScale}
-          >
-            <ChevronRight className="h-5 w-5" />
-          </motion.button>
-        </motion.div>
-      </div>
-    </div>
+            <motion.button
+              type="button"
+              onClick={goNext}
+              className="h-12 flex-1 rounded-full border-0 bg-primary-600 text-base font-bold text-white"
+              whileTap={tapScale}
+            >
+              {slide.cta}
+            </motion.button>
+            <motion.button
+              type="button"
+              onClick={goNext}
+              aria-label="Next slide"
+              className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-surface-4 bg-surface-3 text-white"
+              whileTap={tapScale}
+            >
+              <ChevronRight className="h-5 w-5" />
+            </motion.button>
+          </motion.div>
+        </div>
+      }
+    />
   )
 }
