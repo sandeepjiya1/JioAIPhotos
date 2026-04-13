@@ -21,6 +21,8 @@ export interface HomeMemoryCard {
 export interface HomeGreetingCard {
   id: string
   image: string
+  /** Wish category label (bottom overlay on grid tiles). */
+  label: string
 }
 
 export interface HomeTrendingCard {
@@ -74,6 +76,38 @@ export const HOME_STORY_RINGS: readonly HomeStoryRing[] = [
     label: 'Love',
     image: '/assets/figma/defd24b0ba2543a683d1c21866cf1b5c65c558aa.png',
   },
+  {
+    id: 'travel',
+    label: 'Travel',
+    image: '/assets/figma/939127241329aed177882aa617dc4b47d1e350c2.png',
+    hasNew: true,
+  },
+  {
+    id: 'festival',
+    label: 'Festival',
+    image: '/assets/figma/2e6ff07eac6f4148a03df5e6ae992fbdd23c2f3e.png',
+  },
+  {
+    id: 'family',
+    label: 'Family',
+    image: '/assets/figma/9c3be8ec82a701547f20afe3432e1123d6e09a4a.png',
+  },
+  {
+    id: 'nature',
+    label: 'Nature',
+    image: '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png',
+    hasNew: true,
+  },
+  {
+    id: 'friends',
+    label: 'Friends',
+    image: '/assets/figma/d0dcd90132612641a0109cc9bb9b63ddd311016b.png',
+  },
+  {
+    id: 'workout',
+    label: 'Workout',
+    image: '/assets/figma/bb58655a57d80a328c43b89c58da982691332c16.png',
+  },
 ]
 
 /** Figma Memories rail (488:9299), left → right */
@@ -102,23 +136,53 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
   ],
 }
 
-/** Order: Holi → Good morning → Hanuman ji */
+/** Send Wishes — 3×2 grid (reference layout), row-major: L→R, top then bottom */
 export const HOME_GREETINGS_SECTION: HomeRichSection<HomeGreetingCard> = {
   title: 'Send Wishes',
   subtitle: 'Get ready-to-share greetings for every day and every moment.',
   items: [
-    { id: 'greet-holi', image: '/assets/figma/2e6ff07eac6f4148a03df5e6ae992fbdd23c2f3e.png' },
-    { id: 'greet-morning', image: '/assets/figma/5c958752d2ada746764d0c855c950c6be3b8ad7a.png' },
-    { id: 'greet-hanuman', image: '/assets/figma/hanumanji-greetings.png' },
+    {
+      id: 'greet-holi',
+      label: 'Happy Holi',
+      image: '/assets/figma/2e6ff07eac6f4148a03df5e6ae992fbdd23c2f3e.png',
+    },
+    {
+      id: 'greet-morning',
+      label: 'Good Morning',
+      image: '/assets/figma/5c958752d2ada746764d0c855c950c6be3b8ad7a.png',
+    },
+    {
+      id: 'greet-new-baby',
+      label: 'New Baby',
+      image: '/assets/figma/9c3be8ec82a701547f20afe3432e1123d6e09a4a.png',
+    },
+    {
+      id: 'greet-anniversary',
+      label: 'Anniversary',
+      image: '/assets/figma/e5ed6df5cb304c15b0443f6e03cd8446e5b2b912.png',
+    },
+    {
+      id: 'greet-engagement',
+      label: 'Engagement',
+      image: '/assets/figma/d0dcd90132612641a0109cc9bb9b63ddd311016b.png',
+    },
+    {
+      id: 'greet-sunday',
+      label: 'Sunday Wishes',
+      image: '/assets/figma/hanumanji-greetings.png',
+    },
   ],
 }
 
 const TRENDING_MIDDLE_CROP =
   'h-[115.79%] w-[158.61%] max-w-none object-cover -left-[37.04%] -top-[2.9%]'
 
-/** Figma TrendingPhotoLooks_Section (488:9337); middle tile → 488:9345 */
+/**
+ * Recent AI creations — placeholder tiles; replace with the user’s latest AI-generated media.
+ * (Layout derived from Figma TrendingPhotoLooks_Section 488:9337; middle tile crop → 488:9345.)
+ */
 export const HOME_TRENDING_SECTION: HomeRichSection<HomeTrendingCard> = {
-  title: 'Trending Themes',
+  title: 'Recent AI Creations',
   items: [
     { id: 'trend-1', image: '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png' },
     {

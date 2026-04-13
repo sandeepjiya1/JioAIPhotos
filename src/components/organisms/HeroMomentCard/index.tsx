@@ -1,6 +1,8 @@
 import { type ReactNode } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
 import { Icon } from '@/components/atoms'
+import { tapScale } from '@/components/layout/PageTransition'
 
 export interface HeroAction {
   label: string
@@ -9,18 +11,27 @@ export interface HeroAction {
   variant?: 'share' | 'edit' | 'more'
 }
 
+export interface HeroMomentSelectorStrip {
+  logos: readonly string[]
+  /** Per-thumb framing (e.g. Trending crop on one tile). */
+  thumbImageClassNames?: readonly (string | undefined)[]
+  selectedIndex: number
+  onSelect: (index: number) => void
+  labels: readonly string[]
+  listAriaLabel: string
+}
+
 export interface HeroMomentCardProps {
   image: string
   /** Alt for the hero image (e.g. theme or moment description). */
   imageAlt?: string
   overlayImage?: string
-  /** IPL team logo strip — Figma `IPLTeam_Logos` (488:9286): 56×56, gap 11px, radius 14px */
-  iplTeamLogos?: readonly string[]
-  /** With `onIplLogoSelect`, each logo is a control and this index shows the active border. */
-  iplSelectedLogoIndex?: number
-  onIplLogoSelect?: (index: number) => void
-  /** Same length as `iplTeamLogos` — used for `aria-label` when logos are interactive. */
-  iplTeamLogoLabels?: readonly string[]
+  /** Hero image area aspect — default tall card; home uses a shorter banner. */
+  aspectClassName?: string
+  /** Smaller actions + tighter padding for dense layouts. */
+  compact?: boolean
+  /** Logo / poster strip (IPL teams, movies, etc.). */
+  selectorStrip?: HeroMomentSelectorStrip
   onShare?: () => void
   onEdit?: () => void
   onMore?: () => void
@@ -31,20 +42,38 @@ export function HeroMomentCard({
   image,
   imageAlt = 'Moment',
   overlayImage,
-  iplTeamLogos,
-  iplSelectedLogoIndex = 0,
-  onIplLogoSelect,
-  iplTeamLogoLabels,
+  aspectClassName = 'aspect-[3/4]',
+  compact = false,
+  selectorStrip,
   onShare,
   onEdit,
   onMore,
   className,
 }: HeroMomentCardProps) {
+  const reduceMotion = useReducedMotion() === true
+  const btnH = compact ? 'h-9' : 'h-10'
+  const btnText = compact ? 'text-xs' : 'text-sm'
+  const pad = compact ? 'bottom-3 left-3 right-3' : 'bottom-4 left-4 right-4'
+  const moreBtn = compact ? 'size-9' : 'size-10'
+
   return (
-    <div className={cn('flex flex-col gap-3', className)}>
-      {/* Main card */}
-      <div className="relative w-full aspect-[3/4] rounded-image overflow-hidden">
-        <img src={image} alt={imageAlt} className="absolute inset-0 size-full object-cover" />
+    <div
+      className={cn(
+        'flex min-w-0 w-full max-w-full flex-col gap-2',
+        selectorStrip && 'overflow-x-visible',
+        className,
+      )}
+    >
+      <div className={cn('relative w-full overflow-hidden rounded-image', aspectClassName)}>
+        <motion.img
+          key={image}
+          src={image}
+          alt={imageAlt}
+          className="absolute inset-0 size-full object-cover"
+          initial={reduceMotion ? false : { opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: reduceMotion ? 0 : 0.28, ease: [0.4, 0, 0.2, 1] }}
+        />
 
         {overlayImage && (
           <img
@@ -55,89 +84,92 @@ export function HeroMomentCard({
           />
         )}
 
-        {/* Gradient */}
         <div className="absolute inset-0 bg-gradient-to-t from-[rgba(34,64,157,0.9)] via-[rgba(68,97,176,0.3)] to-transparent" />
 
-        {/* Action buttons */}
-        <div className="absolute bottom-4 left-4 right-4 flex items-center gap-2">
-          <button
+        <div className={cn('absolute flex items-center', compact ? 'gap-1.5' : 'gap-2', pad)}>
+          <motion.button
             type="button"
             onClick={onShare}
             aria-label="Share moment"
-            className="flex-1 flex items-center justify-center gap-1.5 h-10 rounded-full glass text-content-primary text-sm font-bold"
+            whileTap={reduceMotion ? undefined : tapScale}
+            className={cn(
+              'flex flex-1 items-center justify-center rounded-full glass font-bold text-content-primary',
+              compact ? 'gap-1' : 'gap-1.5',
+              btnH,
+              btnText,
+            )}
           >
             <Icon name="share" size="sm" />
             Share
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={onEdit}
             aria-label="Edit moment"
-            className="flex items-center justify-center gap-1.5 h-10 px-5 rounded-full glass text-content-primary text-sm font-bold"
+            whileTap={reduceMotion ? undefined : tapScale}
+            className={cn(
+              'flex items-center justify-center rounded-full glass font-bold text-content-primary',
+              compact ? 'gap-1 px-3' : 'gap-1.5 px-4',
+              btnH,
+              btnText,
+            )}
           >
             <Icon name="edit" size="sm" />
             Edit
-          </button>
-          <button
+          </motion.button>
+          <motion.button
             type="button"
             onClick={onMore}
             aria-label="More options"
-            className="size-10 rounded-full glass flex items-center justify-center"
+            whileTap={reduceMotion ? undefined : tapScale}
+            className={cn('flex items-center justify-center rounded-full glass', moreBtn)}
           >
             <Icon name="more-h" size="sm" />
-          </button>
+          </motion.button>
         </div>
       </div>
 
-      {/* IPL team logos — Figma IPLTeam_Logos */}
-      {iplTeamLogos && iplTeamLogos.length > 0 && (
+      {selectorStrip && selectorStrip.logos.length > 0 && (
         <div
-          className="-mx-4 flex gap-[11px] overflow-x-auto px-4 scrollbar-hide"
+          className={cn(
+            // Full viewport-width scrollport (same idea as home rails’ -mx-4 px-4) so peers peek at the edges.
+            'relative left-1/2 flex w-[100dvw] max-w-[100dvw] -translate-x-1/2 flex-nowrap',
+            'touch-pan-x gap-[11px] overflow-x-auto overscroll-x-contain px-4 scrollbar-hide',
+            // Let tiles keep their full border radius at the scrollport edge (avoid subpixel vertical clip).
+            'py-px',
+          )}
           role="list"
-          aria-label="IPL team logos"
+          aria-label={selectorStrip.listAriaLabel}
         >
-          {iplTeamLogos.map((src, i) => {
-            const selected = i === iplSelectedLogoIndex
-            const label =
-              iplTeamLogoLabels?.[i] ?? `IPL team ${i + 1}`
+          {selectorStrip.logos.map((src, i) => {
+            const selected = i === selectorStrip.selectedIndex
+            const label = selectorStrip.labels[i] ?? `Option ${i + 1}`
+            const thumbExtra = selectorStrip.thumbImageClassNames?.[i]
             const frameClass = cn(
-              'relative h-14 w-14 shrink-0 overflow-hidden rounded-[14px] bg-surface-3 border transition-colors',
+              'relative h-14 w-14 shrink-0 overflow-hidden rounded-[14px] border bg-surface-3 transition-colors',
               selected ? 'border-primary-400/40' : 'border-on-border',
             )
 
-            if (onIplLogoSelect) {
-              return (
-                <div key={`${src}-${i}`} role="listitem" className="shrink-0">
-                  <button
-                    type="button"
-                    aria-label={`Show ${label} hero theme`}
-                    aria-pressed={selected}
-                    onClick={() => onIplLogoSelect(i)}
-                    className={cn(frameClass, 'cursor-pointer p-0 size-14')}
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      className="size-full object-contain p-2 pointer-events-none"
-                      loading="lazy"
-                    />
-                  </button>
-                </div>
-              )
-            }
-
             return (
-              <div
-                key={`${src}-${i}`}
-                role="listitem"
-                className={frameClass}
-              >
-                <img
-                  src={src}
-                  alt=""
-                  className="size-full object-contain p-2"
-                  loading="lazy"
-                />
+              <div key={`${src}-${i}`} role="listitem" className="shrink-0">
+                <motion.button
+                  type="button"
+                  aria-label={`Show ${label}`}
+                  aria-pressed={selected}
+                  onClick={() => selectorStrip.onSelect(i)}
+                  whileTap={reduceMotion ? undefined : tapScale}
+                  className={cn(frameClass, 'size-14 cursor-pointer p-0')}
+                >
+                  <img
+                    src={src}
+                    alt=""
+                    className={cn(
+                      'pointer-events-none size-full',
+                      thumbExtra ?? 'object-contain p-2',
+                    )}
+                    loading="lazy"
+                  />
+                </motion.button>
               </div>
             )
           })}

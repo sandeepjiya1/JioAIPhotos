@@ -1,6 +1,8 @@
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
+import { tapScale } from '@/components/layout/PageTransition'
 
-export type MediaCardVariant = 'memory' | 'greeting' | 'trending' | 'square'
+export type MediaCardVariant = 'memory' | 'greeting' | 'greetingGrid' | 'trending' | 'square'
 
 export interface MediaCardProps {
   variant?: MediaCardVariant
@@ -14,10 +16,13 @@ export interface MediaCardProps {
 }
 
 const variantDimensions: Record<MediaCardVariant, string> = {
-  memory:   'size-[220px] shrink-0',
-  greeting: 'shrink-0 w-[175px] aspect-[9/16]',
-  trending: 'shrink-0 w-[160px] aspect-[3/4]',
-  square:   'aspect-square',
+  /** ~160px tall × ~284px wide (~16:9) — matches previous compact IPL hero banner */
+  memory: 'h-40 w-[min(17.75rem,calc(100vw-2.5rem))] shrink-0',
+  greeting:      'shrink-0 w-[175px] aspect-[9/16]',
+  /** Home “Send Wishes” 3×2 grid — full cell width, portrait tile */
+  greetingGrid:  'w-full min-w-0 aspect-[3/4]',
+  trending:      'shrink-0 w-[160px] aspect-[3/4]',
+  square:        'aspect-square',
 }
 
 export function MediaCard({
@@ -29,12 +34,14 @@ export function MediaCard({
   className,
   onClick,
 }: MediaCardProps) {
+  const reduceMotion = useReducedMotion() === true
   return (
-    <div
+    <motion.div
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
       onClick={onClick}
       onKeyDown={onClick ? (e) => e.key === 'Enter' && onClick() : undefined}
+      whileTap={reduceMotion ? undefined : tapScale}
       className={cn(
         'relative rounded-image overflow-hidden cursor-pointer',
         variantDimensions[variant],
@@ -54,9 +61,11 @@ export function MediaCard({
       {(variant === 'memory' && (title || date)) && (
         <>
           <div className="absolute inset-0 gradient-up-black" />
-          <div className="absolute bottom-3 left-3 flex flex-col gap-2">
+          <div className="absolute bottom-2 left-2 flex flex-col gap-1">
             {title && (
-              <p className="text-content-primary text-2xl font-black leading-7 whitespace-pre-line">{title}</p>
+              <p className="text-content-primary text-lg font-black leading-snug whitespace-pre-line">
+                {title}
+              </p>
             )}
             {date && (
               <p className="text-content-primary text-xs font-medium leading-snug">{date}</p>
@@ -64,6 +73,16 @@ export function MediaCard({
           </div>
         </>
       )}
-    </div>
+
+      {/* Send Wishes grid — bottom-centered label on dark fade (reference 3×2) */}
+      {variant === 'greetingGrid' && title && (
+        <>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-transparent" />
+          <p className="text-home-wish-tile-label pointer-events-none absolute bottom-2.5 left-2 right-2 line-clamp-2">
+            {title}
+          </p>
+        </>
+      )}
+    </motion.div>
   )
 }

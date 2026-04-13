@@ -1,5 +1,6 @@
 export * from './NotFoundPage'
 export * from './app/HomePage'
+export { HomePageSkeleton } from './app/HomePageSkeleton'
 export * from './app/AlbumsPage'
 export * from './app/SearchPage'
 export * from './app/MemoriesPage'

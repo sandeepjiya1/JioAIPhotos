@@ -1,7 +1,9 @@
 import { type ReactNode } from 'react'
+import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
 import { Avatar } from '@/components/atoms'
 import { Icon } from '@/components/atoms'
+import { tapScale } from '@/components/layout/PageTransition'
 
 const imgProductLogo = '/assets/figma/3a1e52ece350c3cd3815a476bdd9c3ac93f6cc2f.svg'
 
@@ -29,6 +31,7 @@ export function AppHeader({
   rightSlot,
   className,
 }: AppHeaderProps) {
+  const reduceMotion = useReducedMotion() === true
   const trailingAria = trailingIcon === 'search' ? 'Search' : 'Notifications'
   return (
     <header
@@ -54,22 +57,24 @@ export function AppHeader({
       {/* Actions */}
       <div className="flex items-center gap-3">
         {rightSlot}
-        <button
+        <motion.button
           type="button"
           onClick={onNotification}
           aria-label={trailingAria}
+          whileTap={reduceMotion ? undefined : tapScale}
           className="size-8 flex items-center justify-center rounded-full active:bg-surface-2 transition-colors"
         >
           <Icon name={trailingIcon} size="sm" className="text-content-primary" />
-        </button>
-        <button
+        </motion.button>
+        <motion.button
           type="button"
           onClick={onProfile}
           aria-label="Profile"
+          whileTap={reduceMotion ? undefined : tapScale}
           className="rounded-full ring-2 ring-on-border overflow-hidden"
         >
           <Avatar src={avatarSrc} fallback={avatarFallback} size="sm" />
-        </button>
+        </motion.button>
       </div>
     </header>
   )

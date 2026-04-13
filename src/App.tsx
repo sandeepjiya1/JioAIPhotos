@@ -17,9 +17,9 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Fills #root so auth screens get a stable height chain on first paint (mobile / PWA) */}
-      <div className="flex min-h-0 min-h-svh min-h-dvh w-full flex-1 flex-col">
+      <div className="flex min-h-0 min-h-svh min-h-dvh w-full min-w-0 max-w-full flex-1 flex-col">
         <OfflineBanner />
-        <div className="flex min-h-0 flex-1 flex-col">
+        <div className="flex min-h-0 min-w-0 w-full max-w-full flex-1 flex-col">
           <AppRouter />
         </div>
         <UpdatePrompt />

@@ -41,8 +41,10 @@ export function SectionHeader({
       >
         <TitleTag
           className={cn(
-            'font-black leading-tight text-content-primary',
-            variant === 'display' ? 'text-[28px]' : 'text-[22px]',
+            'font-black text-content-primary [font-family:var(--font-jio)]',
+            variant === 'display'
+              ? 'text-[length:var(--text-headline-l)] leading-[var(--leading-headline-l)]'
+              : 'text-[length:var(--text-headline-m)] leading-[var(--leading-headline-m)]',
             centered && 'text-center',
           )}
         >

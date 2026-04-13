@@ -44,7 +44,7 @@ export function AppLayout() {
   )
 
   return (
-    <div className="flex flex-col min-h-dvh bg-surface-0">
+    <div className="flex min-h-dvh w-full min-w-0 max-w-full flex-col bg-surface-0">
       <Outlet />
       <BottomNavBar items={navItems} />
     </div>

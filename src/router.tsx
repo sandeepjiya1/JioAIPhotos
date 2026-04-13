@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { createBrowserRouter, Navigate, RouterProvider } from 'react-router-dom'
 import { AppLayout } from '@/components/layout'
 import { Spinner } from '@/components/atoms'
+import { HomePageSkeleton } from '@/pages/app/HomePageSkeleton'
 
 // ── Auth pages ───────────────────────────────────────────────────────────────
 const SplashPage               = lazy(() => import('@/pages/auth/SplashPage').then((m)               => ({ default: m.SplashPage })))
@@ -22,6 +23,32 @@ const CreatePage   = lazy(() => import('@/pages/app/CreatePage').then((m)   => (
 const MemoriesPage = lazy(() => import('@/pages/app/MemoriesPage').then((m) => ({ default: m.MemoriesPage })))
 const ProfilePage  = lazy(() => import('@/pages/app/ProfilePage').then((m)  => ({ default: m.ProfilePage })))
 const NotFoundPage = lazy(() => import('@/pages/NotFoundPage').then((m)     => ({ default: m.NotFoundPage })))
+
+/** Minimum time to show home skeleton (lazy-load UX testing). Set to 0 to disable. */
+const HOME_SKELETON_MIN_MS = 2500
+
+function HomePageWithMinSkeletonDelay() {
+  const [minElapsed, setMinElapsed] = useState(HOME_SKELETON_MIN_MS <= 0)
+
+  useEffect(() => {
+    if (HOME_SKELETON_MIN_MS <= 0) return
+    const id = window.setTimeout(() => setMinElapsed(true), HOME_SKELETON_MIN_MS)
+    return () => window.clearTimeout(id)
+  }, [])
+
+  useEffect(() => {
+    if (HOME_SKELETON_MIN_MS <= 0) return
+    void import('@/pages/app/HomePage')
+  }, [])
+
+  if (!minElapsed) return <HomePageSkeleton />
+
+  return (
+    <Suspense fallback={<HomePageSkeleton />}>
+      <HomePage />
+    </Suspense>
+  )
+}
 
 function PageLoader() {
   return (
@@ -58,7 +85,7 @@ export const router = createBrowserRouter([
     path: '/home',
     element: <AppLayout />,
     children: [
-      { index: true,       element: wrap(HomePage) },
+      { index: true, element: <HomePageWithMinSkeletonDelay /> },
       { path: 'photos',    element: wrap(AlbumsPage) },
       { path: 'albums',    element: <Navigate to="/home/photos" replace /> },
       { path: 'ai-camera', element: wrap(AiCameraPage) },

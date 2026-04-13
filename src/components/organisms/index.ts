@@ -8,7 +8,7 @@ export { MediaCard } from './MediaCard'
 export type { MediaCardProps, MediaCardVariant } from './MediaCard'
 
 export { HeroMomentCard } from './HeroMomentCard'
-export type { HeroMomentCardProps } from './HeroMomentCard'
+export type { HeroMomentCardProps, HeroMomentSelectorStrip } from './HeroMomentCard'
 
 export { StorageBanner } from './StorageBanner'
 export type { StorageBannerProps } from './StorageBanner'

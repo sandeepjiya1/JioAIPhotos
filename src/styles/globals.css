@@ -72,6 +72,8 @@
   --leading-label-s:    1.25rem;
   --leading-body:       1.375rem;
   --leading-caption:    1.125rem;
+  /* Figma Label/Label 2XS Low — home story rings (488:9245) */
+  --leading-label-2xs:  0.625rem;
 
   /* ── Spacing / safe areas ──────────────────────────────────────────────── */
   --spacing-safe-top:    env(safe-area-inset-top);
@@ -256,10 +258,36 @@
     text-align: center;
   }
 
+  /**
+   * Send Wishes 3×2 tiles — Label S scale, bold for contrast on imagery (DS + legibility).
+   * Stronger than story-ring 2XS; matches section-sub size with Label/Medium weight for titles.
+   */
+  .text-home-wish-tile-label {
+    font-family: var(--font-jio);
+    font-size: var(--text-label-s);
+    font-weight: 700;
+    line-height: var(--leading-label-s);
+    letter-spacing: 0.01em;
+    color: var(--color-on-high);
+    text-align: center;
+    text-wrap: balance;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.85);
+  }
+
   /* Touch action */
   .touch-pan-y { touch-action: pan-y; }
   .touch-pan-x { touch-action: pan-x; }
   .touch-none  { touch-action: none; }
+
+  /**
+   * Home stories rail — nested inside a vertical overflow; needs its own scrollport + iOS momentum.
+   * (touch-pan-x alone can fight nested scrolling; flex + overflow on one node is more reliable.)
+   */
+  .home-stories-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: none;
+  }
 
   /* Glass morphism — used in media card overlays */
   .glass {
