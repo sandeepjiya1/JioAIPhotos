@@ -117,13 +117,13 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
   items: [
     {
       id: 'mem-1',
-      image: '/assets/figma/939127241329aed177882aa617dc4b47d1e350c2.png',
+      image: '/assets/mem-varanasi-1597bc99.png',
       title: 'Varanasi\ntrip',
       date: '20 June 2026',
     },
     {
       id: 'mem-2',
-      image: '/assets/figma/9c3be8ec82a701547f20afe3432e1123d6e09a4a.png',
+      image: '/assets/my-memories-birthday.png',
       title: "Ruhi's\nB'Day",
       date: '22 June 2026',
     },

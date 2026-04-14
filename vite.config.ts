@@ -86,6 +86,19 @@ export default defineConfig({
         maximumFileSizeToCacheInBytes: 25 * 1024 * 1024,
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp,woff2}'],
         runtimeCaching: [
+          // Same-origin /assets/* images — prefer network so CMS/local image swaps are not stuck on CacheFirst.
+          {
+            urlPattern: ({ request }) =>
+              request.destination === 'image' &&
+              new URL(request.url).pathname.startsWith('/assets/'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'local-assets-images',
+              networkTimeoutSeconds: 3,
+              expiration: { maxEntries: 120, maxAgeSeconds: 60 * 60 * 24 * 7 },
+              cacheableResponse: { statuses: [0, 200] },
+            },
+          },
           {
             urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
             handler: 'CacheFirst',

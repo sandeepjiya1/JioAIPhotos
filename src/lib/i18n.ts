@@ -97,8 +97,8 @@ const en: Translations = {
 
   onboarding_skip: 'Skip',
   onboarding_slides: [
-    { title: 'Make new photos and improve your old ones', subtitle: 'Do it in seconds with AI.', cta: 'Try Now' },
-    { title: 'See your photos and videos as a slideshow', subtitle: 'They come together so you can watch and share anytime.', cta: 'Try Now' },
+    { title: 'Try new looks for your photos', subtitle: 'Do it in seconds with AI.', cta: 'Try Now' },
+    { title: 'Watch your photos as a slideshow', subtitle: 'They come together so you can watch and share anytime.', cta: 'Try Now' },
     { title: 'Make photos for any moment',               subtitle: 'For birthdays, festivals, and more in seconds.', cta: 'Try Now' },
   ],
 
@@ -151,8 +151,8 @@ const hi: Translations = {
 
   onboarding_skip: 'छोड़ें',
   onboarding_slides: [
-    { title: 'नई फ़ोटो बनाएं और पुरानी सुधारें', subtitle: 'AI की मदद से सेकंडों में करें।', cta: 'अभी आज़माएं' },
-    { title: 'अपनी फ़ोटो और वीडियो को स्लाइडशो में देखें', subtitle: 'वे एक साथ आते हैं ताकि आप कभी भी देख और शेयर कर सकें।', cta: 'अभी आज़माएं' },
+    { title: 'अपनी फ़ोटो पर नए लुक आज़माएं', subtitle: 'AI की मदद से सेकंडों में करें।', cta: 'अभी आज़माएं' },
+    { title: 'अपनी फ़ोटो को स्लाइडशो में देखें', subtitle: 'वे एक साथ आते हैं ताकि आप कभी भी देख और शेयर कर सकें।', cta: 'अभी आज़माएं' },
     { title: 'हर पल के लिए फ़ोटो बनाएं', subtitle: 'जन्मदिन, त्योहारों और अन्य के लिए सेकंडों में।', cta: 'अभी आज़माएं' },
   ],
 
