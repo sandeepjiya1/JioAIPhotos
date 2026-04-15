@@ -77,10 +77,7 @@ export function FlowViewportScreen({
 
       <div
         ref={footerWrapRef}
-        className={cn(
-          'fixed bottom-0 left-0 right-0 z-20 flex flex-col bg-surface-0',
-          footerClassName,
-        )}
+        className={cn('fixed bottom-0 left-0 right-0 z-20 flex flex-col', footerClassName)}
       >
         {footer}
       </div>
