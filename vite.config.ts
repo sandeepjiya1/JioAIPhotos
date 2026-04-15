@@ -118,7 +118,10 @@ export default defineConfig({
             },
           },
           {
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp)$/,
+            urlPattern: ({ sameOrigin, url }) =>
+              sameOrigin &&
+              !url.pathname.startsWith('/assets/') &&
+              /\.(?:png|jpg|jpeg|svg|gif|webp)$/i.test(url.pathname),
             handler: 'CacheFirst',
             options: {
               cacheName: 'images-cache',

@@ -47,13 +47,28 @@ export function HomePageSkeleton() {
           ))}
         </div>
 
-        {/* IPL hero block */}
+        {/* IPL theme rail (Figma 813:8611) */}
         <div className="mt-2 min-w-0 overflow-x-visible px-4">
-          <Shimmer className="aspect-square w-full max-w-full rounded-image" />
-          <div className="relative left-1/2 mt-2 flex w-[100dvw] max-w-[100dvw] -translate-x-1/2 gap-[11px] overflow-x-auto overscroll-x-contain px-4 pb-px pt-1 scrollbar-hide">
-            {Array.from({ length: 9 }).map((_, i) => (
-              <Shimmer key={i} className="size-14 shrink-0 rounded-[14px]" />
-            ))}
+          <div className="flex gap-2.5 overflow-x-auto px-0 py-1 scrollbar-hide">
+            <div className="flex shrink-0 flex-col gap-2.5">
+              <Shimmer className="h-[245px] w-[183px] shrink-0 rounded-[10px]" />
+              <Shimmer className="h-[101px] w-[181px] shrink-0 rounded-[10px]" />
+            </div>
+            <div className="flex w-[218px] shrink-0 flex-col gap-2 rounded-[12px] bg-primary-200 p-2">
+              <Shimmer className="aspect-[21/28] w-full shrink-0 rounded-[10px]" />
+              <div className="flex gap-1.5 overflow-x-hidden">
+                {Array.from({ length: 9 }).map((_, i) => (
+                  <Shimmer key={i} className="size-14 shrink-0 rounded-[14px]" />
+                ))}
+              </div>
+            </div>
+            <div className="flex shrink-0 flex-col gap-2.5">
+              <Shimmer className="h-[101px] w-[181px] shrink-0 rounded-[10px]" />
+              <Shimmer className="h-[245px] w-[183px] shrink-0 rounded-[10px]" />
+            </div>
+          </div>
+          <div className="flex justify-center px-4 pb-1 pt-2">
+            <Shimmer className="h-12 w-full max-w-[234px] rounded-pill" />
           </div>
         </div>
 

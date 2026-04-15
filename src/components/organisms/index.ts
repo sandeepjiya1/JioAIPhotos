@@ -10,5 +10,8 @@ export type { MediaCardProps, MediaCardVariant } from './MediaCard'
 export { HeroMomentCard } from './HeroMomentCard'
 export type { HeroMomentCardProps, HeroMomentSelectorStrip } from './HeroMomentCard'
 
+export { IplHomeThemeRail } from './IplHomeThemeRail'
+export type { IplHomeThemeRailProps } from './IplHomeThemeRail'
+
 export { StorageBanner } from './StorageBanner'
 export type { StorageBannerProps } from './StorageBanner'

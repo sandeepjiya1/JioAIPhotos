@@ -2,7 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
-import { AppHeader, HeroMomentCard, MediaCard, StorageBanner } from '@/components/organisms'
+import { AppHeader, IplHomeThemeRail, MediaCard, StorageBanner } from '@/components/organisms'
 import {
   IPL_HOME_HERO_ALTS,
   IPL_HOME_HERO_IMAGES,
@@ -94,18 +94,14 @@ export function HomePage() {
           animate={reduceMotion ? false : { opacity: 1, y: 0 }}
           transition={{ duration: 0.42, ease: HOME_EASE, delay: reduceMotion ? 0 : 0.1 }}
         >
-          <HeroMomentCard
-            compact
-            aspectClassName="aspect-square w-full min-h-0"
-            image={IPL_HOME_HERO_IMAGES[iplHeroIndex]}
-            imageAlt={IPL_HOME_HERO_ALTS[iplHeroIndex]}
-            selectorStrip={{
-              logos: IPL_HOME_LOGO_STRIP,
-              selectedIndex: iplHeroIndex,
-              onSelect: setIplHeroIndex,
-              labels: [...IPL_HOME_TEAM_LABELS],
-              listAriaLabel: 'IPL team themes',
-            }}
+          <IplHomeThemeRail
+            heroImages={IPL_HOME_HERO_IMAGES}
+            heroAlts={IPL_HOME_HERO_ALTS}
+            logos={IPL_HOME_LOGO_STRIP}
+            labels={[...IPL_HOME_TEAM_LABELS]}
+            selectedIndex={iplHeroIndex}
+            onSelectTeam={setIplHeroIndex}
+            onTryWithPhotos={() => navigate('/home/create')}
           />
         </motion.div>
 
