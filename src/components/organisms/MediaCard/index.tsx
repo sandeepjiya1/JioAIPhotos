@@ -61,9 +61,9 @@ export function MediaCard({
       {(variant === 'memory' && (title || date)) && (
         <>
           <div className="absolute inset-0 gradient-up-black" />
-          <div className="absolute bottom-2 left-2 flex flex-col gap-1">
+          <div className="absolute bottom-2 left-2 right-2 flex min-w-0 flex-col gap-1">
             {title && (
-              <p className="text-content-primary text-lg font-black leading-snug whitespace-pre-line">
+              <p className="truncate text-lg font-black leading-snug text-content-primary">
                 {title}
               </p>
             )}

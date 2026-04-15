@@ -44,7 +44,7 @@ export function SectionHeader({
             'font-black text-content-primary [font-family:var(--font-jio)]',
             variant === 'display'
               ? 'text-[length:var(--text-headline-l)] leading-[var(--leading-headline-l)]'
-              : 'text-[length:var(--text-headline-m)] leading-[var(--leading-headline-m)]',
+              : 'text-[length:var(--text-headline-s)] leading-[var(--leading-headline-s)]',
             centered && 'text-center',
           )}
         >

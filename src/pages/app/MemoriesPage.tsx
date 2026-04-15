@@ -4,8 +4,8 @@ import { SectionHeader } from '@/components/molecules'
 import { MediaCard } from '@/components/organisms'
 
 const MOCK_MEMORIES = [
-  { id: '1', image: '/assets/figma/9d6d5c6ff44924f668f3e336b96bd4380d7c1ec2.png', title: 'Varanasi\ntrip', date: '20 June 2026' },
-  { id: '2', image: '/assets/figma/705537c0d3b7be60ebf845f2184b6902e544f36e.png', title: "Ruhi's\nB'Day", date: '22 June 2026' },
+  { id: '1', image: '/assets/figma/9d6d5c6ff44924f668f3e336b96bd4380d7c1ec2.png', title: 'Varanasi trip', date: '20 June 2026' },
+  { id: '2', image: '/assets/figma/705537c0d3b7be60ebf845f2184b6902e544f36e.png', title: "Ruhi's Birthday", date: '22 June 2026' },
 ]
 
 const isLoading = false

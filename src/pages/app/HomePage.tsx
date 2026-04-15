@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
+import { Button } from '@/components/atoms'
 import { AppHeader, IplHomeThemeRail, MediaCard, StorageBanner } from '@/components/organisms'
 import {
   IPL_HOME_HERO_ALTS,
@@ -72,7 +73,7 @@ export function HomePage() {
           initial={reduceMotion ? false : 'hidden'}
           animate={reduceMotion ? undefined : 'show'}
           className={cn(
-            'home-stories-scroll flex min-w-0 max-w-full flex-nowrap items-stretch gap-3.5',
+            'home-stories-scroll flex min-w-0 max-w-full flex-nowrap items-end gap-3.5',
             'overflow-x-auto overflow-y-hidden px-3.5 pb-[7px] pt-2 scrollbar-hide',
           )}
         >
@@ -89,7 +90,7 @@ export function HomePage() {
         </motion.div>
 
         <motion.div
-          className="mt-2 min-w-0 max-w-full overflow-x-visible px-4"
+          className="mt-2 min-w-0 max-w-full overflow-x-visible"
           initial={reduceMotion ? false : { opacity: 0, y: 18 }}
           animate={reduceMotion ? false : { opacity: 1, y: 0 }}
           transition={{ duration: 0.42, ease: HOME_EASE, delay: reduceMotion ? 0 : 0.1 }}
@@ -137,7 +138,22 @@ export function HomePage() {
           reduceMotion={reduceMotion}
           className="mt-6 flex flex-col gap-3 px-4"
         >
-          <SectionHeader title={HOME_GREETINGS_SECTION.title} variant="heading" titleAs="h3" />
+          <SectionHeader
+            title={HOME_GREETINGS_SECTION.title}
+            variant="heading"
+            titleAs="h3"
+            action={
+              <Button
+                type="button"
+                variant="tertiary"
+                size="sm"
+                className="-mr-1 font-semibold"
+                onClick={() => navigate('/home/create')}
+              >
+                View all
+              </Button>
+            }
+          />
           <motion.div
             variants={homeCardStagger}
             initial={reduceMotion ? false : 'hidden'}
