@@ -6,7 +6,7 @@ import { Button } from '@/components/atoms'
 import { JioLogo, PhoneInput, LegalText } from '@/components/molecules'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
-import { staggerContainer, fadeUp, tapScale } from '@/components/layout/PageTransition'
+import { staggerContainer, fadeUp, tapScale } from '@/lib/pageMotion'
 
 export function LoginPage() {
   const navigate = useNavigate()

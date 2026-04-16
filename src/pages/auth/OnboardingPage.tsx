@@ -6,7 +6,7 @@ import { useSwipe } from '@/hooks/useSwipe'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useState } from 'react'
-import { tapScale } from '@/components/layout/PageTransition'
+import { tapScale } from '@/lib/pageMotion'
 
 function ChevronRight({ className = 'w-5 h-5' }: { className?: string }) {
   return (
@@ -76,7 +76,7 @@ export function OnboardingPage() {
                 key={current}
                 src={SLIDE_IMAGES[current]}
                 alt={slide.title}
-                className="max-h-full w-full object-contain object-bottom mix-blend-screen"
+                className="max-h-full w-full object-contain object-bottom"
                 initial={{ opacity: 0, scale: 1.04 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0 }}

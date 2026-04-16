@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useTranslation } from '@/hooks/useTranslation'
-import { staggerContainer, fadeUp, tapScale } from '@/components/layout/PageTransition'
+import { staggerContainer, fadeUp, tapScale } from '@/lib/pageMotion'
 
 // Gallery / Photos SVG icon
 function PhotosIcon() {

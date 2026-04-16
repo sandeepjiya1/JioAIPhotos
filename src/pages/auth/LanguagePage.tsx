@@ -6,7 +6,7 @@ import { LanguageCard } from '@/components/molecules'
 import { FlowViewportScreen } from '@/components/layout'
 import { useAuthStore } from '@/store/authStore'
 import { translations } from '@/lib/i18n'
-import { staggerContainer, fadeUp, imageReveal } from '@/components/layout/PageTransition'
+import { staggerContainer, fadeUp, imageReveal } from '@/lib/pageMotion'
 
 const imgCollage = '/assets/figma/5231a1f39ecdafc99e093e11726249b642313aab.png'
 

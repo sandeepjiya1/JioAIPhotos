@@ -3,20 +3,23 @@ import { IPL_TEAM_LOGO_PATHS } from '@/lib/iplTeamLogos'
 /** Bump when replacing PNGs under `public/assets/figma/` at the same filenames. */
 const IPL_FIGMA_Q = '?v=20260415e'
 
+/** Bump when replacing any `ipl-home-hero-*.png` (browser cache). */
+const IPL_HOME_HERO_Q = '?v=20260416b'
+
 /** Full `IPLTeam_Logos` strip (Figma 488:9286) — left → right, all franchises in design order. */
 export const IPL_HOME_LOGO_STRIP = IPL_TEAM_LOGO_PATHS
 
 /** Hero art per logo index — MI, GT, KKR, RCB, CSK, SRH, DC, RR, LSG (matches `IPL_HOME_TEAM_LABELS`). */
 export const IPL_HOME_HERO_IMAGES = [
-  '/assets/figma/7a4abb356f8c11773546f147d03d88183ef7fda6.png',
-  '/assets/figma/ipl-home-hero-gt.png',
-  '/assets/figma/ipl-home-hero-kkr.png',
-  '/assets/figma/ipl-home-hero-rcb.png',
-  '/assets/figma/ipl-home-hero-csk.png',
-  '/assets/figma/ipl-home-hero-srh.png',
-  '/assets/figma/ipl-home-hero-dc.png',
-  '/assets/figma/ipl-home-hero-rr.png',
-  '/assets/figma/ipl-home-hero-lsg.png',
+  `/assets/figma/ipl-home-hero-mi.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-gt.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-kkr.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-rcb.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-csk.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-srh.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-dc.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-rr.png${IPL_HOME_HERO_Q}`,
+  `/assets/figma/ipl-home-hero-lsg.png${IPL_HOME_HERO_Q}`,
 ] as const
 
 /**

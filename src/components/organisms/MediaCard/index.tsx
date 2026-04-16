@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
-import { tapScale } from '@/components/layout/PageTransition'
+import { tapScale } from '@/lib/pageMotion'
 
 export type MediaCardVariant = 'memory' | 'greeting' | 'greetingGrid' | 'trending' | 'square'
 

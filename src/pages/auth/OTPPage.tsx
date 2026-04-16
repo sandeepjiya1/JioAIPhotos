@@ -6,7 +6,7 @@ import { Spinner } from '@/components/atoms'
 import { JioLogo, OTPInput, LegalText } from '@/components/molecules'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
-import { staggerContainer, fadeUp } from '@/components/layout/PageTransition'
+import { staggerContainer, fadeUp } from '@/lib/pageMotion'
 
 const OTP_LENGTH  = 4
 const RESEND_SECS = 29

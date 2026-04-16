@@ -1,0 +1,53 @@
+{
+  "expo": {
+    "name": "Jio AI Photos",
+    "slug": "jio-ai-photos",
+    "scheme": "jioaiphotos",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff"
+      },
+      "edgeToEdgeEnabled": true,
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Jio AI Photos to use your camera for AI Camera."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "Allow Jio AI Photos to access your photos to personalize your experience.",
+          "savePhotosPermission": "Allow Jio AI Photos to save photos to your library."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "color": "#278bc1"
+        }
+      ]
+    ]
+  }
+}

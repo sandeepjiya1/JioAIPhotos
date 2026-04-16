@@ -7,10 +7,7 @@ export function AuthHydrationGate({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(() => useAuthStore.persist.hasHydrated())
 
   useEffect(() => {
-    if (useAuthStore.persist.hasHydrated()) {
-      setReady(true)
-      return
-    }
+    if (useAuthStore.persist.hasHydrated()) return undefined
     return useAuthStore.persist.onFinishHydration(() => setReady(true))
   }, [])
 

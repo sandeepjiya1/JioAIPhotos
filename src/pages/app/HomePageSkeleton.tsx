@@ -1,10 +1,11 @@
 import { cn } from '@/lib'
 
+/** Same fill as `Skeleton` — single surface tone so lazy-load placeholders match the page. */
 function Shimmer({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        'animate-pulse rounded-lg bg-surface-3/90 motion-reduce:animate-none',
+        'animate-pulse rounded-lg bg-surface-3 motion-reduce:animate-none',
         className,
       )}
     />
@@ -54,7 +55,7 @@ export function HomePageSkeleton() {
               <Shimmer className="h-[245px] w-[183px] shrink-0 rounded-[10px]" />
               <Shimmer className="h-[101px] w-[181px] shrink-0 rounded-[10px]" />
             </div>
-            <div className="flex w-[218px] shrink-0 flex-col gap-2 rounded-[12px] bg-primary-200 p-2">
+            <div className="flex w-[218px] shrink-0 flex-col gap-2 rounded-[12px] border border-on-border/25 bg-surface-2 p-2">
               <Shimmer className="aspect-[21/28] w-full shrink-0 rounded-[10px]" />
               <div className="flex gap-1.5 overflow-x-hidden">
                 {Array.from({ length: 9 }).map((_, i) => (

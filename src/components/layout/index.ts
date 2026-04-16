@@ -12,4 +12,4 @@ export type { AppTabPlaceholderLayoutProps } from './AppTabPlaceholderLayout'
 export { FlowViewportScreen } from './FlowViewportScreen'
 export type { FlowViewportScreenProps } from './FlowViewportScreen'
 
-export * from './PageTransition'
+export { PageTransition } from './PageTransition'

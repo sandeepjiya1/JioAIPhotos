@@ -3,7 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
 import { Avatar } from '@/components/atoms'
 import { Icon } from '@/components/atoms'
-import { tapScale } from '@/components/layout/PageTransition'
+import { tapScale } from '@/lib/pageMotion'
 
 const imgProductLogo = '/assets/figma/3a1e52ece350c3cd3815a476bdd9c3ac93f6cc2f.svg'
 

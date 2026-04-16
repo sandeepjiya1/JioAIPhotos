@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { cn } from '@/lib'
 import { Icon } from '@/components/atoms'
-import { tapScale } from '@/components/layout/PageTransition'
+import { tapScale } from '@/lib/pageMotion'
 
 export interface HeroAction {
   label: string

@@ -7,7 +7,13 @@
     "dev": "bash scripts/free-ports.sh dev && vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "bash scripts/free-ports.sh preview && vite preview"
+    "preview": "bash scripts/free-ports.sh preview && vite preview",
+    "mobile": "npm --prefix mobile run start",
+    "mobile:dev": "npm --prefix mobile run dev",
+    "mobile:ios": "npm --prefix mobile run ios",
+    "mobile:android": "npm --prefix mobile run android",
+    "mobile:dev:ios": "npm --prefix mobile run dev:ios",
+    "mobile:dev:android": "npm --prefix mobile run dev:android"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.96.2",

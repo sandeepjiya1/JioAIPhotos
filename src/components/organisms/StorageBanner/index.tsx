@@ -1,7 +1,7 @@
 import { cn } from '@/lib'
 import { StorageBar } from '@/components/molecules'
 
-const imgStoragePromo = '/assets/figma/storage-promotion-banner.png?v=20260415a'
+const imgStoragePromo = '/assets/figma/storage-promotion-banner.png?v=20260415b'
 
 /** Intrinsic size of `storage-promotion-banner.png` — keeps layout ratio and avoids crop. */
 const STORAGE_PROMO_WIDTH = 656
@@ -23,7 +23,7 @@ export function StorageBanner({ used, total, unit = 'GB', onInvite, className }:
         src={imgStoragePromo}
         width={STORAGE_PROMO_WIDTH}
         height={STORAGE_PROMO_HEIGHT}
-        alt="Invite family and get 50GB free storage"
+        alt="Invite family member and get extra 50GB free storage"
         className="block h-auto w-full max-w-full"
         decoding="async"
       />

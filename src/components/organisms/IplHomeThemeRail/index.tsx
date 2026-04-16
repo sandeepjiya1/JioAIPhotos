@@ -1,8 +1,9 @@
+import { useLayoutEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { Button } from '@/components/atoms'
 import { cn } from '@/lib'
 import { IPL_HOME_MOSAIC_ALTS, IPL_HOME_MOSAIC_IMAGES } from '@/lib/iplHeroHome'
-import { tapScale } from '@/components/layout/PageTransition'
+import { tapScale } from '@/lib/pageMotion'
 
 const COL_GAP = 'gap-2.5' // 10px — Figma 922:1204
 
@@ -29,6 +30,26 @@ const MOSAIC_PAIRS: readonly [readonly [number, number], readonly [number, numbe
 const STACK_A = 'tall-short' as const
 const STACK_B = 'short-tall' as const
 const COLUMN_STACKS: readonly (typeof STACK_A | typeof STACK_B)[] = [STACK_A, STACK_B, STACK_A, STACK_B]
+
+/** Scroll so the hero card sits in the horizontal center of the rail scrollport. */
+function syncRailScrollToHero(scrollEl: HTMLElement, heroEl: HTMLElement | null) {
+  if (!heroEl) return
+
+  const maxScroll = scrollEl.scrollWidth - scrollEl.clientWidth
+  scrollEl.classList.toggle('justify-center', maxScroll <= 0)
+
+  if (maxScroll <= 0) {
+    scrollEl.scrollLeft = 0
+    return
+  }
+
+  const rScroll = scrollEl.getBoundingClientRect()
+  const rHero = heroEl.getBoundingClientRect()
+  const heroLeftInContent = scrollEl.scrollLeft + (rHero.left - rScroll.left)
+  const target =
+    heroLeftInContent + rHero.width / 2 - scrollEl.clientWidth / 2
+  scrollEl.scrollLeft = Math.max(0, Math.min(maxScroll, target))
+}
 
 function MosaicTile({
   src,
@@ -104,103 +125,130 @@ export function IplHomeThemeRail({
   className,
 }: IplHomeThemeRailProps) {
   const reduceMotion = useReducedMotion() === true
+  const railScrollRef = useRef<HTMLDivElement>(null)
+  const railInnerRef = useRef<HTMLDivElement>(null)
+  const heroCardRef = useRef<HTMLDivElement>(null)
   const mainSrc = heroImages[selectedIndex] ?? heroImages[0]
   const mainAlt = heroAlts[selectedIndex] ?? 'IPL theme'
+
+  useLayoutEffect(() => {
+    const el = railScrollRef.current
+    if (!el) return
+
+    const sync = () => {
+      syncRailScrollToHero(el, heroCardRef.current)
+    }
+
+    sync()
+    requestAnimationFrame(sync)
+
+    const ro = new ResizeObserver(sync)
+    ro.observe(el)
+    const inner = railInnerRef.current
+    if (inner) ro.observe(inner)
+    const hero = heroCardRef.current
+    if (hero) ro.observe(hero)
+
+    return () => ro.disconnect()
+  }, [])
 
   return (
     <div className={cn('flex w-full min-w-0 max-w-full flex-col gap-2', className)}>
       <div
+        ref={railScrollRef}
         dir="ltr"
         className={cn(
-          'flex w-full min-w-0 max-w-full flex-nowrap justify-start',
-          COL_GAP,
-          'touch-pan-x overflow-x-auto overflow-y-hidden px-4 scrollbar-hide',
+          'flex w-full min-w-0 max-w-full flex-row overflow-x-auto overflow-y-hidden',
+          'touch-pan-x scrollbar-hide',
         )}
         role="region"
         aria-label="IPL themes carousel"
       >
-        <MosaicColumn
-          pair={MOSAIC_PAIRS[0]}
-          stack={COLUMN_STACKS[0]}
-          mosaicImages={IPL_HOME_MOSAIC_IMAGES}
-          mosaicAlts={IPL_HOME_MOSAIC_ALTS}
-        />
-        <MosaicColumn
-          pair={MOSAIC_PAIRS[1]}
-          stack={COLUMN_STACKS[1]}
-          mosaicImages={IPL_HOME_MOSAIC_IMAGES}
-          mosaicAlts={IPL_HOME_MOSAIC_ALTS}
-        />
-
-        <div
-          className={cn(
-            'flex w-[218px] shrink-0 flex-col gap-2 rounded-[12px] bg-primary-200 p-2',
-            'overflow-x-clip overflow-y-visible',
-          )}
-        >
-          <div className="relative w-full shrink-0 overflow-hidden rounded-[10px] bg-surface-3 aspect-[21/28]">
-            <motion.img
-              key={mainSrc}
-              src={mainSrc}
-              alt={mainAlt}
-              className="absolute inset-0 size-full object-cover"
-              initial={reduceMotion ? false : { opacity: 0.88 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.4, 0, 0.2, 1] }}
-            />
-          </div>
+        <div ref={railInnerRef} className={cn('flex w-max shrink-0 flex-nowrap', COL_GAP, 'px-4')}>
+          <MosaicColumn
+            pair={MOSAIC_PAIRS[0]}
+            stack={COLUMN_STACKS[0]}
+            mosaicImages={IPL_HOME_MOSAIC_IMAGES}
+            mosaicAlts={IPL_HOME_MOSAIC_ALTS}
+          />
+          <MosaicColumn
+            pair={MOSAIC_PAIRS[1]}
+            stack={COLUMN_STACKS[1]}
+            mosaicImages={IPL_HOME_MOSAIC_IMAGES}
+            mosaicAlts={IPL_HOME_MOSAIC_ALTS}
+          />
 
           <div
-            dir="ltr"
+            ref={heroCardRef}
             className={cn(
-              'flex min-w-0 max-w-full flex-nowrap justify-start gap-1.5 overflow-x-auto overflow-y-hidden scrollbar-hide',
+              'flex w-[218px] shrink-0 flex-col gap-2 rounded-[12px] bg-primary-200 p-2',
             )}
-            role="list"
-            aria-label="IPL team themes"
           >
-            {logos.map((src, i) => {
-              const selected = i === selectedIndex
-              const label = labels[i] ?? `Team ${i + 1}`
-              return (
-                <div key={`${src}-${i}`} role="listitem" className="shrink-0">
-                  <motion.button
-                    type="button"
-                    aria-label={`Show ${label}`}
-                    aria-pressed={selected}
-                    onClick={() => onSelectTeam(i)}
-                    whileTap={reduceMotion ? undefined : tapScale}
-                    className={cn(
-                      'relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[#15294a] p-0',
-                      selected
-                        ? 'border-2 border-[rgba(77,168,223,0.4)]'
-                        : 'border border-transparent',
-                    )}
-                  >
-                    <img
-                      src={src}
-                      alt=""
-                      className="pointer-events-none size-full object-contain p-2"
-                      loading="lazy"
-                    />
-                  </motion.button>
-                </div>
-              )
-            })}
-          </div>
-        </div>
+            <div className="relative w-full shrink-0 overflow-hidden rounded-[10px] bg-surface-3 aspect-[21/28]">
+              <motion.img
+                key={mainSrc}
+                src={mainSrc}
+                alt={mainAlt}
+                className="absolute inset-0 size-full object-cover"
+                initial={reduceMotion ? false : { opacity: 0.88 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.4, 0, 0.2, 1] }}
+              />
+            </div>
 
-        <MosaicColumn
-          pair={MOSAIC_PAIRS[2]}
-          stack={COLUMN_STACKS[2]}
-          mosaicImages={IPL_HOME_MOSAIC_IMAGES}
-          mosaicAlts={IPL_HOME_MOSAIC_ALTS}
-        />
-        <MosaicColumn
-          pair={MOSAIC_PAIRS[3]}
-          stack={COLUMN_STACKS[3]}
-          mosaicImages={IPL_HOME_MOSAIC_IMAGES}
-          mosaicAlts={IPL_HOME_MOSAIC_ALTS}
-        />
+            <div
+              dir="ltr"
+              className={cn(
+                'flex min-w-0 max-w-full flex-nowrap justify-start gap-1.5 overflow-x-auto overflow-y-hidden scrollbar-hide',
+              )}
+              role="list"
+              aria-label="IPL team themes"
+            >
+              {logos.map((src, i) => {
+                const selected = i === selectedIndex
+                const label = labels[i] ?? `Team ${i + 1}`
+                return (
+                  <div key={`${src}-${i}`} role="listitem" className="shrink-0">
+                    <motion.button
+                      type="button"
+                      aria-label={`Show ${label}`}
+                      aria-pressed={selected}
+                      onClick={() => onSelectTeam(i)}
+                      whileTap={reduceMotion ? undefined : tapScale}
+                      className={cn(
+                        'relative flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-[14px] bg-[#15294a] p-0',
+                        selected
+                          ? 'border-2 border-[rgba(77,168,223,0.4)]'
+                          : 'border border-transparent',
+                      )}
+                    >
+                      <img
+                        src={src}
+                        alt=""
+                        className="pointer-events-none size-full object-cover object-center p-1.5"
+                        loading="eager"
+                        decoding="async"
+                      />
+                    </motion.button>
+                  </div>
+                )
+              })}
+            </div>
+          </div>
+
+          <MosaicColumn
+            pair={MOSAIC_PAIRS[2]}
+            stack={COLUMN_STACKS[2]}
+            mosaicImages={IPL_HOME_MOSAIC_IMAGES}
+            mosaicAlts={IPL_HOME_MOSAIC_ALTS}
+          />
+          <MosaicColumn
+            pair={MOSAIC_PAIRS[3]}
+            stack={COLUMN_STACKS[3]}
+            mosaicImages={IPL_HOME_MOSAIC_IMAGES}
+            mosaicAlts={IPL_HOME_MOSAIC_ALTS}
+          />
+        </div>
       </div>
 
       <div className="flex w-full justify-center px-4 pb-1 pt-1">
