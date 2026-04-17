@@ -1,5 +1,5 @@
-import { useCallback, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { useCallback, useMemo, useState } from 'react'
+import { StyleSheet, Text, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, runOnJS } from 'react-native-reanimated'
 import { router } from 'expo-router'
@@ -9,20 +9,36 @@ import { Button } from '@/components/atoms/Button'
 import { ChevronRight } from '@/components/molecules/ChevronRight'
 import { ProgressDots } from '@/components/molecules/ProgressDots'
 import { OnboardingSlideArt } from '@/components/onboarding/OnboardingSlideArt'
+import { PressableScale } from '@/components/motion/PressableScale'
 import { useAuthStore } from '@/store/authStore'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
 import { requestMediaLibraryAndNotifications } from '@/lib/nativePermissions'
 import { colors } from '@/theme/colors'
+import { motionDuration } from '@/theme/motion'
 
 const SWIPE_X = 52
 
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
+  const reducedMotion = usePrefersReducedMotion()
   const setHasSeenOnboarding = useAuthStore((s) => s.setHasSeenOnboarding)
   const t = useTranslation()
   const [current, setCurrent] = useState(0)
   const slides = t.onboarding_slides
   const slide = slides[current]!
+
+  const artEntering = useMemo(
+    () => (reducedMotion ? FadeIn.duration(motionDuration.fast) : FadeIn.duration(380).springify()),
+    [reducedMotion],
+  )
+  const copyEntering = useMemo(
+    () =>
+      reducedMotion
+        ? FadeIn.duration(motionDuration.normal)
+        : FadeIn.duration(360).delay(50).springify(),
+    [reducedMotion],
+  )
 
   const finish = useCallback(async () => {
     setHasSeenOnboarding(true)
@@ -52,23 +68,24 @@ export default function OnboardingScreen() {
       <StatusBar style="light" />
 
       <View style={[styles.skipWrap, { top: Math.max(insets.top, 8) }]}>
-        <Pressable
+        <PressableScale
           onPress={() => void finish()}
           hitSlop={12}
           style={styles.skip}
           accessibilityRole="button"
           accessibilityLabel="Skip onboarding"
+          layout="auto"
         >
           <Text style={styles.skipText}>{t.onboarding_skip}</Text>
           <ChevronRight size={16} color={colors.contentPrimary} />
-        </Pressable>
+        </PressableScale>
       </View>
 
       <GestureDetector gesture={pan}>
         <Animated.View
           key={`art-${current}`}
-          entering={FadeIn.duration(380).springify()}
-          exiting={FadeOut.duration(200)}
+          entering={artEntering}
+          exiting={reducedMotion ? undefined : FadeOut.duration(200)}
           style={styles.artArea}
         >
           <OnboardingSlideArt index={current} />
@@ -78,8 +95,8 @@ export default function OnboardingScreen() {
       <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
         <Animated.View
           key={`copy-${current}`}
-          entering={FadeIn.duration(360).delay(50).springify()}
-          exiting={FadeOut.duration(180)}
+          entering={copyEntering}
+          exiting={reducedMotion ? undefined : FadeOut.duration(180)}
           style={styles.copyBlock}
         >
           <Text style={styles.title}>{slide.title}</Text>
@@ -88,7 +105,9 @@ export default function OnboardingScreen() {
 
         <Animated.View
           key={`dots-${current}`}
-          entering={FadeIn.duration(240).delay(80)}
+          entering={
+            reducedMotion ? FadeIn.duration(motionDuration.fast) : FadeIn.duration(240).delay(80)
+          }
           style={styles.dotsWrap}
         >
           <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} />
@@ -100,14 +119,15 @@ export default function OnboardingScreen() {
               {slide.cta}
             </Button>
           </View>
-          <Pressable
+          <PressableScale
             onPress={goNext}
-            style={({ pressed }) => [styles.iconCta, pressed && styles.iconCtaPressed]}
+            style={styles.iconCta}
             accessibilityRole="button"
             accessibilityLabel="Next slide"
+            layout="auto"
           >
             <ChevronRight size={22} color={colors.contentPrimary} />
-          </Pressable>
+          </PressableScale>
         </View>
       </View>
     </View>
@@ -192,8 +212,5 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface3,
     borderWidth: 1,
     borderColor: colors.surface4,
-  },
-  iconCtaPressed: {
-    opacity: 0.9,
   },
 })

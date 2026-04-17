@@ -1,12 +1,25 @@
-import { useEffect, useMemo } from 'react'
-import { Animated, Easing, Pressable, StyleSheet, Text, View } from 'react-native'
+import { useEffect } from 'react'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import AnimatedRN, { FadeIn } from 'react-native-reanimated'
+import Animated, {
+  cancelAnimation,
+  FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated'
 import { JioLogo } from '@/components/molecules/JioLogo'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { colors } from '@/theme/colors'
+import { motionDuration, motionEasing } from '@/theme/motion'
 
 export default function SplashScreen() {
+  const reducedMotion = usePrefersReducedMotion()
+
   useEffect(() => {
     const t = setTimeout(() => router.replace('/language'), 2200)
     return () => clearTimeout(t)
@@ -15,9 +28,12 @@ export default function SplashScreen() {
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
-      <AnimatedRN.View entering={FadeIn.duration(600)} style={styles.logoWrap}>
+      <Animated.View
+        entering={FadeIn.duration(reducedMotion ? motionDuration.fast : 600)}
+        style={styles.logoWrap}
+      >
         <JioLogo size="splash" />
-      </AnimatedRN.View>
+      </Animated.View>
 
       <View style={styles.dots} accessibilityElementsHidden>
         <PulsingDot delay={0} />
@@ -37,31 +53,30 @@ export default function SplashScreen() {
 }
 
 function PulsingDot({ delay }: { delay: number }) {
-  const opacity = useMemo(() => new Animated.Value(0.35), [])
+  const reducedMotion = usePrefersReducedMotion()
+  const opacity = useSharedValue(0.35)
 
   useEffect(() => {
-    const anim = Animated.loop(
-      Animated.sequence([
-        Animated.delay(delay),
-        Animated.timing(opacity, {
-          toValue: 1,
-          duration: 600,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-        Animated.timing(opacity, {
-          toValue: 0.35,
-          duration: 600,
-          easing: Easing.inOut(Easing.quad),
-          useNativeDriver: true,
-        }),
-      ]),
+    if (reducedMotion) {
+      cancelAnimation(opacity)
+      opacity.value = 0.65
+      return
+    }
+    opacity.value = 0.35
+    opacity.value = withRepeat(
+      withSequence(
+        withDelay(delay, withTiming(1, { duration: 600, easing: motionEasing.inOutQuad })),
+        withTiming(0.35, { duration: 600, easing: motionEasing.inOutQuad }),
+      ),
+      -1,
+      false,
     )
-    anim.start()
-    return () => anim.stop()
-  }, [delay, opacity])
+    return () => cancelAnimation(opacity)
+  }, [delay, opacity, reducedMotion])
 
-  return <Animated.View style={[styles.dot, { opacity }]} />
+  const dotStyle = useAnimatedStyle(() => ({ opacity: opacity.value }))
+
+  return <Animated.View style={[styles.dot, dotStyle]} />
 }
 
 const styles = StyleSheet.create({

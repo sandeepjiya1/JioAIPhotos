@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
+import { FadeInDown } from 'react-native-reanimated'
 import { router } from 'expo-router'
 import { AuthLayout } from '@/components/layout/AuthLayout'
 import { Button } from '@/components/atoms/Button'
+import { AnimatedScreen } from '@/components/motion/AnimatedScreen'
 import { JioLogo } from '@/components/molecules/JioLogo'
 import { LegalText } from '@/components/molecules/LegalText'
 import { PhoneInput } from '@/components/molecules/PhoneInput'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { motionDuration } from '@/theme/motion'
 
 export default function LoginScreen() {
   const setPhone = useAuthStore((s) => s.setPhone)
@@ -37,7 +40,7 @@ export default function LoginScreen() {
         </View>
       }
     >
-      <View style={styles.block}>
+      <AnimatedScreen entering={FadeInDown.duration(motionDuration.normal)} style={styles.block}>
         <View style={styles.topBlock}>
           <JioLogo size="md" />
           <Text style={styles.heading}>{t.login_heading}</Text>
@@ -45,7 +48,7 @@ export default function LoginScreen() {
         </View>
 
         <PhoneInput value={phone} onChange={(v) => { setLocalPhone(v); setError('') }} error={error} autoFocus />
-      </View>
+      </AnimatedScreen>
     </AuthLayout>
   )
 }

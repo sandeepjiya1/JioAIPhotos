@@ -1,14 +1,17 @@
 import { useState } from 'react'
 import type { ImageSourcePropType } from 'react-native'
 import { Image, StyleSheet, Text, View } from 'react-native'
+import { FadeInDown } from 'react-native-reanimated'
 import { router } from 'expo-router'
 import { Button } from '@/components/atoms/Button'
 import { LanguageFlowLayout } from '@/components/layout/LanguageFlowLayout'
+import { AnimatedScreen } from '@/components/motion/AnimatedScreen'
 import { LanguageCard } from '@/components/molecules/LanguageCard'
 import { useAuthStore } from '@/store/authStore'
 import type { Locale } from '@/lib/i18n'
 import { translations } from '@/lib/i18n'
 import { colors } from '@/theme/colors'
+import { motionDuration } from '@/theme/motion'
 
 /** Same hero as web `LanguagePage`: `public/assets/figma/5231a1f39ecdafc99e093e11726249b642313aab.png`. */
 const LANGUAGE_HERO = require('../assets/home/language-collage.png') as ImageSourcePropType
@@ -32,7 +35,7 @@ export default function LanguageScreen() {
   return (
     <LanguageFlowLayout
       main={
-        <View style={styles.mainCol}>
+        <AnimatedScreen entering={FadeInDown.duration(motionDuration.normal)} style={styles.mainCol}>
           <View style={styles.heroText}>
             <Text style={styles.headline}>{t.language_headline}</Text>
             <Text style={styles.subtitle}>{t.language_subtitle}</Text>
@@ -42,7 +45,7 @@ export default function LanguageScreen() {
             <Image source={LANGUAGE_HERO} style={styles.artImage} resizeMode="cover" accessibilityIgnoresInvertColors />
             <View style={styles.artScrim} pointerEvents="none" />
           </View>
-        </View>
+        </AnimatedScreen>
       }
       footer={
         <View style={styles.footerInner}>

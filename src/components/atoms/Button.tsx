@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { ActivityIndicator, Pressable, StyleSheet, Text, type ViewStyle } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, type ViewStyle } from 'react-native'
+import { PressableScale } from '@/components/motion/PressableScale'
 import { colors } from '@/theme/colors'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger'
@@ -60,11 +61,12 @@ export function Button({
   const padH = size === 'sm' ? 16 : 24
 
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
       disabled={disabled || loading}
       onPress={onPress}
+      layout="fill"
       style={({ pressed }) => [
         styles.core,
         { minHeight: height, borderRadius: radius, paddingHorizontal: padH },
@@ -79,7 +81,7 @@ export function Button({
       ) : (
         <Text style={[styles.label, { color: vs.text, fontSize }]}>{children}</Text>
       )}
-    </Pressable>
+    </PressableScale>
   )
 }
 

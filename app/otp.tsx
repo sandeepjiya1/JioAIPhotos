@@ -1,13 +1,17 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { FadeInDown } from 'react-native-reanimated'
 import { router, useLocalSearchParams } from 'expo-router'
 import { AuthLayout } from '@/components/layout/AuthLayout'
+import { AnimatedScreen } from '@/components/motion/AnimatedScreen'
+import { PressableScale } from '@/components/motion/PressableScale'
 import { JioLogo } from '@/components/molecules/JioLogo'
 import { LegalText } from '@/components/molecules/LegalText'
 import { OTPInput } from '@/components/molecules/OTPInput'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { motionDuration } from '@/theme/motion'
 
 const OTP_LENGTH = 4
 const RESEND_SECS = 29
@@ -79,7 +83,7 @@ export default function OTPScreen() {
         </View>
       }
     >
-      <View style={styles.block}>
+      <AnimatedScreen entering={FadeInDown.duration(motionDuration.normal)} style={styles.block}>
         <View style={styles.topBlock}>
           <JioLogo size="md" />
           <Text style={styles.heading}>{t.otp_heading}</Text>
@@ -87,13 +91,18 @@ export default function OTPScreen() {
             {t.otp_sent_to}{' '}
             <Text style={styles.sentStrong}>{masked}.</Text>
           </Text>
-          <Pressable onPress={() => router.replace('/login')} hitSlop={8} style={styles.changeBtn}>
+          <PressableScale
+            onPress={() => router.replace('/login')}
+            hitSlop={8}
+            style={styles.changeBtn}
+            layout="auto"
+          >
             <Text style={styles.changeLabel}>{t.otp_change}</Text>
-          </Pressable>
+          </PressableScale>
         </View>
 
         <OTPInput length={OTP_LENGTH} value={otp} onChange={setOtp} disabled={loading} countdown={countdown} onResend={handleResend} />
-      </View>
+      </AnimatedScreen>
     </AuthLayout>
   )
 }

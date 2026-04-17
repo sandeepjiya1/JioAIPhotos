@@ -1,8 +1,9 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { LinearGradient } from 'expo-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, usePathname } from 'expo-router'
+import { PressableScale } from '@/components/motion/PressableScale'
 import { NavBarGlyph, type BottomNavGlyph } from '@/components/navigation/NavBarGlyph'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
@@ -72,12 +73,13 @@ export function HomeBottomNav() {
           if (featured) {
             return (
               <View key={id} style={styles.featuredCol}>
-                <Pressable
+                <PressableScale
                   accessibilityRole="button"
                   accessibilityLabel={label[id]}
                   accessibilityState={{ selected: active }}
                   onPress={() => router.replace(href)}
-                  style={({ pressed }) => [styles.featuredPress, pressed && styles.pressed]}
+                  layout="fill"
+                  style={styles.featuredPress}
                 >
                   <View style={styles.orbStack}>
                     <View style={styles.halo} accessibilityElementsHidden />
@@ -109,19 +111,20 @@ export function HomeBottomNav() {
                   >
                     {label[id]}
                   </Text>
-                </Pressable>
+                </PressableScale>
               </View>
             )
           }
 
           return (
-            <Pressable
+            <PressableScale
               key={id}
               accessibilityRole="button"
               accessibilityLabel={label[id]}
               accessibilityState={{ selected: active }}
               onPress={() => router.replace(href)}
-              style={({ pressed }) => [styles.item, pressed && styles.pressed]}
+              layout="fill"
+              style={styles.item}
             >
               <View style={styles.iconSlot}>
                 <NavBarGlyph glyph={GLYPH[id]} color={glyphColor} size={20} />
@@ -129,7 +132,7 @@ export function HomeBottomNav() {
               <Text style={[styles.label, active ? styles.labelActive : styles.labelIdle]} numberOfLines={1}>
                 {label[id]}
               </Text>
-            </Pressable>
+            </PressableScale>
           )
         })}
       </View>
@@ -254,8 +257,5 @@ const styles = StyleSheet.create({
   labelActive: {
     fontWeight: '600',
     color: ON_HIGH,
-  },
-  pressed: {
-    opacity: 0.88,
   },
 })
