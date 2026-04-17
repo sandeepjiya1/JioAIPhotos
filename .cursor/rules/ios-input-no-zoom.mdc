@@ -1,20 +1,18 @@
 ---
-description: Prevent iOS Safari/PWA zoom on input focus (16px minimum)
+description: Avoid iOS zoom on small text fields (16px minimum on text inputs)
 alwaysApply: true
 ---
 
-# Form controls and iOS viewport zoom
+# Form controls and iOS input zoom (React Native / Expo)
 
-Safari on iPhone and standalone PWAs **zoom the whole page** when the user focuses an `input`, `textarea`, or `select` whose **computed font-size is below 16px**.
+On **iOS Safari** (and in some WebViews), focusing a text field whose effective size reads as **smaller than ~16px** can trigger **viewport zoom** in hybrid contexts. In **pure React Native** `TextInput`, use explicit typography so fields never ship at tiny default sizes.
 
 ## Requirements
 
-1. **Project safeguard**: `src/styles/globals.css` includes a `max-width: 48rem` media query that forces **16px** on text-entry fields (with `!important` so Tailwind utilities like `text-sm` cannot override it). Do not remove without replacing with another guaranteed ≥16px strategy.
+1. **Components**: Prefer **`fontSize: 16`** (or `text-base` / design tokens that resolve to **≥16**) on the **`TextInput`** (and multiline fields), not only on labels. Avoid `text-xs` / `text-sm` equivalents on those nodes for primary flows.
 
-2. **Components**: Prefer **`text-base` (1rem / 16px)** on the **actual** `<input>`, `<textarea>`, and `<select>` elements—not only on labels. Avoid `text-xs` / `text-sm` on those nodes for mobile-first flows.
+2. **Do not** “fix” zoom by locking the WebView or web shell to `user-scalable=no` or `maximum-scale=1`; that hurts accessibility.
 
-3. **Do not** “fix” zoom by setting `user-scalable=no` or `maximum-scale=1` on the viewport meta tag; that hurts accessibility and is unnecessary if font-size rules are correct.
+3. **Exceptions**: Decorative or non-text inputs (`checkbox`, `switch`, etc.) are not the focus of this rule.
 
-4. **Exceptions**: Decorative or non-text inputs (`checkbox`, `radio`, `range`, `file`, etc.) are excluded from the global rule via `:not(...)` selectors.
-
-When adding new form fields, verify on iPhone or Safari responsive mode that focus does not zoom the viewport.
+When adding new text fields, verify on iPhone that focus does not cause unexpected zoom if the screen is ever embedded in a web view.
