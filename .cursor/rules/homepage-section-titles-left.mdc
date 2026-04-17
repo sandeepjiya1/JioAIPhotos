@@ -1,6 +1,6 @@
 ---
 description: Home page section titles must be left-aligned (SectionHeader)
-globs: src/pages/app/HomePage.tsx
+globs: src/features/home/HomeScreen.tsx
 alwaysApply: false
 ---
 

@@ -1,16 +1,23 @@
-# Dependency directories
+# Dependencies
 node_modules/
 
-# Build output
+# Build / caches
 dist/
 dist-ssr/
+web-build/
+.expo/
+.metro-health-check*
 
-# Environment files
+# TypeScript
+*.tsbuildinfo
+expo-env.d.ts
+
+# Environment
 .env
 .env.local
 .env.*.local
 
-# Editor directories
+# Editors / OS
 .DS_Store
 .vscode/*
 !.vscode/extensions.json
@@ -20,10 +27,21 @@ dist-ssr/
 *.log
 npm-debug.log*
 yarn-debug.log*
-pnpm-debug.log*
+yarn-error.log*
 
-# TypeScript build info
-*.tsbuildinfo
-
-# PWA temp files
+# PWA / web leftovers
 dev-dist/
+
+# Native signing (local)
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.pem
+*.orig.*
+.kotlin/
+
+# Generated native projects (optional; remove if you commit ios/android)
+/ios
+/android

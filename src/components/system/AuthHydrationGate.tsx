@@ -1,8 +1,9 @@
 import { useEffect, useState, type ReactNode } from 'react'
+import { ActivityIndicator, StyleSheet, View } from 'react-native'
 import { useAuthStore } from '@/store/authStore'
-import { Spinner } from '@/components/atoms'
+import { colors } from '@/theme/colors'
 
-/** Renders children only after auth persist has rehydrated (avoids localStorage merge clobbering UI). */
+/** Renders children only after auth persist has rehydrated from AsyncStorage. */
 export function AuthHydrationGate({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(() => useAuthStore.persist.hasHydrated())
 
@@ -13,11 +14,20 @@ export function AuthHydrationGate({ children }: { children: ReactNode }) {
 
   if (!ready) {
     return (
-      <div className="flex items-center justify-center w-full min-h-dvh bg-surface-0">
-        <Spinner size="lg" />
-      </div>
+      <View style={styles.root}>
+        <ActivityIndicator size="large" color={colors.primary200} />
+      </View>
     )
   }
 
   return <>{children}</>
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.surface0,
+  },
+})

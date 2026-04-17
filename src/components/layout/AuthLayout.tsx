@@ -1,88 +1,76 @@
-import { type ReactNode } from 'react'
-import { cn } from '@/lib'
-import { useVisualViewportBottomInset } from '@/hooks/useVisualViewportBottomInset'
-
-function KeyboardLiftFooter({ children }: { children: ReactNode }) {
-  const keyboardInset = useVisualViewportBottomInset()
-
-  return (
-    <div
-      className={cn(
-        'auth-screen-px auth-cta-bottom-pad shrink-0 bg-surface-0 pt-2',
-        keyboardInset > 0 && 'transition-[transform] duration-150 ease-out',
-      )}
-      style={
-        keyboardInset > 0
-          ? { transform: `translateY(-${keyboardInset}px)` }
-          : undefined
-      }
-    >
-      {children}
-    </div>
-  )
-}
-
-function StaticAuthFooter({ children }: { children: ReactNode }) {
-  return (
-    <div className="auth-screen-px auth-cta-bottom-pad shrink-0 bg-surface-0 pt-2">
-      {children}
-    </div>
-  )
-}
+import type { ReactNode } from 'react'
+import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { StatusBar } from 'expo-status-bar'
+import { colors } from '@/theme/colors'
 
 export interface AuthLayoutProps {
   children: ReactNode
-  /** Content rendered below the status bar spacer */
-  headerSlot?: ReactNode
-  /** Content pinned at the bottom (outside the scroll area). */
   footerSlot?: ReactNode
-  /**
-   * When true with `footerSlot`, lifts the footer by the visual viewport bottom inset
-   * (e.g. phone keyboard) so CTAs stay visible. Use on login / OTP-style screens.
-   */
+  /** Lifts footer with keyboard on login / OTP style screens */
   keyboardAwareFooter?: boolean
-  className?: string
 }
 
-/**
- * AuthLayout — shared wrapper for all auth screens.
- *
- * Provides:
- *   - Full-screen dark surface
- *   - Safe-area-aware top spacer (`auth-top-spacer`)
- *   - Flex column with content area + optional pinned footer
- */
-export function AuthLayout({
-  children,
-  headerSlot,
-  footerSlot,
-  keyboardAwareFooter = false,
-  className,
-}: AuthLayoutProps) {
+export function AuthLayout({ children, footerSlot, keyboardAwareFooter }: AuthLayoutProps) {
+  const insets = useSafeAreaInsets()
+
   return (
-    <div className={cn('flex flex-col w-full h-dvh min-h-0 bg-surface-0', className)}>
-      <div className="auth-top-spacer" aria-hidden="true" />
-
-      {headerSlot && (
-        <div className="auth-screen-px shrink-0">{headerSlot}</div>
-      )}
-
-      {/* Main scrollable content — min-h-0 so flex child can shrink on mobile */}
-      <div
-        className={cn(
-          'auth-screen-px flex min-h-0 flex-1 flex-col overflow-y-auto',
-          footerSlot ? 'pb-4' : 'auth-cta-bottom-pad justify-between',
-        )}
+    <View style={[styles.root, { paddingTop: insets.top }]}>
+      <StatusBar style="light" />
+      <KeyboardAvoidingView
+        style={styles.flex}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        keyboardVerticalOffset={insets.top}
       >
-        {children}
-      </div>
+        <ScrollView
+          style={styles.flex}
+          contentContainerStyle={[
+            styles.scrollContent,
+            { paddingHorizontal: 24, paddingBottom: footerSlot ? 16 : Math.max(insets.bottom, 24) },
+          ]}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+        >
+          {children}
+        </ScrollView>
 
-      {footerSlot &&
-        (keyboardAwareFooter ? (
-          <KeyboardLiftFooter>{footerSlot}</KeyboardLiftFooter>
-        ) : (
-          <StaticAuthFooter>{footerSlot}</StaticAuthFooter>
-        ))}
-    </div>
+        {footerSlot ? (
+          <View
+            style={[
+              styles.footer,
+              {
+                paddingBottom: keyboardAwareFooter ? 12 : Math.max(insets.bottom, 16),
+                paddingTop: 8,
+              },
+            ]}
+          >
+            {footerSlot}
+          </View>
+        ) : null}
+      </KeyboardAvoidingView>
+    </View>
   )
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+    backgroundColor: colors.surface0,
+    minHeight: 0,
+  },
+  flex: {
+    flex: 1,
+    minHeight: 0,
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: 8,
+  },
+  footer: {
+    paddingHorizontal: 24,
+    backgroundColor: colors.surface0,
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: 'rgba(255,255,255,0.08)',
+    gap: 16,
+  },
+})
