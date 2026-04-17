@@ -4,9 +4,9 @@ globs: src/features/home/HomeScreen.tsx
 alwaysApply: false
 ---
 
-# Home page section titles
+# Home screen section titles
 
-On **`HomePage`**, every **`SectionHeader`** for main content rails (e.g. Memories, Greetings, Trending photo looks, Photos) must be **left-aligned**.
+On **`HomeScreen`**, every section title row for main content rails (e.g. Memories, Greetings, Recent AI, Photos) must be **left-aligned** (match prior web `SectionHeader` default).
 
 ## Requirements
 
