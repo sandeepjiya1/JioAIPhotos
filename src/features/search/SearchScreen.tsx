@@ -1,6 +1,17 @@
 import { useState } from 'react'
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 'react-native'
+import {
+  Dimensions,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  useWindowDimensions,
+} from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TopBar } from '@/components/layout/TopBar'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { colors } from '@/theme/colors'
 
 const RECENT_SEARCHES = ['Birthday', 'Varanasi', 'Ruhi', 'Greetings'] as const
@@ -11,13 +22,19 @@ export interface SearchScreenProps {
 
 export default function SearchScreen({ topBarTitle = 'Search' }: SearchScreenProps) {
   const [query, setQuery] = useState('')
+  const insets = useSafeAreaInsets()
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
 
   return (
     <View style={styles.root}>
       <TopBar title={topBarTitle} />
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: homeBottomTabScrollPaddingBottom(insets.bottom, ww) },
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
@@ -78,7 +95,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 132,
   },
   inputShell: {
     flexDirection: 'row',

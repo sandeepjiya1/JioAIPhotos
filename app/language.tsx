@@ -13,7 +13,11 @@ import { translations } from '@/lib/i18n'
 import { colors } from '@/theme/colors'
 import { motionDuration } from '@/theme/motion'
 
-/** Same hero as web `LanguagePage`: `public/assets/figma/5231a1f39ecdafc99e093e11726249b642313aab.png`. */
+/**
+ * Language hero art (`assets/home/language-collage.png`).
+ * Figma: JioAIPhotos — Journeys, node `683-15305` — same frame as Figma Desktop MCP `get_screenshot` / `get_design_context`.
+ * Regenerate: `FIGMA_ACCESS_TOKEN=… npm run figma:language-hero` (see `scripts/fetch-figma-language-hero.mjs`), or export PNG from Figma.
+ */
 const LANGUAGE_HERO = require('../assets/home/language-collage.png') as ImageSourcePropType
 
 export default function LanguageScreen() {

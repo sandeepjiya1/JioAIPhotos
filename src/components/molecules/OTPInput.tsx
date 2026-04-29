@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native'
 import { colors } from '@/theme/colors'
+import { useLayoutScale } from '@/hooks/useLayoutScale'
 import { useTranslation } from '@/hooks/useTranslation'
 
 export interface OTPInputProps {
@@ -22,7 +23,7 @@ function formatDigitAria(template: string, n: number) {
 }
 
 export function OTPInput({
-  length = 4,
+  length = 6,
   value,
   onChange,
   disabled = false,
@@ -31,6 +32,7 @@ export function OTPInput({
   onResend,
 }: OTPInputProps) {
   const t = useTranslation()
+  const { ms } = useLayoutScale()
   const refs = useRef<Array<TextInput | null>>([])
 
   useEffect(() => {
@@ -57,10 +59,10 @@ export function OTPInput({
   }
 
   return (
-    <View style={styles.wrap}>
-      <Text style={styles.label}>{t.otp_field_label}</Text>
+    <View style={[styles.wrap, { gap: ms(12) }]}>
+      <Text style={[styles.label, { fontSize: ms(14) }]}>{t.otp_field_label}</Text>
 
-      <View style={styles.row}>
+      <View style={[styles.row, { gap: ms(12) }]}>
         {Array.from({ length }).map((_, i) => (
           <TextInput
             key={i}
@@ -73,23 +75,34 @@ export function OTPInput({
             maxLength={1}
             editable={!disabled}
             accessibilityLabel={formatDigitAria(t.otp_digit_aria, i + 1)}
-            style={[styles.cell, error ? styles.cellError : styles.cellOk, disabled && styles.cellDisabled]}
+            style={[
+              styles.cell,
+              {
+                height: ms(52),
+                borderRadius: ms(4),
+                fontSize: ms(16),
+              },
+              error ? styles.cellError : styles.cellOk,
+              disabled && styles.cellDisabled,
+            ]}
           />
         ))}
       </View>
 
       {!error ? (
-        <Text style={styles.meta}>
+        <Text style={[styles.meta, { fontSize: ms(14) }]}>
           {countdown > 0 ? (
-            <Text style={styles.metaStrong}>{formatCountdown(t.otp_resend_countdown, countdown)}</Text>
+            <Text style={[styles.metaStrong, { fontSize: ms(14) }]}>
+              {formatCountdown(t.otp_resend_countdown, countdown)}
+            </Text>
           ) : (
-            <Pressable onPress={onResend} hitSlop={8}>
-              <Text style={styles.resend}>{t.otp_resend_cta}</Text>
+            <Pressable onPress={onResend} hitSlop={ms(8)}>
+              <Text style={[styles.resend, { fontSize: ms(14) }]}>{t.otp_resend_cta}</Text>
             </Pressable>
           )}
         </Text>
       ) : (
-        <Text style={styles.error} accessibilityRole="alert">
+        <Text style={[styles.error, { fontSize: ms(12) }]} accessibilityRole="alert">
           {error}
         </Text>
       )}
@@ -98,27 +111,20 @@ export function OTPInput({
 }
 
 const styles = StyleSheet.create({
-  wrap: {
-    gap: 12,
-  },
+  wrap: {},
   label: {
-    fontSize: 14,
     fontWeight: '600',
     color: colors.contentPrimary,
   },
   row: {
     flexDirection: 'row',
-    gap: 12,
     width: '100%',
   },
   cell: {
     flex: 1,
     minWidth: 0,
-    height: 52,
-    borderRadius: 4,
     borderWidth: 1,
     textAlign: 'center',
-    fontSize: 16,
     fontWeight: '600',
     color: colors.contentPrimary,
     backgroundColor: 'transparent',
@@ -133,7 +139,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   meta: {
-    fontSize: 14,
     color: colors.contentSecondary,
   },
   metaStrong: {
@@ -141,12 +146,10 @@ const styles = StyleSheet.create({
     color: colors.contentSecondary,
   },
   resend: {
-    fontSize: 14,
     fontWeight: '700',
     color: colors.primary600,
   },
   error: {
-    fontSize: 12,
     color: colors.error,
   },
 })

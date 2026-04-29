@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 import { ActivityIndicator, StyleSheet, Text, type ViewStyle } from 'react-native'
 import { PressableScale } from '@/components/motion/PressableScale'
+import { useLayoutScale } from '@/hooks/useLayoutScale'
 import { colors } from '@/theme/colors'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger'
@@ -54,11 +55,12 @@ export function Button({
   onPress,
   accessibilityLabel,
 }: ButtonProps) {
+  const { ms } = useLayoutScale()
   const vs = variantStyles[variant]
-  const height = size === 'pill' ? 48 : size === 'md' ? 48 : 36
-  const radius = size === 'pill' ? 999 : size === 'md' ? 12 : 10
-  const fontSize = size === 'sm' ? 14 : 16
-  const padH = size === 'sm' ? 16 : 24
+  const height = size === 'pill' ? ms(48) : size === 'md' ? ms(48) : ms(36)
+  const radius = size === 'pill' ? 999 : size === 'md' ? ms(12) : ms(10)
+  const fontSize = size === 'sm' ? ms(14) : ms(16)
+  const padH = size === 'sm' ? ms(16) : ms(24)
 
   return (
     <PressableScale
@@ -79,7 +81,9 @@ export function Button({
       {loading ? (
         <ActivityIndicator color={vs.text} />
       ) : (
-        <Text style={[styles.label, { color: vs.text, fontSize }]}>{children}</Text>
+        <Text style={[styles.label, { color: vs.text, fontSize, lineHeight: Math.round(fontSize * 1.2) }]}>
+          {children}
+        </Text>
       )}
     </PressableScale>
   )
@@ -97,7 +101,6 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   label: {
-    fontSize: 16,
     fontWeight: '600',
   },
 })

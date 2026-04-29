@@ -13,7 +13,6 @@ import { PressableScale } from '@/components/motion/PressableScale'
 import { useAuthStore } from '@/store/authStore'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
-import { requestMediaLibraryAndNotifications } from '@/lib/nativePermissions'
 import { colors } from '@/theme/colors'
 import { motionDuration } from '@/theme/motion'
 
@@ -40,10 +39,9 @@ export default function OnboardingScreen() {
     [reducedMotion],
   )
 
-  const finish = useCallback(async () => {
+  const finish = useCallback(() => {
     setHasSeenOnboarding(true)
-    await requestMediaLibraryAndNotifications()
-    router.replace('/home')
+    router.replace('/permission')
   }, [setHasSeenOnboarding])
 
   const goNext = useCallback(() => {
@@ -76,8 +74,10 @@ export default function OnboardingScreen() {
           accessibilityLabel="Skip onboarding"
           layout="auto"
         >
-          <Text style={styles.skipText}>{t.onboarding_skip}</Text>
-          <ChevronRight size={16} color={colors.contentPrimary} />
+          <View style={styles.skipInner}>
+            <Text style={styles.skipText}>{t.onboarding_skip}</Text>
+            <ChevronRight size={16} color={colors.contentPrimary} />
+          </View>
         </PressableScale>
       </View>
 
@@ -113,21 +113,31 @@ export default function OnboardingScreen() {
           <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} />
         </Animated.View>
 
-        <View style={styles.ctaRow}>
-          <View style={styles.ctaPrimary}>
-            <Button variant="primary" size="pill" fullWidth onPress={goNext}>
-              {slide.cta}
+        <View style={styles.buttonGroup} accessibilityRole="none">
+          <View style={styles.buttonGroupItem}>
+            <Button
+              variant="outline"
+              size="pill"
+              fullWidth
+              onPress={() => void finish()}
+              accessibilityLabel={t.onboarding_try_now}
+            >
+              {t.onboarding_try_now}
             </Button>
           </View>
-          <PressableScale
-            onPress={goNext}
-            style={styles.iconCta}
-            accessibilityRole="button"
-            accessibilityLabel="Next slide"
-            layout="auto"
-          >
-            <ChevronRight size={22} color={colors.contentPrimary} />
-          </PressableScale>
+          <View style={styles.buttonGroupItem}>
+            <Button
+              variant="primary"
+              size="pill"
+              fullWidth
+              onPress={goNext}
+              accessibilityLabel={
+                current < slides.length - 1 ? t.onboarding_next_slide_aria : t.onboarding_finish_aria
+              }
+            >
+              {t.onboarding_next}
+            </Button>
+          </View>
         </View>
       </View>
     </View>
@@ -150,12 +160,14 @@ const styles = StyleSheet.create({
     paddingRight: 20,
   },
   skip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
     minHeight: 44,
     paddingVertical: 8,
     paddingLeft: 12,
+  },
+  skipInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
   },
   skipText: {
     fontSize: 14,
@@ -166,6 +178,7 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
     marginTop: 56,
+    overflow: 'visible',
   },
   footer: {
     paddingHorizontal: 24,
@@ -193,24 +206,14 @@ const styles = StyleSheet.create({
     color: colors.contentSecondary,
     maxWidth: 360,
   },
-  ctaRow: {
+  buttonGroup: {
     flexDirection: 'row',
-    alignItems: 'center',
+    alignItems: 'stretch',
     gap: 12,
     paddingTop: 8,
   },
-  ctaPrimary: {
+  buttonGroupItem: {
     flex: 1,
     minWidth: 0,
-  },
-  iconCta: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: colors.surface3,
-    borderWidth: 1,
-    borderColor: colors.surface4,
   },
 })

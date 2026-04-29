@@ -1,2 +1,2 @@
-export { AnimatedScreen } from './AnimatedScreen'
-export { PressableScale } from './PressableScale'
+export { AnimatedSection } from './AnimatedSection'
+export { ScrollRevealSection } from './ScrollRevealSection'

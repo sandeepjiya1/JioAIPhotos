@@ -1,37 +1,58 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { useMemo } from 'react'
+import { Dimensions, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { BlurView } from 'expo-blur'
-import { LinearGradient } from 'expo-linear-gradient'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router, usePathname } from 'expo-router'
 import { PressableScale } from '@/components/motion/PressableScale'
 import { NavBarGlyph, type BottomNavGlyph } from '@/components/navigation/NavBarGlyph'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { BASE_DESIGN_WIDTH, moderateSize } from '@/theme/layoutScale'
 
-type NavId = 'home' | 'photos' | 'ai-camera' | 'files' | 'create'
+type NavId = 'home' | 'create' | 'photos'
 
-const NAV_IDS: readonly NavId[] = ['home', 'photos', 'ai-camera', 'files', 'create']
+const NAV_IDS: readonly NavId[] = ['home', 'create', 'photos']
 
 const HREF: Record<NavId, string> = {
   home: '/home',
-  photos: '/home/photos',
-  'ai-camera': '/home/ai-camera',
-  files: '/home/files',
   create: '/home/create',
+  photos: '/home/photos',
 }
 
 const GLYPH: Record<NavId, BottomNavGlyph> = {
   home: 'home',
-  photos: 'photos',
-  'ai-camera': 'ai-camera',
-  files: 'files',
   create: 'create',
+  photos: 'photos',
 }
 
 const ON_MEDIUM = 'rgba(255,255,255,0.77)'
 const ON_HIGH = '#ffffff'
-const ORB = 44
-const TRACK_MAX_W = 512
+
+/**
+ * Bottom nav metrics derived from window width — keep in sync with `HomeBottomNav` visuals.
+ */
+export function getHomeBottomNavLayout(screenWidth: number) {
+  const w = screenWidth > 0 ? screenWidth : BASE_DESIGN_WIDTH
+  return {
+    trackMaxW: moderateSize(512, w),
+    rowHeight: moderateSize(60, w),
+    trackPadH: moderateSize(20, w),
+    trackPadTop: moderateSize(4, w),
+    itemPadV: moderateSize(6, w),
+    iconLabelGap: moderateSize(8, w),
+    iconSize: moderateSize(20, w),
+    itemRadius: moderateSize(8, w),
+    labelFont: moderateSize(12, w),
+    labelLine: moderateSize(12, w),
+    bottomChromeExtra: moderateSize(12, w),
+  }
+}
+
+/** Scroll `paddingBottom` so content clears tab bar + home indicator (physical safe area unchanged). */
+export function homeBottomTabScrollPaddingBottom(safeBottom: number, screenWidth: number): number {
+  const L = getHomeBottomNavLayout(screenWidth)
+  return L.trackPadTop + L.rowHeight + Math.max(safeBottom, 4) + L.bottomChromeExtra
+}
 
 function isActive(pathname: string, href: string): boolean {
   if (href === '/home') return pathname === '/home' || pathname === '/home/'
@@ -41,14 +62,15 @@ function isActive(pathname: string, href: string): boolean {
 export function HomeBottomNav() {
   const insets = useSafeAreaInsets()
   const pathname = usePathname()
+  const { width: winW } = useWindowDimensions()
   const t = useTranslation()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const L = useMemo(() => getHomeBottomNavLayout(ww), [ww])
 
   const label: Record<NavId, string> = {
     home: t.nav_home,
-    photos: t.nav_photos,
-    'ai-camera': t.nav_ai_camera,
-    files: t.nav_files,
     create: t.nav_create,
+    photos: t.nav_photos,
   }
 
   return (
@@ -59,62 +81,17 @@ export function HomeBottomNav() {
         style={[
           styles.track,
           {
-            paddingBottom: Math.max(insets.bottom, 10),
-            maxWidth: TRACK_MAX_W,
+            paddingTop: L.trackPadTop,
+            paddingBottom: Math.max(insets.bottom, 4),
+            maxWidth: L.trackMaxW,
+            paddingHorizontal: L.trackPadH,
           },
         ]}
       >
         {NAV_IDS.map((id) => {
           const href = HREF[id]
           const active = isActive(pathname, href)
-          const featured = id === 'ai-camera'
-          const glyphColor = active ? ON_HIGH : ON_MEDIUM
-
-          if (featured) {
-            return (
-              <View key={id} style={styles.featuredCol}>
-                <PressableScale
-                  accessibilityRole="button"
-                  accessibilityLabel={label[id]}
-                  accessibilityState={{ selected: active }}
-                  onPress={() => router.replace(href)}
-                  layout="fill"
-                  style={styles.featuredPress}
-                >
-                  <View style={styles.orbStack}>
-                    <View style={styles.halo} accessibilityElementsHidden />
-                    <LinearGradient
-                      colors={['rgba(157,202,228,0.98)', colors.primary600, colors.primary700]}
-                      start={{ x: 0.5, y: 0 }}
-                      end={{ x: 0.5, y: 1 }}
-                      style={[
-                        styles.orb,
-                        active ? styles.orbBorderActive : styles.orbBorderIdle,
-                        active ? styles.orbGlowActive : styles.orbGlowIdle,
-                      ]}
-                    >
-                      <LinearGradient
-                        colors={['rgba(255,255,255,0.38)', 'transparent', 'rgba(0,40,60,0.22)']}
-                        start={{ x: 0.2, y: 0.1 }}
-                        end={{ x: 0.9, y: 1 }}
-                        style={StyleSheet.absoluteFill}
-                        pointerEvents="none"
-                      />
-                      <View style={styles.orbGlyph}>
-                        <NavBarGlyph glyph="ai-camera" color={ON_HIGH} size={20} />
-                      </View>
-                    </LinearGradient>
-                  </View>
-                  <Text
-                    style={[styles.label, active ? styles.labelActive : styles.labelIdle]}
-                    numberOfLines={1}
-                  >
-                    {label[id]}
-                  </Text>
-                </PressableScale>
-              </View>
-            )
-          }
+          const glyphColor = active ? colors.primary600 : ON_MEDIUM
 
           return (
             <PressableScale
@@ -124,14 +101,32 @@ export function HomeBottomNav() {
               accessibilityState={{ selected: active }}
               onPress={() => router.replace(href)}
               layout="fill"
-              style={styles.item}
+              style={[
+                styles.item,
+                {
+                  paddingVertical: L.itemPadV,
+                  height: L.rowHeight,
+                  minHeight: L.rowHeight,
+                  maxHeight: L.rowHeight,
+                  borderRadius: L.itemRadius,
+                },
+              ]}
             >
-              <View style={styles.iconSlot}>
-                <NavBarGlyph glyph={GLYPH[id]} color={glyphColor} size={20} />
+              <View style={[styles.itemInner, { gap: L.iconLabelGap }]}>
+                <View style={[styles.iconSlot, { width: L.iconSize, height: L.iconSize }]}>
+                  <NavBarGlyph glyph={GLYPH[id]} color={glyphColor} size={L.iconSize} />
+                </View>
+                <Text
+                  style={[
+                    styles.label,
+                    { fontSize: L.labelFont, lineHeight: L.labelLine },
+                    active ? styles.labelActive : styles.labelIdle,
+                  ]}
+                  numberOfLines={1}
+                >
+                  {label[id]}
+                </Text>
               </View>
-              <Text style={[styles.label, active ? styles.labelActive : styles.labelIdle]} numberOfLines={1}>
-                {label[id]}
-              </Text>
             </PressableScale>
           )
         })}
@@ -152,102 +147,37 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 24,
   },
-  /** Matches web `.glass-nav` tint over blur. */
   tint: {
     ...StyleSheet.absoluteFillObject,
     backgroundColor: 'rgba(13,42,61,0.52)',
   },
   track: {
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
     justifyContent: 'space-between',
     alignSelf: 'center',
     width: '100%',
-    paddingHorizontal: 8,
-    paddingTop: 6,
-    gap: 2,
+    gap: 0,
   },
   item: {
     flex: 1,
     minWidth: 0,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    paddingBottom: 6,
-    paddingTop: 4,
-    minHeight: 52,
-    gap: 4,
-    borderRadius: 8,
+    justifyContent: 'center',
+  },
+  itemInner: {
+    flex: 1,
+    width: '100%',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   iconSlot: {
-    width: 20,
-    height: 20,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  featuredCol: {
-    flex: 1,
-    minWidth: 0,
-    zIndex: 4,
-    alignItems: 'center',
-  },
-  featuredPress: {
-    alignItems: 'center',
-    width: '100%',
-    paddingBottom: 6,
-    paddingTop: 0,
-  },
-  orbStack: {
-    width: ORB,
-    height: ORB,
-    marginTop: -36,
-    marginBottom: 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  halo: {
-    position: 'absolute',
-    width: 46,
-    height: 46,
-    borderRadius: 23,
-    backgroundColor: 'rgba(120,190,230,0.32)',
-    opacity: 0.55,
-  },
-  orb: {
-    width: ORB,
-    height: ORB,
-    borderRadius: ORB / 2,
-    overflow: 'hidden',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 2,
-  },
-  orbBorderIdle: {
-    borderColor: colors.surface0,
-  },
-  orbBorderActive: {
-    borderColor: 'rgba(120,200,255,0.55)',
-  },
-  orbGlowIdle: {
-    shadowColor: '#57a3d0',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.55,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  orbGlowActive: {
-    shadowColor: '#a0dcff',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.65,
-    shadowRadius: 14,
-    elevation: 12,
-  },
-  orbGlyph: {
-    zIndex: 1,
   },
   label: {
     maxWidth: '100%',
-    fontSize: 12,
-    lineHeight: 14,
     textAlign: 'center',
   },
   labelIdle: {

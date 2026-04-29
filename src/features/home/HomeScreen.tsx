@@ -1,4 +1,4 @@
-import { useMemo, useState, type ReactNode } from 'react'
+import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   Dimensions,
   Pressable,
@@ -7,42 +7,108 @@ import {
   Text,
   View,
   useWindowDimensions,
+  type StyleProp,
+  type TextStyle,
 } from 'react-native'
+import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
 import { LinearGradient } from 'expo-linear-gradient'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { AnimatedSection, ScrollRevealSection } from '@/components/motion'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { HomeAppHeader } from '@/features/home/HomeAppHeader'
 import { HomeIplRail } from '@/features/home/HomeIplRail'
-import { HomeStoryRow } from '@/features/home/HomeStoryRow'
+import { HomePhotosMosaic } from '@/features/home/HomePhotosMosaic'
 import { ResolvedImage } from '@/features/home/ResolvedImage'
 import {
   HOME_GREETINGS_SECTION,
+  HOME_IPL_AVATARS_SECTION_TITLE,
   HOME_MEMORIES_SECTION,
   HOME_PHOTOS_SECTION,
   HOME_SHOW_SECTION_SUBTITLES,
   HOME_STORAGE_BANNER,
   HOME_STORAGE_BANNER_IMAGE,
-  HOME_TRENDING_SECTION,
+  type HomeMemoryCard,
 } from '@/features/home/homeContent'
 import { HomeScreenSkeleton } from '@/features/home/HomeScreenSkeleton'
 import { useHomeScreenImagesReady } from '@/features/home/useHomeScreenImagesReady'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 
-const SECTION_PAD = 16
-const TREND_W = 160
-const TREND_H = (TREND_W * 4) / 3
-const MEM_H = 160
+const MEM_DESIGN_CARD_W = 253
+const MEM_DESIGN_CONTENT_W = 328
+const MEM_DESIGN_IMG_H = 141.961
+
+function MemoryRailCard({
+  item,
+  width,
+  borderRadius,
+  screenWidth,
+}: {
+  item: HomeMemoryCard
+  width: number
+  borderRadius: number
+  screenWidth: number
+}) {
+  const imgH = Math.round((width * MEM_DESIGN_IMG_H) / MEM_DESIGN_CARD_W)
+  const g = item.overlayGradient
+  const sw = screenWidth > 0 ? screenWidth : Dimensions.get('window').width
+  const ol = moderateSize(12, sw)
+  const ob = moderateSize(8, sw)
+  const og = moderateSize(4, sw)
+  const titleSize = moderateSize(20, sw)
+  const dateSize = moderateSize(10, sw)
+  return (
+    <View style={[styles.memCard, { width, borderRadius }]}>
+      <View style={[styles.memImageWrap, { height: imgH, borderRadius }]}>
+        <ResolvedImage webPath={item.image} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+        <LinearGradient
+          pointerEvents="none"
+          colors={[...g.colors] as [string, string, ...string[]]}
+          locations={[...g.locations] as [number, number, ...number[]]}
+          start={g.start}
+          end={g.end}
+          style={[StyleSheet.absoluteFillObject, { borderRadius }]}
+        />
+        <View
+          style={[
+            styles.memOverlayText,
+            {
+              left: ol,
+              right: ol,
+              bottom: ob,
+              gap: og,
+            },
+          ]}
+        >
+          <Text
+            style={[styles.memTitleOverlay, { fontSize: titleSize, lineHeight: titleSize }]}
+            numberOfLines={2}
+          >
+            {item.title}
+          </Text>
+          <Text style={[styles.memDateOverlay, { fontSize: dateSize, lineHeight: dateSize }]}>{item.date}</Text>
+        </View>
+      </View>
+    </View>
+  )
+}
 
 function SectionHeader({
   title,
   action,
+  titleStyle,
+  rowStyle,
 }: {
   title: string
   action?: ReactNode
+  titleStyle?: StyleProp<TextStyle>
+  rowStyle?: object
 }) {
   return (
-    <View style={styles.sectionHeadRow}>
-      <Text style={styles.sectionTitle}>{title}</Text>
+    <View style={[styles.sectionHeadRow, rowStyle]}>
+      <Text style={[styles.sectionTitle, titleStyle]}>{title}</Text>
       {action ? <View style={styles.sectionAction}>{action}</View> : null}
     </View>
   )
@@ -50,21 +116,70 @@ function SectionHeader({
 
 export default function HomeScreen() {
   const [iplHeroIndex, setIplHeroIndex] = useState(0)
-  const { width: winW } = useWindowDimensions()
+  const { width: winW, height: winH } = useWindowDimensions()
+  const insets = useSafeAreaInsets()
   const homeImagesReady = useHomeScreenImagesReady()
+  const scrollY = useSharedValue(0)
+  const viewportH = useSharedValue(Math.max(1, Dimensions.get('window').height))
 
-  const { memCardW, greetCellW, greetCellH, photoCellW } = useMemo(() => {
+  useEffect(() => {
+    viewportH.value = Math.max(1, winH)
+  }, [winH, viewportH])
+
+  const onScroll = useAnimatedScrollHandler({
+    onScroll: (e) => {
+      scrollY.value = e.contentOffset.y
+    },
+  })
+
+  const { memCardW, greetCellW, greetCellH, photosMosaicInnerW, lx } = useMemo(() => {
     const ww = winW > 0 ? winW : Dimensions.get('window').width
-    const inner = Math.max(1, ww - SECTION_PAD * 2)
-    const greetGap = 8
+    const ms = (n: number) => moderateSize(n, ww)
+    const sectionPad = ms(16)
+    const inner = Math.max(1, ww - sectionPad * 2)
+    const greetGap = ms(8)
     const greetW = Math.max(1, (inner - greetGap * 2) / 3)
-    const photoGap = 4
-    const photoW = Math.max(1, (inner - photoGap * 2) / 3)
     return {
-      memCardW: Math.min(284, Math.max(100, inner - 8)),
+      memCardW: Math.max(200, Math.round((inner * MEM_DESIGN_CARD_W) / MEM_DESIGN_CONTENT_W)),
       greetCellW: greetW,
       greetCellH: (greetW * 4) / 3,
-      photoCellW: photoW,
+      photosMosaicInnerW: Math.max(1, ww),
+      lx: {
+        ww,
+        sectionPad,
+        sectionMarginTop: ms(22),
+        sectionGap: ms(10),
+        aiSectionMarginTop: ms(10),
+        photoSectionMarginTop: ms(22),
+        photoHeaderGap: ms(4),
+        photoHeaderPadH: sectionPad,
+        memRailGap: ms(16),
+        memRailPadV: ms(4),
+        memRadius: ms(10),
+        greetGridGap: greetGap,
+        greetCellRadius: ms(10),
+        greetLabelPadH: ms(8),
+        greetLabelBottom: ms(10),
+        storageBlockGap: ms(18),
+        storageMetaGap: ms(10),
+        storageBannerRadius: ms(14),
+        spacerBottom: ms(12),
+        headRowGap: ms(12),
+        hitSlop: ms(8),
+        aiTitleSize: ms(20),
+        memoriesTitleSize: ms(20),
+        photosTitleSize: ms(20),
+        sectionTitleSize: ms(18),
+        sectionTitleLine: ms(22),
+        viewAllSize: ms(14),
+        sectionSubSize: ms(14),
+        sectionSubLine: ms(18),
+        greetLabelSize: ms(13),
+        greetLabelLine: ms(16),
+        storageLabelSize: ms(16),
+        storageCaptionSize: ms(14),
+        storageTrackH: ms(10),
+      },
     }
   }, [winW])
 
@@ -81,57 +196,64 @@ export default function HomeScreen() {
     <View style={styles.root}>
       <StatusBar style="light" />
       <HomeAppHeader />
-      <ScrollView
+      <Animated.ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{
+          paddingBottom: homeBottomTabScrollPaddingBottom(
+            insets.bottom,
+            winW > 0 ? winW : Dimensions.get('window').width,
+          ),
+        }}
         showsVerticalScrollIndicator={false}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
       >
-        <HomeStoryRow />
+        <AnimatedSection delayMs={72}>
+          <View
+            style={[
+              styles.section,
+              {
+                marginTop: lx.aiSectionMarginTop,
+                paddingHorizontal: lx.sectionPad,
+                gap: lx.sectionGap,
+              },
+            ]}
+          >
+            <SectionHeader
+              title={HOME_IPL_AVATARS_SECTION_TITLE}
+              titleStyle={[
+                styles.aiAvatarSectionTitle,
+                { fontSize: lx.aiTitleSize, lineHeight: lx.aiTitleSize },
+              ]}
+              rowStyle={{ gap: lx.headRowGap }}
+            />
+            <HomeIplRail selectedIndex={iplHeroIndex} onSelectTeam={setIplHeroIndex} />
+          </View>
+        </AnimatedSection>
 
-        <HomeIplRail selectedIndex={iplHeroIndex} onSelectTeam={setIplHeroIndex} />
-
-        <View style={styles.section}>
-          <SectionHeader title={HOME_MEMORIES_SECTION.title} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hRail}>
-            {HOME_MEMORIES_SECTION.items.map((item) => (
-              <View key={item.id} style={[styles.memCard, { width: memCardW }]}>
-                <View style={[styles.memImageWrap, { height: MEM_H }]}>
-                  <ResolvedImage
-                    webPath={item.image}
-                    style={StyleSheet.absoluteFillObject}
-                    resizeMode="cover"
-                  />
-                  <LinearGradient
-                    pointerEvents="none"
-                    colors={['transparent', 'rgba(0,0,0,0.72)']}
-                    locations={[0.38, 1]}
-                    style={StyleSheet.absoluteFill}
-                  />
-                  <View style={styles.memOverlayText}>
-                    <Text style={styles.memTitleOverlay} numberOfLines={2}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.memDateOverlay}>{item.date}</Text>
-                  </View>
-                </View>
-              </View>
-            ))}
-          </ScrollView>
-          {HOME_SHOW_SECTION_SUBTITLES && HOME_MEMORIES_SECTION.subtitle ? (
-            <Text style={styles.sectionSub}>{HOME_MEMORIES_SECTION.subtitle}</Text>
-          ) : null}
-        </View>
-
-        <View style={styles.section}>
+        <ScrollRevealSection
+          scrollY={scrollY}
+          viewportHeight={viewportH}
+          style={[
+            styles.section,
+            {
+              marginTop: lx.sectionMarginTop,
+              paddingHorizontal: lx.sectionPad,
+              gap: lx.sectionGap,
+            },
+          ]}
+        >
           <SectionHeader
             title={HOME_GREETINGS_SECTION.title}
+            rowStyle={{ gap: lx.headRowGap }}
+            titleStyle={[styles.sectionTitle, { fontSize: lx.sectionTitleSize, lineHeight: lx.sectionTitleLine }]}
             action={
-              <Pressable onPress={() => router.push('/home/create')} hitSlop={8}>
-                <Text style={styles.viewAll}>View all</Text>
+              <Pressable onPress={() => router.push('/home/create')} hitSlop={lx.hitSlop}>
+                <Text style={[styles.viewAll, { fontSize: lx.viewAllSize }]}>View all</Text>
               </Pressable>
             }
           />
-          <View style={styles.greetGrid}>
+          <View style={[styles.greetGrid, { gap: lx.greetGridGap }]}>
             {HOME_GREETINGS_SECTION.items.map((item) => (
               <View
                 key={item.id}
@@ -140,6 +262,7 @@ export default function HomeScreen() {
                   {
                     width: greetCellW,
                     height: greetCellH,
+                    borderRadius: lx.greetCellRadius,
                   },
                 ]}
               >
@@ -154,80 +277,151 @@ export default function HomeScreen() {
                   locations={[0, 0.42, 1]}
                   style={StyleSheet.absoluteFill}
                 />
-                <Text style={styles.greetLabel} numberOfLines={2}>
+                <Text
+                  style={[
+                    styles.greetLabel,
+                    {
+                      left: lx.greetLabelPadH,
+                      right: lx.greetLabelPadH,
+                      bottom: lx.greetLabelBottom,
+                      fontSize: lx.greetLabelSize,
+                      lineHeight: lx.greetLabelLine,
+                    },
+                  ]}
+                  numberOfLines={2}
+                >
                   {item.label}
                 </Text>
               </View>
             ))}
           </View>
           {HOME_SHOW_SECTION_SUBTITLES && HOME_GREETINGS_SECTION.subtitle ? (
-            <Text style={styles.sectionSub}>{HOME_GREETINGS_SECTION.subtitle}</Text>
+            <Text
+              style={[
+                styles.sectionSub,
+                { fontSize: lx.sectionSubSize, lineHeight: lx.sectionSubLine },
+              ]}
+            >
+              {HOME_GREETINGS_SECTION.subtitle}
+            </Text>
           ) : null}
-        </View>
+        </ScrollRevealSection>
 
-        <View style={styles.section}>
-          <SectionHeader title={HOME_TRENDING_SECTION.title} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hRail}>
-            {HOME_TRENDING_SECTION.items.map((item) => (
-              <View key={item.id} style={[styles.trendCard, { width: TREND_W, height: TREND_H }]}>
-                {item.imageClassName ? (
-                  <View style={styles.trendCrop}>
-                    <ResolvedImage
-                      webPath={item.image}
-                      style={styles.trendCropImg}
-                      resizeMode="cover"
-                    />
-                  </View>
-                ) : (
-                  <ResolvedImage
-                    webPath={item.image}
-                    style={StyleSheet.absoluteFillObject}
-                    resizeMode="cover"
-                  />
-                )}
-              </View>
+        <ScrollRevealSection
+          scrollY={scrollY}
+          viewportHeight={viewportH}
+          style={[
+            styles.section,
+            {
+              marginTop: lx.sectionMarginTop,
+              paddingHorizontal: lx.sectionPad,
+              gap: lx.sectionGap,
+            },
+          ]}
+        >
+          <SectionHeader
+            title={HOME_MEMORIES_SECTION.title}
+            titleStyle={[
+              styles.memoriesSectionTitle,
+              { fontSize: lx.memoriesTitleSize, lineHeight: lx.memoriesTitleSize },
+            ]}
+            rowStyle={{ gap: lx.headRowGap }}
+            action={
+              <Pressable onPress={() => router.push('/home/memories')} hitSlop={lx.hitSlop}>
+                <Text style={[styles.viewAll, { fontSize: lx.viewAllSize }]}>View all</Text>
+              </Pressable>
+            }
+          />
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.memHRail,
+              { gap: lx.memRailGap, paddingVertical: lx.memRailPadV },
+            ]}
+          >
+            {HOME_MEMORIES_SECTION.items.map((item) => (
+              <MemoryRailCard
+                key={item.id}
+                item={item}
+                width={memCardW}
+                borderRadius={lx.memRadius}
+                screenWidth={lx.ww}
+              />
             ))}
           </ScrollView>
-        </View>
-
-        <View style={styles.section}>
-          <SectionHeader title={HOME_PHOTOS_SECTION.title} />
-          <View style={styles.photoGrid}>
-            {HOME_PHOTOS_SECTION.items.map((tile) => (
-              <View key={tile.id} style={[styles.photoCell, { width: photoCellW, height: photoCellW }]}>
-                <ResolvedImage
-                  webPath={tile.src}
-                  style={StyleSheet.absoluteFillObject}
-                  resizeMode="cover"
-                />
-                {tile.morePhotosOverlay ? (
-                  <View style={styles.photoOverlay}>
-                    <Text style={styles.photoOverlayCount}>+{tile.morePhotosOverlay.count}</Text>
-                    <Text style={styles.photoOverlayUnit}>{tile.morePhotosOverlay.unitLabel}</Text>
-                  </View>
-                ) : null}
-              </View>
-            ))}
-          </View>
-          {HOME_SHOW_SECTION_SUBTITLES && HOME_PHOTOS_SECTION.subtitle ? (
-            <Text style={styles.sectionSub}>{HOME_PHOTOS_SECTION.subtitle}</Text>
+          {HOME_SHOW_SECTION_SUBTITLES && HOME_MEMORIES_SECTION.subtitle ? (
+            <Text
+              style={[
+                styles.sectionSub,
+                { fontSize: lx.sectionSubSize, lineHeight: lx.sectionSubLine },
+              ]}
+            >
+              {HOME_MEMORIES_SECTION.subtitle}
+            </Text>
           ) : null}
-        </View>
+        </ScrollRevealSection>
 
-        <View style={[styles.section, styles.storageBlock]}>
+        <ScrollRevealSection
+          scrollY={scrollY}
+          viewportHeight={viewportH}
+          style={[
+            styles.photoSection,
+            {
+              marginTop: lx.photoSectionMarginTop,
+              gap: lx.sectionGap,
+            },
+          ]}
+        >
+          <View style={[styles.photoSectionHeader, { paddingHorizontal: lx.photoHeaderPadH, gap: lx.photoHeaderGap }]}>
+            <SectionHeader
+              title={HOME_PHOTOS_SECTION.title}
+              titleStyle={[
+                styles.photosSectionTitle,
+                { fontSize: lx.photosTitleSize, lineHeight: lx.photosTitleSize },
+              ]}
+              rowStyle={{ gap: lx.headRowGap }}
+            />
+            {HOME_SHOW_SECTION_SUBTITLES && HOME_PHOTOS_SECTION.subtitle ? (
+              <Text
+                style={[
+                  styles.sectionSub,
+                  { fontSize: lx.sectionSubSize, lineHeight: lx.sectionSubLine },
+                ]}
+              >
+                {HOME_PHOTOS_SECTION.subtitle}
+              </Text>
+            ) : null}
+          </View>
+          <HomePhotosMosaic innerWidth={photosMosaicInnerW} items={HOME_PHOTOS_SECTION.items} />
+        </ScrollRevealSection>
+
+        <ScrollRevealSection
+          scrollY={scrollY}
+          viewportHeight={viewportH}
+          style={[
+            styles.section,
+            styles.storageBlock,
+            {
+              marginTop: lx.sectionMarginTop,
+              paddingHorizontal: lx.sectionPad,
+              gap: lx.storageBlockGap,
+            },
+          ]}
+        >
           <ResolvedImage
             webPath={HOME_STORAGE_BANNER_IMAGE}
-            style={styles.storageBanner}
+            style={[styles.storageBanner, { borderRadius: lx.storageBannerRadius }]}
             resizeMode="contain"
           />
-          <View style={styles.storageMeta}>
+          <View style={[styles.storageMeta, { gap: lx.storageMetaGap }]}>
             <View style={styles.storageLabels}>
-              <Text style={styles.storageLabel}>Storage</Text>
-              <Text style={styles.storageNums}>
+              <Text style={[styles.storageLabel, { fontSize: lx.storageLabelSize }]}>Storage</Text>
+              <Text style={[styles.storageNums, { fontSize: lx.storageLabelSize }]}>
                 {HOME_STORAGE_BANNER.used} GB / {HOME_STORAGE_BANNER.total} GB
               </Text>
             </View>
-            <View style={styles.storageTrack}>
+            <View style={[styles.storageTrack, { height: lx.storageTrackH }]}>
               <View
                 style={[
                   styles.storageFill,
@@ -235,12 +429,14 @@ export default function HomeScreen() {
                 ]}
               />
             </View>
-            <Text style={styles.storageCaption}>AI memories safely backed up</Text>
+            <Text style={[styles.storageCaption, { fontSize: lx.storageCaptionSize }]}>
+              AI memories safely backed up
+            </Text>
           </View>
-        </View>
+        </ScrollRevealSection>
 
-        <View style={{ height: 12 }} />
-      </ScrollView>
+        <View style={{ height: lx.spacerBottom }} />
+      </Animated.ScrollView>
     </View>
   )
 }
@@ -255,25 +451,30 @@ const styles = StyleSheet.create({
     flex: 1,
     minHeight: 0,
   },
-  scrollContent: {
-    /** Extra space for glass nav + raised AI Camera orb (web `pb-36` parity). */
-    paddingBottom: 132,
+  section: {},
+  aiAvatarSectionTitle: {
+    fontWeight: '900',
+    color: colors.contentPrimary,
   },
-  section: {
-    marginTop: 22,
-    paddingHorizontal: SECTION_PAD,
-    gap: 10,
+  photoSection: {
+    paddingHorizontal: 0,
+  },
+  photoSectionHeader: {},
+  memoriesSectionTitle: {
+    fontWeight: '900',
+    color: colors.contentPrimary,
   },
   sectionHeadRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    gap: 12,
   },
   sectionTitle: {
     flex: 1,
-    fontSize: 18,
-    lineHeight: 22,
+    fontWeight: '900',
+    color: colors.contentPrimary,
+  },
+  photosSectionTitle: {
     fontWeight: '900',
     color: colors.contentPrimary,
   },
@@ -281,22 +482,16 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   viewAll: {
-    fontSize: 14,
     fontWeight: '600',
     color: colors.primary600,
   },
   sectionSub: {
-    fontSize: 14,
-    lineHeight: 18,
     color: 'rgba(255,255,255,0.45)',
   },
-  hRail: {
+  memHRail: {
     flexDirection: 'row',
-    gap: 14,
-    paddingVertical: 4,
   },
   memCard: {
-    borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: colors.surface3,
   },
@@ -307,122 +502,54 @@ const styles = StyleSheet.create({
   },
   memOverlayText: {
     position: 'absolute',
-    left: 10,
-    right: 10,
-    bottom: 10,
-    gap: 4,
   },
   memTitleOverlay: {
-    fontSize: 17,
     fontWeight: '900',
-    lineHeight: 22,
-    color: colors.contentPrimary,
+    color: '#ffffff',
   },
   memDateOverlay: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: colors.contentPrimary,
+    fontWeight: '400',
+    color: 'rgba(255,255,255,0.92)',
   },
   greetGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
+    flexWrap: 'nowrap',
   },
   greetCell: {
-    borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: colors.surface3,
     position: 'relative',
   },
   greetLabel: {
     position: 'absolute',
-    left: 8,
-    right: 8,
-    bottom: 10,
-    fontSize: 13,
     fontWeight: '700',
-    lineHeight: 16,
     color: '#fff',
     textAlign: 'center',
   },
-  trendCard: {
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: colors.surface3,
-    position: 'relative',
-  },
-  /** Parity with web `MediaCard` middle tile (Figma 488:9345 crop). */
-  trendCrop: {
-    ...StyleSheet.absoluteFillObject,
-    overflow: 'hidden',
-  },
-  trendCropImg: {
-    position: 'absolute',
-    width: '158.61%',
-    height: '115.79%',
-    left: '-37.04%',
-    top: '-2.9%',
-  },
-  photoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    borderRadius: 14,
-    overflow: 'hidden',
-  },
-  photoCell: {
-    position: 'relative',
-    overflow: 'hidden',
-    backgroundColor: colors.surface3,
-  },
-  photoOverlay: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 2,
-  },
-  photoOverlayCount: {
-    fontSize: 20,
-    fontWeight: '900',
-    color: '#fff',
-  },
-  photoOverlayUnit: {
-    fontSize: 8,
-    color: 'rgba(255,255,255,0.9)',
-  },
-  storageBlock: {
-    gap: 18,
-  },
+  storageBlock: {},
   storageBanner: {
     width: '100%',
     height: undefined,
     aspectRatio: 656 / 368,
-    borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: colors.surface2,
   },
-  storageMeta: {
-    gap: 10,
-  },
+  storageMeta: {},
   storageLabels: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'baseline',
   },
   storageLabel: {
-    fontSize: 16,
     fontWeight: '500',
     color: colors.contentSecondary,
   },
   storageNums: {
-    fontSize: 16,
     fontWeight: '500',
     color: colors.contentSecondary,
     fontVariant: ['tabular-nums'],
   },
   storageTrack: {
-    height: 10,
     borderRadius: 999,
     backgroundColor: '#ebebec',
     overflow: 'hidden',
@@ -433,7 +560,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary600,
   },
   storageCaption: {
-    fontSize: 14,
     fontWeight: '500',
     color: colors.contentSecondary,
     textAlign: 'center',

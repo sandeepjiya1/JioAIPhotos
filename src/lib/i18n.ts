@@ -36,7 +36,11 @@ export interface Translations {
   legal_privacy: string
 
   onboarding_skip: string
-  onboarding_slides: { title: string; subtitle: string; cta: string }[]
+  onboarding_try_now: string
+  onboarding_next: string
+  onboarding_next_slide_aria: string
+  onboarding_finish_aria: string
+  onboarding_slides: { title: string; subtitle: string }[]
 
   gallery_perm_title: string
   gallery_perm_subtitle: string
@@ -48,6 +52,15 @@ export interface Translations {
   notif_perm_allow: string
   notif_perm_skip: string
 
+  /** Combined pre-permission screen (Figma 698:16838) before OS dialogs. */
+  perm_intro_headline: string
+  perm_intro_gallery_title: string
+  perm_intro_gallery_body: string
+  perm_intro_notif_title: string
+  perm_intro_notif_body: string
+  perm_intro_allow: string
+  perm_intro_later: string
+
   nav_home: string
   nav_photos: string
   nav_ai_camera: string
@@ -56,13 +69,13 @@ export interface Translations {
 }
 
 const en: Translations = {
-  language_headline: 'Make your photos look new and better',
-  language_subtitle: 'Try something new, improve your photos, and share them easily.',
+  language_headline: 'Your everyday photo app',
+  language_subtitle: 'Create AI photos, relive memories, and share easily with 50 GB free storage.',
   language_choose: 'Choose your language',
   language_continue: 'Continue',
 
-  login_heading: 'Sign in',
-  login_subtitle: 'Make new photos or improve your old ones.',
+  login_heading: 'Log in',
+  login_subtitle: 'Welcome to the JioPix.',
   login_cta: 'Get OTP',
   login_placeholder: 'Mobile number',
   login_error: 'Please enter a valid 10-digit number',
@@ -73,7 +86,7 @@ const en: Translations = {
   otp_heading: 'Verify your mobile number',
   otp_sent_to: 'Enter the OTP sent to',
   otp_change: 'Change my number',
-  otp_hint: 'Enter all 4 digits to continue automatically',
+  otp_hint: 'Enter all 6 digits to continue automatically',
   otp_verifying: 'Verifying…',
   otp_field_label: 'OTP number',
   otp_resend_countdown: 'Request OTP in {count} secs',
@@ -86,14 +99,25 @@ const en: Translations = {
   legal_privacy: 'Privacy Policy.',
 
   onboarding_skip: 'Skip',
+  onboarding_try_now: 'Try Now',
+  onboarding_next: 'Next',
+  onboarding_next_slide_aria: 'Next slide',
+  onboarding_finish_aria: 'Finish and open app',
   onboarding_slides: [
-    { title: 'Try new looks for your photos', subtitle: 'Do it in seconds with AI.', cta: 'Try Now' },
+    { title: 'Try new looks for your photos', subtitle: 'Do it in seconds with AI.' },
     {
       title: 'Watch your photos as a slideshow',
       subtitle: 'They come together so you can watch and share anytime.',
-      cta: 'Try Now',
     },
-    { title: 'Make photos for any moment', subtitle: 'For birthdays, festivals, and more in seconds.', cta: 'Try Now' },
+    /** Onboarding card art: Figma `683:15397` (jersey + “Your Name” mock). */
+    {
+      title: 'Your name. Your kit.',
+      subtitle: 'AI turns your photos into jersey moments for every celebration—in seconds.',
+    },
+    {
+      title: 'Get more storage\nwith family',
+      subtitle: 'Invite your family and get more than 5GB storage.',
+    },
   ],
 
   gallery_perm_title: 'Access your photos',
@@ -108,6 +132,14 @@ const en: Translations = {
   notif_perm_allow: 'Enable Notifications',
   notif_perm_skip: 'Not now',
 
+  perm_intro_headline: 'Allow access to use all features in the app',
+  perm_intro_gallery_title: 'Photos and videos access',
+  perm_intro_gallery_body: 'Save all your photos and videos and edit them easily.',
+  perm_intro_notif_title: 'Notifications',
+  perm_intro_notif_body: 'Get updates on your photos and new features.',
+  perm_intro_allow: 'Allow access',
+  perm_intro_later: 'Maybe Later',
+
   nav_home: 'Home',
   nav_photos: 'Photos',
   nav_ai_camera: 'AI Camera',
@@ -116,13 +148,14 @@ const en: Translations = {
 }
 
 const hi: Translations = {
-  language_headline: 'अपनी फ़ोटो को नया और बेहतर बनाएं',
-  language_subtitle: 'कुछ नया आज़माएं, अपनी फ़ोटो सुधारें और उन्हें आसानी से शेयर करें।',
+  language_headline: 'आपकी रोज़मर्रा की फोटो ऐप',
+  language_subtitle:
+    'AI फ़ोटो बनाएं, यादें दोबारा जिएं, और 50 GB मुफ्त स्टोरेज के साथ आसानी से शेयर करें।',
   language_choose: 'अपनी भाषा चुनें',
   language_continue: 'जारी रखें',
 
-  login_heading: 'साइन इन करें',
-  login_subtitle: 'नई फ़ोटो बनाएं या पुरानी फ़ोटो को बेहतर करें।',
+  login_heading: 'लॉग इन',
+  login_subtitle: 'JioPix में आपका स्वागत है।',
   login_cta: 'OTP पाएं',
   login_placeholder: 'मोबाइल नंबर',
   login_error: 'कृपया 10 अंकों का सही नंबर दर्ज करें',
@@ -133,7 +166,7 @@ const hi: Translations = {
   otp_heading: 'अपना मोबाइल नंबर सत्यापित करें',
   otp_sent_to: 'OTP भेजा गया',
   otp_change: 'नंबर बदलें',
-  otp_hint: 'जारी रखने के लिए सभी 4 अंक दर्ज करें',
+  otp_hint: 'जारी रखने के लिए सभी 6 अंक दर्ज करें',
   otp_verifying: 'सत्यापित हो रहा है…',
   otp_field_label: 'OTP नंबर',
   otp_resend_countdown: '{count} सेकंड में OTP फिर से माँगें',
@@ -146,14 +179,25 @@ const hi: Translations = {
   legal_privacy: 'गोपनीयता नीति से सहमत होते हैं।',
 
   onboarding_skip: 'छोड़ें',
+  onboarding_try_now: 'अभी आज़माएं',
+  onboarding_next: 'अगला',
+  onboarding_next_slide_aria: 'अगली स्लाइड',
+  onboarding_finish_aria: 'समाप्त करें और ऐप खोलें',
   onboarding_slides: [
-    { title: 'अपनी फ़ोटो पर नए लुक आज़माएं', subtitle: 'AI की मदद से सेकंडों में करें।', cta: 'अभी आज़माएं' },
+    { title: 'अपनी फ़ोटो पर नए लुक आज़माएं', subtitle: 'AI की मदद से सेकंडों में करें।' },
     {
       title: 'अपनी फ़ोटो को स्लाइडशो में देखें',
       subtitle: 'वे एक साथ आते हैं ताकि आप कभी भी देख और शेयर कर सकें।',
-      cta: 'अभी आज़माएं',
     },
-    { title: 'हर पल के लिए फ़ोटो बनाएं', subtitle: 'जन्मदिन, त्योहारों और अन्य के लिए सेकंडों में।', cta: 'अभी आज़माएं' },
+    /** Onboarding card art: Figma `683:15397` (jersey + “Your Name” mock). */
+    {
+      title: 'आपका नाम, आपकी जर्सी',
+      subtitle: 'AI आपकी फ़ोटो से हर जश्न के लिए सेकंडों में जर्सी लुक बनाता है।',
+    },
+    {
+      title: 'परिवार के साथ\nज्यादा स्टोरेज पाएं',
+      subtitle: 'अपने परिवार को आमंत्रित करें और 5GB से अधिक स्टोरेज पाएं।',
+    },
   ],
 
   gallery_perm_title: 'अपनी फ़ोटो एक्सेस करें',
@@ -167,6 +211,14 @@ const hi: Translations = {
     'AI-बेहतर फ़ोटो, यादें और अधिक के अपडेट के लिए नोटिफ़िकेशन की अनुमति दें।',
   notif_perm_allow: 'नोटिफ़िकेशन चालू करें',
   notif_perm_skip: 'अभी नहीं',
+
+  perm_intro_headline: 'ऐप की सभी सुविधाओं के लिए एक्सेस की अनुमति दें',
+  perm_intro_gallery_title: 'फ़ोटो और वीडियो एक्सेस',
+  perm_intro_gallery_body: 'अपनी सभी फ़ोटो और वीडियो सहेजें और आसानी से एडिट करें।',
+  perm_intro_notif_title: 'नोटिफ़िकेशन',
+  perm_intro_notif_body: 'अपनी फ़ोटो और नई सुविधाओं पर अपडेट पाएं।',
+  perm_intro_allow: 'एक्सेस दें',
+  perm_intro_later: 'बाद में',
 
   nav_home: 'होम',
   nav_photos: 'फ़ोटो',

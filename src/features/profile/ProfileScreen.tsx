@@ -1,6 +1,8 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Image, Pressable, ScrollView, StyleSheet, Text, View, Dimensions, useWindowDimensions } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { TopBar } from '@/components/layout/TopBar'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { Button } from '@/components/atoms/Button'
 import { resolveHomeImage } from '../../../assets/home/registry'
 import { useAuthStore } from '@/store/authStore'
@@ -13,6 +15,9 @@ const SETTINGS = ['Account', 'Notifications', 'Privacy', 'Help & Support', 'Abou
 export default function ProfileScreen() {
   const phoneNumber = useAuthStore((s) => s.phoneNumber)
   const logout = useAuthStore((s) => s.logout)
+  const insets = useSafeAreaInsets()
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
   const avatarSrc = resolveHomeImage(AVATAR_WEB)
 
   const handleLogout = () => {
@@ -25,7 +30,10 @@ export default function ProfileScreen() {
       <TopBar title="Profile" />
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: homeBottomTabScrollPaddingBottom(insets.bottom, ww) },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.profileCard}>
@@ -88,7 +96,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
     paddingTop: 24,
-    paddingBottom: 132,
     gap: 16,
   },
   profileCard: {

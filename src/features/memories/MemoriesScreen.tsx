@@ -1,27 +1,48 @@
 import { useMemo } from 'react'
 import { Dimensions, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { LinearGradient } from 'expo-linear-gradient'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TopBar } from '@/components/layout/TopBar'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { ResolvedImage } from '@/features/home/ResolvedImage'
 import { HOME_MEMORIES_SECTION } from '@/features/home/homeContent'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 
-const SECTION_PAD = 16
-const MEM_H = 160
+const MEM_DESIGN_CARD_W = 253
+const MEM_DESIGN_CONTENT_W = 328
+const MEM_DESIGN_IMG_H = 141.961
 
 export default function MemoriesScreen() {
   const { width: winW } = useWindowDimensions()
+  const insets = useSafeAreaInsets()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const sectionPad = moderateSize(16, ww)
+  const memRadius = moderateSize(10, ww)
+  const scrollPadTop = moderateSize(16, ww)
+
   const cardW = useMemo(() => {
-    const ww = winW > 0 ? winW : Dimensions.get('window').width
-    return Math.min(284, Math.max(100, ww - SECTION_PAD * 2))
+    const w = winW > 0 ? winW : Dimensions.get('window').width
+    const pad = moderateSize(16, w)
+    const inner = Math.max(1, w - pad * 2)
+    return Math.max(200, Math.round((inner * MEM_DESIGN_CARD_W) / MEM_DESIGN_CONTENT_W))
   }, [winW])
+
+  const cardImgH = Math.round((cardW * MEM_DESIGN_IMG_H) / MEM_DESIGN_CARD_W)
 
   return (
     <View style={styles.root}>
       <TopBar title="Memories" />
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          {
+            paddingHorizontal: sectionPad,
+            paddingTop: scrollPadTop,
+            paddingBottom: homeBottomTabScrollPaddingBottom(insets.bottom, ww),
+          },
+        ]}
         showsVerticalScrollIndicator={false}
       >
         {HOME_MEMORIES_SECTION.items.length === 0 ? (
@@ -39,8 +60,8 @@ export default function MemoriesScreen() {
             </View>
             <View style={styles.stack}>
               {HOME_MEMORIES_SECTION.items.map((m) => (
-                <View key={m.id} style={[styles.card, { width: cardW }]}>
-                  <View style={[styles.cardImage, { height: MEM_H }]}>
+                <View key={m.id} style={[styles.card, { width: cardW, borderRadius: memRadius }]}>
+                  <View style={[styles.cardImage, { height: cardImgH, borderRadius: memRadius }]}>
                     <ResolvedImage
                       webPath={m.image}
                       style={StyleSheet.absoluteFillObject}
@@ -48,9 +69,11 @@ export default function MemoriesScreen() {
                     />
                     <LinearGradient
                       pointerEvents="none"
-                      colors={['transparent', 'rgba(0,0,0,0.72)']}
-                      locations={[0.38, 1]}
-                      style={StyleSheet.absoluteFill}
+                      colors={[...m.overlayGradient.colors] as [string, string, ...string[]]}
+                      locations={[...m.overlayGradient.locations] as [number, number, ...number[]]}
+                      start={m.overlayGradient.start}
+                      end={m.overlayGradient.end}
+                      style={[StyleSheet.absoluteFillObject, { borderRadius: memRadius }]}
                     />
                     <View style={styles.cardText}>
                       <Text style={styles.cardTitle} numberOfLines={2}>
@@ -78,11 +101,7 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1,
   },
-  scrollContent: {
-    paddingHorizontal: SECTION_PAD,
-    paddingTop: 16,
-    paddingBottom: 132,
-  },
+  scrollContent: {},
   empty: {
     flex: 1,
     alignItems: 'center',
@@ -127,30 +146,31 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    borderRadius: 14,
     overflow: 'hidden',
     backgroundColor: colors.surface3,
   },
   cardImage: {
     width: '100%',
     position: 'relative',
+    overflow: 'hidden',
   },
   cardText: {
     position: 'absolute',
-    left: 10,
-    right: 10,
-    bottom: 10,
+    left: 12,
+    right: 12,
+    bottom: 8,
     gap: 4,
   },
   cardTitle: {
-    fontSize: 17,
+    fontSize: 20,
     fontWeight: '900',
-    lineHeight: 22,
-    color: colors.contentPrimary,
+    lineHeight: 20,
+    color: '#ffffff',
   },
   cardDate: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: colors.contentPrimary,
+    fontSize: 10,
+    lineHeight: 10,
+    fontWeight: '400',
+    color: 'rgba(255,255,255,0.92)',
   },
 })

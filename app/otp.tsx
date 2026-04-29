@@ -13,7 +13,7 @@ import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
 import { motionDuration } from '@/theme/motion'
 
-const OTP_LENGTH = 4
+const OTP_LENGTH = 6
 const RESEND_SECS = 29
 
 function usePhoneParam(): string {

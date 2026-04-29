@@ -1,10 +1,11 @@
 import { useEffect, useMemo } from 'react'
-import { Animated, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
+import { Animated, Dimensions, ScrollView, StyleSheet, View, useWindowDimensions } from 'react-native'
 import { StatusBar } from 'expo-status-bar'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 
-const SECTION_PAD = 16
 const SHIMMER = colors.surface3
 
 function ShimmerBlock({
@@ -36,13 +37,23 @@ export function HomeScreenSkeleton() {
     return () => loop.stop()
   }, [pulse])
 
-  const inner = Math.max(1, winW - SECTION_PAD * 2)
-  const greetGap = 8
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const sectionPad = moderateSize(16, ww)
+  const inner = Math.max(1, ww - sectionPad * 2)
+  const greetGap = moderateSize(8, ww)
+  const sectionGap = moderateSize(10, ww)
+  const sectionTop = moderateSize(22, ww)
+  const aiSectionTop = moderateSize(10, ww)
   const greetW = Math.max(1, (inner - greetGap * 2) / 3)
   const greetH = (greetW * 4) / 3
-  const photoGap = 4
-  const photoW = Math.max(1, (inner - photoGap * 2) / 3)
-  const memW = Math.min(284, Math.max(100, inner - 8))
+  const mosaicW = Math.max(1, ww)
+  const photoG = 1
+  const photoCell = Math.floor((mosaicW - 2 * photoG) / 3)
+  const photoHeroW = mosaicW - photoG - photoCell
+  const photoHeroH = photoCell * 2 + photoG
+  const memCardW = Math.max(200, Math.round((inner * 253) / 328))
+  const memH = Math.round((memCardW * 141.961) / 253)
+  const memW = memCardW
 
   return (
     <View
@@ -59,7 +70,6 @@ export function HomeScreenSkeleton() {
             <ShimmerBlock opacity={pulse} style={styles.headerTitle} />
           </View>
           <View style={styles.headerRight}>
-            <ShimmerBlock opacity={pulse} style={styles.headerIcon} />
             <ShimmerBlock opacity={pulse} style={styles.headerAvatar} />
           </View>
         </View>
@@ -67,33 +77,31 @@ export function HomeScreenSkeleton() {
 
       <ScrollView
         style={styles.scroll}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={{ paddingBottom: homeBottomTabScrollPaddingBottom(insets.bottom, winW > 0 ? winW : Dimensions.get('window').width) }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.storyRail}>
-          {Array.from({ length: 8 }).map((_, i) => (
-            <View key={i} style={styles.storyCell}>
-              <ShimmerBlock opacity={pulse} style={styles.storyRing} />
-              <ShimmerBlock opacity={pulse} style={styles.storyLabel} />
-            </View>
-          ))}
-        </ScrollView>
-
-        <View style={styles.iplWrap}>
+        <View
+          style={[
+            styles.section,
+            { paddingHorizontal: sectionPad, marginTop: aiSectionTop, gap: sectionGap },
+          ]}
+        >
+          <ShimmerBlock opacity={pulse} style={styles.sectionTitleIpl} />
+          <View style={styles.iplWrap}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.iplRail}>
             <View style={styles.iplCol}>
               <ShimmerBlock opacity={pulse} style={styles.iplTall} />
-              <View style={{ height: 10 }} />
+              <View style={{ height: 8 }} />
               <ShimmerBlock opacity={pulse} style={styles.iplShort} />
             </View>
-            <View style={{ width: 10 }} />
+            <View style={{ width: 8 }} />
             <View style={styles.iplCol}>
               <ShimmerBlock opacity={pulse} style={styles.iplShort} />
-              <View style={{ height: 10 }} />
+              <View style={{ height: 8 }} />
               <ShimmerBlock opacity={pulse} style={styles.iplTall} />
             </View>
-            <View style={{ width: 10 }} />
+            <View style={{ width: 8 }} />
             <View style={styles.heroCard}>
               <ShimmerBlock opacity={pulse} style={styles.heroAspect} />
               <View style={styles.logoRow}>
@@ -102,69 +110,82 @@ export function HomeScreenSkeleton() {
                 ))}
               </View>
             </View>
-            <View style={{ width: 10 }} />
+            <View style={{ width: 8 }} />
             <View style={styles.iplCol}>
               <ShimmerBlock opacity={pulse} style={styles.iplTall} />
-              <View style={{ height: 10 }} />
+              <View style={{ height: 8 }} />
               <ShimmerBlock opacity={pulse} style={styles.iplShort} />
             </View>
-            <View style={{ width: 10 }} />
+            <View style={{ width: 8 }} />
             <View style={styles.iplCol}>
               <ShimmerBlock opacity={pulse} style={styles.iplShort} />
-              <View style={{ height: 10 }} />
+              <View style={{ height: 8 }} />
               <ShimmerBlock opacity={pulse} style={styles.iplTall} />
             </View>
           </ScrollView>
-          <View style={styles.ctaCenter}>
-            <ShimmerBlock opacity={pulse} style={styles.ctaPill} />
           </View>
         </View>
 
-        <View style={styles.section}>
-          <ShimmerBlock opacity={pulse} style={styles.sectionTitle} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hRail}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <ShimmerBlock key={i} opacity={pulse} style={[styles.memCard, { width: memW }]} />
-            ))}
-          </ScrollView>
-        </View>
-
-        <View style={styles.section}>
+        <View
+          style={[styles.section, { paddingHorizontal: sectionPad, marginTop: sectionTop, gap: sectionGap }]}
+        >
           <ShimmerBlock opacity={pulse} style={styles.sectionTitleWide} />
-          <View style={styles.greetGrid}>
-            {Array.from({ length: 6 }).map((_, i) => (
+          <View style={[styles.greetGrid, { gap: greetGap }]}>
+            {Array.from({ length: 3 }).map((_, i) => (
               <ShimmerBlock
                 key={i}
                 opacity={pulse}
                 style={{
                   width: greetW,
                   height: greetH,
-                  borderRadius: 10,
+                  borderRadius: moderateSize(10, ww),
                 }}
               />
             ))}
           </View>
         </View>
 
-        <View style={styles.section}>
-          <ShimmerBlock opacity={pulse} style={styles.sectionTitleMid} />
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.hRail}>
-            {Array.from({ length: 3 }).map((_, i) => (
-              <ShimmerBlock key={i} opacity={pulse} style={styles.trendCard} />
+        <View
+          style={[styles.section, { paddingHorizontal: sectionPad, marginTop: sectionTop, gap: sectionGap }]}
+        >
+          <ShimmerBlock opacity={pulse} style={styles.sectionTitle} />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.memHRail}>
+            {Array.from({ length: 4 }).map((_, i) => (
+              <ShimmerBlock key={i} opacity={pulse} style={[styles.memCard, { width: memW, height: memH }]} />
             ))}
           </ScrollView>
         </View>
 
-        <View style={styles.section}>
-          <ShimmerBlock opacity={pulse} style={styles.sectionTitleSm} />
-          <View style={styles.photoGrid}>
-            {Array.from({ length: 9 }).map((_, i) => (
-              <ShimmerBlock key={i} opacity={pulse} style={{ width: photoW, height: photoW }} />
-            ))}
+        <View style={[styles.photoSection, { marginTop: sectionTop, gap: sectionGap }]}>
+          <View style={[styles.photoSectionHeader, { paddingHorizontal: sectionPad }]}>
+            <ShimmerBlock opacity={pulse} style={styles.sectionTitlePhotos} />
+          </View>
+          <View style={[styles.photoMosaicRoot, { width: mosaicW, gap: photoG }]}>
+            <View style={[styles.photoMosaicRow, { gap: photoG, width: mosaicW }]}>
+              <ShimmerBlock opacity={pulse} style={{ width: photoHeroW, height: photoHeroH, borderRadius: 0 }} />
+              <View style={{ width: photoCell, height: photoHeroH, gap: photoG }}>
+                <ShimmerBlock opacity={pulse} style={{ width: photoCell, height: photoCell, borderRadius: 0 }} />
+                <ShimmerBlock opacity={pulse} style={{ width: photoCell, height: photoCell, borderRadius: 0 }} />
+              </View>
+            </View>
+            <View style={[styles.photoMosaicRow, { gap: photoG, width: mosaicW }]}>
+              {Array.from({ length: 3 }).map((_, i) => (
+                <ShimmerBlock
+                  key={i}
+                  opacity={pulse}
+                  style={{ width: photoCell, height: photoCell, borderRadius: 0 }}
+                />
+              ))}
+            </View>
           </View>
         </View>
 
-        <View style={[styles.section, { gap: 18 }]}>
+        <View
+          style={[
+            styles.section,
+            { paddingHorizontal: sectionPad, marginTop: sectionTop, gap: moderateSize(18, ww) },
+          ]}
+        >
           <ShimmerBlock opacity={pulse} style={styles.storageBanner} />
           <View style={{ gap: 10 }}>
             <View style={styles.storageRow}>
@@ -201,131 +222,95 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    minHeight: 56,
+    paddingVertical: 8,
+    minHeight: 48,
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 2,
   },
   headerMark: {
     width: 32,
     height: 32,
-    borderRadius: 8,
+    borderRadius: 16,
   },
   headerTitle: {
-    width: 112,
-    height: 22,
+    width: 36,
+    height: 18,
     borderRadius: 6,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-  },
-  headerIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
   },
   headerAvatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
   },
   scroll: {
     flex: 1,
     minHeight: 0,
   },
-  scrollContent: {
-    paddingBottom: 132,
-  },
-  storyRail: {
-    paddingHorizontal: 14,
-    paddingTop: 8,
-    paddingBottom: 4,
-    gap: 14,
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
-  storyCell: {
-    width: 64,
-    alignItems: 'center',
-    gap: 8,
-    paddingBottom: 4,
-  },
-  storyRing: {
-    width: 58,
-    height: 58,
-    borderRadius: 29,
-  },
-  storyLabel: {
-    width: 44,
-    height: 10,
-    borderRadius: 4,
-  },
   iplWrap: {
-    marginTop: 8,
+    marginTop: 0,
     gap: 8,
   },
   iplRail: {
     paddingHorizontal: 16,
-    paddingVertical: 4,
+    paddingVertical: 0,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   iplCol: {
-    width: 183,
+    width: 165,
   },
   iplTall: {
-    width: 183,
-    height: 245,
-    borderRadius: 10,
+    width: 165,
+    height: 220,
+    borderRadius: 12,
   },
   iplShort: {
-    width: 183,
-    height: 101,
-    borderRadius: 10,
+    width: 165,
+    height: 92,
+    borderRadius: 12,
   },
   heroCard: {
-    width: 218,
-    borderRadius: 12,
-    backgroundColor: colors.primary200,
-    padding: 8,
+    width: 203,
+    borderRadius: 14,
+    backgroundColor: colors.primary600,
+    paddingTop: 4,
+    paddingHorizontal: 4,
+    paddingBottom: 8,
     gap: 8,
   },
   heroAspect: {
     width: '100%',
-    aspectRatio: 21 / 28,
-    borderRadius: 10,
+    height: 260,
+    borderRadius: 12,
   },
   logoRow: {
     flexDirection: 'row',
     gap: 6,
     alignItems: 'center',
+    paddingHorizontal: 4,
   },
   logoCell: {
-    width: 56,
-    height: 56,
-    borderRadius: 14,
+    width: 40,
+    height: 40,
+    borderRadius: 8,
   },
-  ctaCenter: {
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 4,
-    paddingBottom: 4,
+  section: {},
+  memHRail: {
+    flexDirection: 'row',
+    gap: 16,
+    paddingVertical: 4,
   },
-  ctaPill: {
-    width: '100%',
-    maxWidth: 234,
-    height: 48,
-    borderRadius: 999,
+  photoSection: {
+    paddingHorizontal: 0,
   },
-  section: {
-    marginTop: 22,
-    paddingHorizontal: SECTION_PAD,
-    gap: 10,
-  },
+  photoSectionHeader: {},
   sectionTitle: {
     height: 22,
     width: 140,
@@ -336,9 +321,9 @@ const styles = StyleSheet.create({
     width: 120,
     borderRadius: 6,
   },
-  sectionTitleMid: {
-    height: 22,
-    width: 200,
+  sectionTitleIpl: {
+    height: 20,
+    width: 178,
     borderRadius: 6,
   },
   sectionTitleSm: {
@@ -346,31 +331,23 @@ const styles = StyleSheet.create({
     width: 100,
     borderRadius: 6,
   },
-  hRail: {
+  sectionTitlePhotos: {
+    height: 22,
+    width: 72,
+    borderRadius: 6,
+  },
+  photoMosaicRoot: {
+    alignSelf: 'stretch',
+  },
+  photoMosaicRow: {
     flexDirection: 'row',
-    gap: 14,
-    paddingVertical: 4,
   },
   memCard: {
-    height: 160,
-    borderRadius: 14,
+    borderRadius: 10,
   },
   greetGrid: {
     flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  trendCard: {
-    width: 160,
-    height: (160 * 4) / 3,
-    borderRadius: 12,
-  },
-  photoGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 4,
-    borderRadius: 14,
-    overflow: 'hidden',
+    flexWrap: 'nowrap',
   },
   storageBanner: {
     width: '100%',

@@ -1,5 +1,7 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, Dimensions, useWindowDimensions } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TopBar } from '@/components/layout/TopBar'
+import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { colors } from '@/theme/colors'
 
 export interface TabPlaceholderScreenProps {
@@ -10,6 +12,9 @@ export interface TabPlaceholderScreenProps {
 
 /** Parity with web `AppTabPlaceholderLayout`: TopBar + centered label. */
 export function TabPlaceholderScreen({ title, caption }: TabPlaceholderScreenProps) {
+  const insets = useSafeAreaInsets()
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
   const sub =
     caption === null
       ? null
@@ -18,7 +23,7 @@ export function TabPlaceholderScreen({ title, caption }: TabPlaceholderScreenPro
   return (
     <View style={styles.root}>
       <TopBar title={title} />
-      <View style={styles.body}>
+      <View style={[styles.body, { paddingBottom: homeBottomTabScrollPaddingBottom(insets.bottom, ww) }]}>
         <Text style={styles.title}>{title}</Text>
         {sub ? <Text style={styles.caption}>{sub}</Text> : null}
       </View>
@@ -37,7 +42,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingBottom: 132,
     gap: 8,
   },
   title: {

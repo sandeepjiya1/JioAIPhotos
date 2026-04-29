@@ -71,18 +71,8 @@ const styles = StyleSheet.create({
     zIndex: 20,
   },
   footerCard: {
-    /** `surface-0` dock so language pills (`surface-3` selected) read like web — not same fill as footer. */
-    backgroundColor: colors.surface0,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: colors.onBorder,
+    backgroundColor: 'transparent',
     paddingTop: 12,
     paddingHorizontal: 24,
-    shadowColor: '#000',
-    shadowOpacity: 0.35,
-    shadowOffset: { width: 0, height: -8 },
-    shadowRadius: 32,
-    elevation: 16,
   },
 })

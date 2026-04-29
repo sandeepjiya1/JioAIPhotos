@@ -4,8 +4,6 @@ import {
   HOME_MEMORIES_SECTION,
   HOME_PHOTOS_SECTION,
   HOME_STORAGE_BANNER_IMAGE,
-  HOME_STORY_RINGS,
-  HOME_TRENDING_SECTION,
 } from '@/features/home/homeContent'
 import { getHomeIplImageWebPaths } from '@/features/home/HomeIplRail'
 
@@ -29,10 +27,8 @@ export function getHomeScreenImageWebPaths(): string[] {
 
   add(HOME_HEADER.avatarSrc)
   add(HOME_STORAGE_BANNER_IMAGE)
-  for (const r of HOME_STORY_RINGS) add(r.image)
   for (const m of HOME_MEMORIES_SECTION.items) add(m.image)
   for (const g of HOME_GREETINGS_SECTION.items) add(g.image)
-  for (const t of HOME_TRENDING_SECTION.items) add(t.image)
   for (const ph of HOME_PHOTOS_SECTION.items) add(ph.src)
   for (const p of getHomeIplImageWebPaths()) add(p)
 

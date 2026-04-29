@@ -8,7 +8,12 @@ export function AuthHydrationGate({ children }: { children: ReactNode }) {
   const [ready, setReady] = useState(() => useAuthStore.persist.hasHydrated())
 
   useEffect(() => {
-    if (useAuthStore.persist.hasHydrated()) return undefined
+    if (useAuthStore.persist.hasHydrated()) {
+      // Defer so we don’t sync setState in the effect body (react-hooks/set-state-in-effect), and
+      // so we still flip `ready` if hydration completed after the first render but before subscribe.
+      queueMicrotask(() => setReady(true))
+      return undefined
+    }
     return useAuthStore.persist.onFinishHydration(() => setReady(true))
   }, [])
 

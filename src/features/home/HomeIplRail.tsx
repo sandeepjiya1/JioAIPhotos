@@ -1,12 +1,34 @@
-import { useEffect, useRef } from 'react'
-import { Dimensions, Pressable, ScrollView, StyleSheet, View } from 'react-native'
-import { router } from 'expo-router'
+import { useEffect, useMemo, useRef } from 'react'
+import {
+  Dimensions,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  type ImageResizeMode,
+  type ViewStyle,
+} from 'react-native'
 import { ResolvedImage } from '@/features/home/ResolvedImage'
-import { Button } from '@/components/atoms/Button'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 
-const IPL_FIGMA_Q = '?v=20260415e'
-const IPL_HOME_HERO_Q = '?v=20260416b'
+const IPL_FIGMA_Q = '?v=20260428b'
+const IPL_HOME_HERO_Q = '?v=20260428b'
+
+/** Inner well fills (Figma `1210:42452` slots, mapped to `LABELS` order). */
+const LOGO_WELL_BG: readonly string[] = [
+  '#15294a',
+  '#1f4481',
+  '#1f4481',
+  '#1f4481',
+  '#1f4481',
+  '#15294a',
+  '#15294a',
+  '#15294a',
+  '#15294a',
+]
 
 const HERO_IMAGES = [
   `/assets/figma/ipl-home-hero-mi.png${IPL_HOME_HERO_Q}`,
@@ -31,17 +53,33 @@ const MOSAIC = [
   `/assets/figma/6650638bb8a01c1d6d44c8c5fb71ffb1b3512b57.png${IPL_FIGMA_Q}`,
 ] as const
 
+const IPL_LOGO_Q = '?v=20260429a'
+
+/** Figma `1210:42452` — asset order matches IPLTeam_Logos left → right. */
 const LOGOS = [
-  `/assets/figma/277f1a1038cf4600b17f6723a28c11133b9c42a5.png`,
-  `/assets/figma/ce031bae6f109c931e6e8c54c91c1b80d7cddd30.jpg`,
-  `/assets/figma/fd2f7ce9ab67910301d015e53f3cd620d0051927.jpg`,
-  `/assets/figma/9d6d5c6ff44924f668f3e336b96bd4380d7c1ec2.jpg`,
-  `/assets/figma/705537c0d3b7be60ebf845f2184b6902e544f36e.jpg`,
-  `/assets/figma/80a7afb26cde0512ec08a60d2a1b2765396fabb4.jpg`,
-  `/assets/figma/74416f5acde65a0356ae4afadffc010a242e4de2.jpg`,
-  `/assets/figma/c29d63c27e7df36494d7f3aff59b372f9c9f583a.jpg`,
-  `/assets/figma/5e18319f2a491e8950e8e7903851e0c43db912ab.jpg`,
+  `/assets/figma/b5113e3f9422b300d03f13aabd8c0a6572c0b364.png${IPL_LOGO_Q}`,
+  `/assets/figma/1e7cb9012d0708c1ccd07731574b21d00fb1ee19.png${IPL_LOGO_Q}`,
+  `/assets/figma/acb3e71bd1be383fefd23410eb8f2ba237cb579c.png${IPL_LOGO_Q}`,
+  `/assets/figma/27136e6426a8ef6f3c38e8c26d26a00d0bd12cec.png${IPL_LOGO_Q}`,
+  `/assets/figma/503b283584ff8b02c79a4b22a2ecd18e74e7a141.png${IPL_LOGO_Q}`,
+  `/assets/figma/80a7afb26cde0512ec08a60d2a1b2765396fabb4.png${IPL_LOGO_Q}`,
+  `/assets/figma/74416f5acde65a0356ae4afadffc010a242e4de2.png${IPL_LOGO_Q}`,
+  `/assets/figma/c29d63c27e7df36494d7f3aff59b372f9c9f583a.png${IPL_LOGO_Q}`,
+  `/assets/figma/5e18319f2a491e8950e8e7903851e0c43db912ab.png${IPL_LOGO_Q}`,
 ] as const
+
+/** Per-slot `resizeMode` from Figma (cover vs contain). */
+const LOGO_RESIZE: readonly ImageResizeMode[] = [
+  'cover',
+  'cover',
+  'contain',
+  'contain',
+  'contain',
+  'cover',
+  'cover',
+  'cover',
+  'cover',
+]
 
 /** All IPL rail images (heroes, mosaic, logos) for prefetch — keep in sync with arrays above. */
 export function getHomeIplImageWebPaths(): readonly string[] {
@@ -76,59 +114,82 @@ const MOSAIC_PAIRS: readonly [readonly [number, number], readonly [number, numbe
   [6, 7],
 ]
 
-/** Figma / web `IplHomeThemeRail` — `h-[245px] w-[183px]` tall, `h-[101px] w-[181px]` short, `gap-2.5`. */
-const COL_GAP = 10
-const MOSAIC_W = 183
-const TALL_H = 245
-const SHORT_H = 101
-const HERO_W = 218
-const HERO_PAD = 8
-const HERO_INNER_W = HERO_W - HERO_PAD * 2
-const HERO_IMG_H = Math.round((HERO_INNER_W * 28) / 21)
-const LOGO_CELL = 56
-const LOGO_INSET = 6
+function useIplRailLayout() {
+  const { width: winW } = useWindowDimensions()
+  return useMemo(() => {
+    const w = winW > 0 ? winW : Dimensions.get('window').width
+    const ms = (n: number) => moderateSize(n, w)
+    return {
+      colGap: ms(8),
+      mosaicW: ms(165),
+      tallH: ms(220),
+      shortH: ms(92),
+      heroCardW: ms(203),
+      heroPadTop: ms(4),
+      heroPadH: ms(4),
+      heroPadBottom: ms(8),
+      heroImgH: ms(260),
+      railPadH: ms(16),
+      wrapGap: ms(8),
+      heroCardRadius: ms(14),
+      heroInnerRadius: ms(12),
+      tileRadius: ms(12),
+      logoRowGap: ms(6),
+      logoPadH: ms(4),
+      logoCell: ms(40),
+      logoRadius: ms(8),
+      screenW: w,
+    }
+  }, [winW])
+}
 
 interface HomeIplRailProps {
   selectedIndex: number
   onSelectTeam: (i: number) => void
 }
 
+type IplL = ReturnType<typeof useIplRailLayout>
+
 function MosaicColumn({
+  layout,
   topTall,
   pair,
 }: {
+  layout: IplL
   topTall: boolean
   pair: readonly [number, number]
 }) {
+  const { mosaicW, colGap, tallH, shortH, tileRadius } = layout
   const [a, b] = pair
   const srcA = MOSAIC[a] ?? MOSAIC[0]
   const srcB = MOSAIC[b] ?? MOSAIC[0]
+  const tileStyle = [styles.tile, { width: mosaicW, borderRadius: tileRadius }]
   const first = topTall ? (
     <>
-      <ResolvedImage webPath={srcA} style={[styles.tile, { height: TALL_H }]} resizeMode="cover" />
-      <View style={{ height: COL_GAP }} />
-      <ResolvedImage webPath={srcB} style={[styles.tile, { height: SHORT_H }]} resizeMode="cover" />
+      <ResolvedImage webPath={srcA} style={[tileStyle, { height: tallH }]} resizeMode="cover" />
+      <View style={{ height: colGap }} />
+      <ResolvedImage webPath={srcB} style={[tileStyle, { height: shortH }]} resizeMode="cover" />
     </>
   ) : (
     <>
-      <ResolvedImage webPath={srcA} style={[styles.tile, { height: SHORT_H }]} resizeMode="cover" />
-      <View style={{ height: COL_GAP }} />
-      <ResolvedImage webPath={srcB} style={[styles.tile, { height: TALL_H }]} resizeMode="cover" />
+      <ResolvedImage webPath={srcA} style={[tileStyle, { height: shortH }]} resizeMode="cover" />
+      <View style={{ height: colGap }} />
+      <ResolvedImage webPath={srcB} style={[tileStyle, { height: tallH }]} resizeMode="cover" />
     </>
   )
-  return <View style={styles.mosaicCol}>{first}</View>
+  return <View style={[styles.mosaicCol, { width: mosaicW }]}>{first}</View>
 }
 
 export function HomeIplRail({ selectedIndex, onSelectTeam }: HomeIplRailProps) {
   const scrollRef = useRef<ScrollView>(null)
-  const screenW = Dimensions.get('window').width
+  const L = useIplRailLayout()
 
   const heroPath = HERO_IMAGES[selectedIndex] ?? HERO_IMAGES[0]
 
-  const paddingOuter = 16
-  const colBlock = MOSAIC_W + COL_GAP
+  const colBlock = L.mosaicW + L.colGap
+  const paddingOuter = L.railPadH
   const leftToHero = paddingOuter + colBlock * 2
-  const targetX = Math.max(0, leftToHero + HERO_W / 2 - screenW / 2)
+  const targetX = Math.max(0, leftToHero + L.heroCardW / 2 - L.screenW / 2)
 
   useEffect(() => {
     const id = requestAnimationFrame(() => {
@@ -138,27 +199,52 @@ export function HomeIplRail({ selectedIndex, onSelectTeam }: HomeIplRailProps) {
   }, [selectedIndex, targetX])
 
   return (
-    <View style={styles.wrap}>
+    <View style={[styles.wrap, { gap: L.wrapGap }]}>
       <ScrollView
         ref={scrollRef}
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.railInner}
+        contentContainerStyle={[styles.railInner, { paddingHorizontal: L.railPadH }]}
         accessibilityRole="scrollbar"
-        accessibilityLabel="IPL themes carousel"
+        accessibilityLabel="AI Avatars carousel"
       >
-        <MosaicColumn topTall pair={MOSAIC_PAIRS[0]} />
-        <View style={{ width: COL_GAP }} />
-        <MosaicColumn topTall={false} pair={MOSAIC_PAIRS[1]} />
-        <View style={{ width: COL_GAP }} />
+        <MosaicColumn layout={L} topTall pair={MOSAIC_PAIRS[0]} />
+        <View style={{ width: L.colGap }} />
+        <MosaicColumn layout={L} topTall={false} pair={MOSAIC_PAIRS[1]} />
+        <View style={{ width: L.colGap }} />
 
-        <View style={styles.heroCard}>
-          <View style={styles.heroImgShell}>
+        <View
+          style={[
+            styles.heroCard,
+            {
+              width: L.heroCardW,
+              borderRadius: L.heroCardRadius,
+              paddingTop: L.heroPadTop,
+              paddingHorizontal: L.heroPadH,
+              paddingBottom: L.heroPadBottom,
+              gap: L.wrapGap,
+            },
+          ]}
+        >
+          <View
+            style={[
+              styles.heroImgShell,
+              {
+                height: L.heroImgH,
+                borderRadius: L.heroInnerRadius,
+              },
+            ]}
+          >
             <ResolvedImage webPath={heroPath} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.logoRow}>
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={[styles.logoRow, { gap: L.logoRowGap, paddingHorizontal: L.logoPadH }]}
+          >
             {LOGOS.map((src, i) => {
               const selected = i === selectedIndex
+              const wellBg = LOGO_WELL_BG[i] ?? '#15294a'
               return (
                 <Pressable
                   key={`${src}-${i}`}
@@ -166,10 +252,22 @@ export function HomeIplRail({ selectedIndex, onSelectTeam }: HomeIplRailProps) {
                   accessibilityLabel={`Show ${LABELS[i] ?? `Team ${i + 1}`}`}
                   accessibilityState={{ selected }}
                   onPress={() => onSelectTeam(i)}
-                  style={[styles.logoCell, selected && styles.logoCellSelected]}
+                  style={({ pressed }) => [
+                    styles.logoCell,
+                    {
+                      width: L.logoCell,
+                      height: L.logoCell,
+                      borderRadius: L.logoRadius,
+                    },
+                    pressed && styles.logoCellPressed,
+                  ]}
                 >
-                  <View style={styles.logoInset}>
-                    <ResolvedImage webPath={src} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
+                  <View style={[styles.logoWell, { backgroundColor: wellBg, borderRadius: L.logoRadius }]}>
+                    <ResolvedImage
+                      webPath={src}
+                      style={StyleSheet.absoluteFillObject}
+                      resizeMode={LOGO_RESIZE[i] ?? 'cover'}
+                    />
                   </View>
                 </Pressable>
               )
@@ -177,94 +275,68 @@ export function HomeIplRail({ selectedIndex, onSelectTeam }: HomeIplRailProps) {
           </ScrollView>
         </View>
 
-        <View style={{ width: COL_GAP }} />
-        <MosaicColumn topTall pair={MOSAIC_PAIRS[2]} />
-        <View style={{ width: COL_GAP }} />
-        <MosaicColumn topTall={false} pair={MOSAIC_PAIRS[3]} />
+        <View style={{ width: L.colGap }} />
+        <MosaicColumn layout={L} topTall pair={MOSAIC_PAIRS[2]} />
+        <View style={{ width: L.colGap }} />
+        <MosaicColumn layout={L} topTall={false} pair={MOSAIC_PAIRS[3]} />
       </ScrollView>
-
-      <View style={styles.ctaWrap}>
-        <View style={styles.ctaMax}>
-          <Button variant="secondary" size="pill" fullWidth onPress={() => router.push('/home/create')}>
-            Try with your photos
-          </Button>
-        </View>
-      </View>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
   wrap: {
-    marginTop: 8,
-    gap: 8,
+    marginTop: 0,
   },
   railInner: {
-    paddingHorizontal: 16,
-    paddingVertical: 4,
+    paddingVertical: 0,
     flexDirection: 'row',
-    alignItems: 'flex-end',
+    alignItems: 'center',
   },
   mosaicCol: {
-    width: MOSAIC_W,
     flexDirection: 'column',
   },
   tile: {
-    width: MOSAIC_W,
-    borderRadius: 10,
     overflow: 'hidden',
   },
   heroCard: {
-    width: HERO_W,
-    borderRadius: 12,
-    backgroundColor: colors.primary200,
-    padding: HERO_PAD,
-    gap: 8,
+    backgroundColor: colors.primary600,
+    overflow: 'hidden',
   },
   heroImgShell: {
     width: '100%',
-    height: HERO_IMG_H,
-    borderRadius: 10,
     overflow: 'hidden',
     backgroundColor: colors.surface3,
     position: 'relative',
   },
   logoRow: {
     flexDirection: 'row',
-    gap: 6,
     alignItems: 'center',
-    paddingRight: 4,
   },
   logoCell: {
-    width: LOGO_CELL,
-    height: LOGO_CELL,
-    borderRadius: 14,
     overflow: 'hidden',
-    backgroundColor: colors.surface3,
-    borderWidth: 1,
-    borderColor: 'transparent',
+    position: 'relative',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    ...Platform.select({
+      web: {
+        outlineWidth: 0,
+        boxShadow: 'none',
+        WebkitTapHighlightColor: 'transparent',
+      } as ViewStyle,
+      default: {},
+    }),
   },
-  logoCellSelected: {
-    borderWidth: 2,
-    borderColor: 'rgba(77,168,223,0.45)',
+  logoCellPressed: {
+    opacity: 0.88,
   },
-  logoInset: {
+  logoWell: {
     position: 'absolute',
-    top: LOGO_INSET,
-    left: LOGO_INSET,
-    right: LOGO_INSET,
-    bottom: LOGO_INSET,
-    borderRadius: 10,
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
     overflow: 'hidden',
-  },
-  ctaWrap: {
-    paddingHorizontal: 16,
-    alignItems: 'center',
-    paddingBottom: 4,
-    paddingTop: 4,
-  },
-  ctaMax: {
-    width: '100%',
-    maxWidth: 234,
+    borderWidth: 0,
   },
 })
