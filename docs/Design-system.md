@@ -216,6 +216,7 @@ Rich screens compose atoms/molecules with feature modules, e.g.:
 | Onboarding | `/onboarding` | [`app/onboarding.tsx`](../app/onboarding.tsx) |
 | Permission intro | `/permission` | [`PreAppPermissionScreen`](../src/features/permissions/PreAppPermissionScreen.tsx) |
 | Home hub | `/home/*` | [`HomeScreen`](../src/features/home/HomeScreen.tsx), tabs, placeholders |
+| Greeting detail | `/home/greeting/[id]` | [`GreetingDetailScreen`](../src/features/greetings/GreetingDetailScreen.tsx) — Figma `839:10412` |
 
 Deep links under `/permission/gallery` and `/permission/notifications` redirect home.
 
@@ -241,6 +242,7 @@ When you add or rename **tokens**, **motion** constants, or **shared components*
 |-------------|----------------|
 | Language hero `683:15305` | `app/language.tsx`, `palettes` language hero tokens |
 | Permission icons `683:15443`, `683:15463`, `683:15470` | `src/features/permissions/*Svg.ts` |
+| Greetings detail `839:10412` (Jio AI Cloud — Temp) | `src/features/greetings/GreetingDetailScreen.tsx`, `greetingDetailContent.ts` |
 
 ---
 

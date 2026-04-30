@@ -419,8 +419,11 @@ export default function HomeScreen() {
           />
           <View style={[styles.greetGrid, { gap: lx.greetGridGap }]}>
             {HOME_GREETINGS_SECTION.items.map((item) => (
-              <View
+              <Pressable
                 key={item.id}
+                accessibilityRole="button"
+                accessibilityLabel={`${item.label}, open greeting`}
+                onPress={() => router.push(`/home/greeting/${item.id}`)}
                 style={[
                   styles.greetCell,
                   {
@@ -456,7 +459,7 @@ export default function HomeScreen() {
                 >
                   {item.label}
                 </Text>
-              </View>
+              </Pressable>
             ))}
           </View>
           {HOME_SHOW_SECTION_SUBTITLES && HOME_GREETINGS_SECTION.subtitle ? (

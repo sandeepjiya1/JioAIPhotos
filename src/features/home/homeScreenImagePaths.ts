@@ -1,3 +1,4 @@
+import { getGreetingDetailImageWebPaths } from '@/features/greetings/greetingDetailContent'
 import {
   HOME_GREETINGS_SECTION,
   HOME_HEADER,
@@ -31,6 +32,7 @@ export function getHomeScreenImageWebPaths(): string[] {
   for (const g of HOME_GREETINGS_SECTION.items) add(g.image)
   for (const ph of HOME_PHOTOS_SECTION.items) add(ph.src)
   for (const p of getHomeIplImageWebPaths()) add(p)
+  for (const p of getGreetingDetailImageWebPaths()) add(p)
 
   return out
 }
