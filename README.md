@@ -2,6 +2,8 @@
 
 This repository is an **Expo SDK 54** app using **Expo Router** (file-based routes under `app/`).
 
+Design tokens, motion, shared components, and UI conventions are documented in **[docs/Design-system.md](./docs/Design-system.md)**.
+
 ## Prerequisites
 
 - Node.js 20+

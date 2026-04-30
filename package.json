@@ -18,7 +18,8 @@
     "figma:onboarding-slide-4": "node scripts/fetch-figma-onboarding-slide-4.mjs",
     "figma:onboarding-slides-1-3": "node scripts/fetch-figma-onboarding-slides-1-3.mjs",
     "onboarding:slide-4:figma-art": "bash scripts/capture-onboarding-slide-4-art.sh",
-    "onboarding:slides-1-3:figma-art": "bash scripts/capture-onboarding-slides-1-3-art.sh"
+    "onboarding:slides-1-3:figma-art": "bash scripts/capture-onboarding-slides-1-3-art.sh",
+    "onboarding:knockout-bg": "node scripts/knockout-onboarding-slide-backgrounds.mjs"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "2.2.0",
@@ -53,6 +54,7 @@
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "globals": "^17.4.0",
+    "sharp": "^0.33.5",
     "typescript": "~5.9.2",
     "typescript-eslint": "^8.58.0"
   },

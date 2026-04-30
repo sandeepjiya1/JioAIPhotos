@@ -6,8 +6,8 @@ import { Platform, StyleSheet } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { AuthHydrationGate } from '@/components/system/AuthHydrationGate'
-import { colors } from '@/theme/colors'
 import { stackTransitionMs } from '@/theme/motion'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 /**
  * Per-route overrides: add `<Stack.Screen name="routeName" options={{ ... }} />` children
@@ -24,9 +24,14 @@ const queryClient = new QueryClient({
   },
 })
 
-export default function RootLayout() {
+/**
+ * With `userInterfaceStyle: "dark"`, paint `colors.surface0` on the root and stack so
+ * the app canvas matches the design system (`#0C0D10` in dark mode), not an arbitrary OS default.
+ */
+function RootLayoutBody() {
+  const colors = useThemeColors()
   return (
-    <GestureHandlerRootView style={styles.root}>
+    <GestureHandlerRootView style={[styles.root, { backgroundColor: colors.surface0 }]}>
       <SafeAreaProvider>
         <QueryClientProvider client={queryClient}>
           <AuthHydrationGate>
@@ -49,6 +54,10 @@ export default function RootLayout() {
       </SafeAreaProvider>
     </GestureHandlerRootView>
   )
+}
+
+export default function RootLayout() {
+  return <RootLayoutBody />
 }
 
 const styles = StyleSheet.create({

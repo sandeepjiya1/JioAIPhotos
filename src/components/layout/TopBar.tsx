@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react'
-import { StyleSheet, Text, View, useWindowDimensions, Dimensions } from 'react-native'
+import { useMemo } from 'react'
+import { Dimensions, StyleSheet, Text, View, useWindowDimensions } from 'react-native'
 import { BlurView } from 'expo-blur'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { colors } from '@/theme/colors'
+import { useThemeStore } from '@/store/themeStore'
 import { moderateSize } from '@/theme/layoutScale'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 export interface TopBarProps {
   title?: string
@@ -12,10 +14,11 @@ export interface TopBarProps {
   transparent?: boolean
 }
 
-const GLASS_TINT = 'rgba(13,42,61,0.52)'
 const BLUR_INTENSITY = 72
 
 export function TopBar({ title, left, right, transparent }: TopBarProps) {
+  const colors = useThemeColors()
+  const appearance = useThemeStore((s) => s.appearance)
   const insets = useSafeAreaInsets()
   const { width: winW } = useWindowDimensions()
   const ww = winW > 0 ? winW : Dimensions.get('window').width
@@ -27,6 +30,14 @@ export function TopBar({ title, left, right, transparent }: TopBarProps) {
 
   const rowStyle = [styles.row, { minHeight: barH, paddingHorizontal: padH }]
 
+  const chromeOuter = useMemo(
+    () => ({
+      borderBottomColor: colors.hairlineOnGlass,
+      backgroundColor: colors.shellUnderlay,
+    }),
+    [colors],
+  )
+
   if (transparent) {
     return (
       <View style={[styles.outer, { paddingTop: insets.top }, styles.transparent]}>
@@ -35,7 +46,10 @@ export function TopBar({ title, left, right, transparent }: TopBarProps) {
           <View style={[styles.center, { paddingHorizontal: padCenterH }]}>
             {title ? (
               <Text
-                style={[styles.title, { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.25) }]}
+                style={[
+                  styles.title,
+                  { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.25), color: colors.contentPrimary },
+                ]}
                 numberOfLines={1}
               >
                 {title}
@@ -49,15 +63,18 @@ export function TopBar({ title, left, right, transparent }: TopBarProps) {
   }
 
   return (
-    <View style={[styles.outer, { paddingTop: insets.top }, styles.glassOuter]}>
-      <BlurView intensity={BLUR_INTENSITY} tint="dark" style={StyleSheet.absoluteFill} />
-      <View style={styles.tint} pointerEvents="none" />
+    <View style={[styles.outer, { paddingTop: insets.top }, chromeOuter]}>
+      <BlurView intensity={BLUR_INTENSITY} tint={appearance === 'light' ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
+      <View style={[styles.tint, { backgroundColor: colors.glassTint }]} pointerEvents="none" />
       <View style={rowStyle}>
         <View style={[styles.side, { minWidth: sideMinW }]}>{left}</View>
         <View style={[styles.center, { paddingHorizontal: padCenterH }]}>
           {title ? (
             <Text
-              style={[styles.title, { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.25) }]}
+              style={[
+                styles.title,
+                { fontSize: titleSize, lineHeight: Math.round(titleSize * 1.25), color: colors.contentPrimary },
+              ]}
               numberOfLines={1}
             >
               {title}
@@ -75,14 +92,9 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.12)',
-  },
-  glassOuter: {
-    backgroundColor: 'rgba(0,29,46,0.35)',
   },
   tint: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: GLASS_TINT,
   },
   transparent: {
     backgroundColor: 'transparent',
@@ -107,7 +119,6 @@ const styles = StyleSheet.create({
   },
   title: {
     fontWeight: '600',
-    color: colors.contentPrimary,
     textAlign: 'center',
     maxWidth: '100%',
   },

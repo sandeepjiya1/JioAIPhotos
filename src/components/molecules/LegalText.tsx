@@ -1,9 +1,28 @@
+import { useMemo } from 'react'
 import { StyleSheet, Text } from 'react-native'
-import { colors } from '@/theme/colors'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 export function LegalText() {
   const t = useTranslation()
+  const colors = useThemeColors()
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        base: {
+          fontSize: 14,
+          fontWeight: '500',
+          lineHeight: 20,
+          color: colors.contentSecondary,
+        },
+        bold: {
+          fontWeight: '700',
+          color: colors.contentPrimary,
+        },
+      }),
+    [colors],
+  )
+
   return (
     <Text style={styles.base}>
       {t.legal_text}
@@ -13,16 +32,3 @@ export function LegalText() {
     </Text>
   )
 }
-
-const styles = StyleSheet.create({
-  base: {
-    fontSize: 14,
-    fontWeight: '500',
-    lineHeight: 20,
-    color: colors.contentSecondary,
-  },
-  bold: {
-    fontWeight: '700',
-    color: colors.contentPrimary,
-  },
-})

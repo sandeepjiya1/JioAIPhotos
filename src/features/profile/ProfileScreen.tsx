@@ -1,18 +1,166 @@
-import { Image, Pressable, ScrollView, StyleSheet, Text, View, Dimensions, useWindowDimensions } from 'react-native'
+import { useMemo } from 'react'
+import {
+  Image,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  View,
+  Dimensions,
+  useWindowDimensions,
+} from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { TopBar } from '@/components/layout/TopBar'
 import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { Button } from '@/components/atoms/Button'
+import { useTranslation } from '@/hooks/useTranslation'
 import { resolveHomeImage } from '../../../assets/home/registry'
 import { useAuthStore } from '@/store/authStore'
-import { colors } from '@/theme/colors'
+import { useThemeStore } from '@/store/themeStore'
+import type { AppThemeColors } from '@/theme/palettes'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 const AVATAR_WEB = '/assets/figma/6cd0e6362a73050667423418aae84ecb14f0f736.png'
 
 const SETTINGS = ['Account', 'Notifications', 'Privacy', 'Help & Support', 'About'] as const
 
+function createProfileStyles(colors: AppThemeColors) {
+  return StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.surface0,
+      minHeight: 0,
+    },
+    scroll: {
+      flex: 1,
+      minHeight: 0,
+    },
+    scrollContent: {
+      paddingHorizontal: 16,
+      paddingTop: 24,
+      gap: 16,
+    },
+    profileCard: {
+      alignItems: 'center',
+      gap: 12,
+      paddingVertical: 24,
+      paddingHorizontal: 16,
+      borderRadius: 16,
+      backgroundColor: colors.surface2,
+    },
+    avatarRing: {
+      width: 96,
+      height: 96,
+      borderRadius: 48,
+      borderWidth: 3,
+      borderColor: colors.avatarRingBorder,
+      overflow: 'hidden',
+      backgroundColor: colors.surface3,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    avatar: {
+      width: '100%',
+      height: '100%',
+    },
+    avatarLetter: {
+      fontSize: 36,
+      fontWeight: '800',
+      color: colors.contentPrimary,
+    },
+    name: {
+      fontSize: 18,
+      fontWeight: '700',
+      color: colors.contentPrimary,
+    },
+    phone: {
+      fontSize: 14,
+      color: colors.contentSecondary,
+    },
+    storageCard: {
+      borderRadius: 16,
+      backgroundColor: colors.surface2,
+      padding: 16,
+      gap: 12,
+    },
+    storageLabels: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    storageMuted: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.contentSecondary,
+    },
+    storageNums: {
+      fontSize: 14,
+      fontWeight: '500',
+      color: colors.contentSecondary,
+      fontVariant: ['tabular-nums'],
+    },
+    storageTrack: {
+      height: 8,
+      borderRadius: 999,
+      backgroundColor: colors.storageTrackBg,
+      overflow: 'hidden',
+    },
+    storageFill: {
+      height: '100%',
+      borderRadius: 999,
+      backgroundColor: colors.primary600,
+    },
+    themeRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      backgroundColor: colors.surface2,
+    },
+    themeRowLabel: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.contentPrimary,
+      flex: 1,
+      paddingRight: 12,
+    },
+    list: {
+      gap: 4,
+    },
+    row: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 14,
+      paddingHorizontal: 16,
+      borderRadius: 12,
+      backgroundColor: colors.surface2,
+    },
+    rowPressed: {
+      backgroundColor: colors.surface3,
+    },
+    rowLabel: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.contentPrimary,
+    },
+    chev: {
+      fontSize: 18,
+      color: colors.contentTertiary,
+    },
+  })
+}
+
 export default function ProfileScreen() {
+  const t = useTranslation()
+  const colors = useThemeColors()
+  const styles = useMemo(() => createProfileStyles(colors), [colors])
+  const appearance = useThemeStore((s) => s.appearance)
+  const setLightModeEnabled = useThemeStore((s) => s.setLightModeEnabled)
   const phoneNumber = useAuthStore((s) => s.phoneNumber)
   const logout = useAuthStore((s) => s.logout)
   const insets = useSafeAreaInsets()
@@ -61,6 +209,18 @@ export default function ProfileScreen() {
           </Button>
         </View>
 
+        <View style={styles.themeRow}>
+          <Text style={styles.themeRowLabel}>{t.profile_light_mode}</Text>
+          <Switch
+            value={appearance === 'light'}
+            onValueChange={setLightModeEnabled}
+            trackColor={{ false: colors.surface3, true: colors.primary200 }}
+            thumbColor={appearance === 'light' ? colors.primary600 : colors.contentTertiary}
+            ios_backgroundColor={colors.surface3}
+            accessibilityLabel={t.profile_light_mode}
+          />
+        </View>
+
         <View style={styles.list}>
           {SETTINGS.map((item) => (
             <Pressable
@@ -82,114 +242,3 @@ export default function ProfileScreen() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.surface0,
-    minHeight: 0,
-  },
-  scroll: {
-    flex: 1,
-    minHeight: 0,
-  },
-  scrollContent: {
-    paddingHorizontal: 16,
-    paddingTop: 24,
-    gap: 16,
-  },
-  profileCard: {
-    alignItems: 'center',
-    gap: 12,
-    paddingVertical: 24,
-    paddingHorizontal: 16,
-    borderRadius: 16,
-    backgroundColor: colors.surface2,
-  },
-  avatarRing: {
-    width: 96,
-    height: 96,
-    borderRadius: 48,
-    borderWidth: 3,
-    borderColor: 'rgba(39,139,193,0.45)',
-    overflow: 'hidden',
-    backgroundColor: colors.surface3,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  avatar: {
-    width: '100%',
-    height: '100%',
-  },
-  avatarLetter: {
-    fontSize: 36,
-    fontWeight: '800',
-    color: colors.contentPrimary,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: colors.contentPrimary,
-  },
-  phone: {
-    fontSize: 14,
-    color: colors.contentSecondary,
-  },
-  storageCard: {
-    borderRadius: 16,
-    backgroundColor: colors.surface2,
-    padding: 16,
-    gap: 12,
-  },
-  storageLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-  storageMuted: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.contentSecondary,
-  },
-  storageNums: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.contentSecondary,
-    fontVariant: ['tabular-nums'],
-  },
-  storageTrack: {
-    height: 8,
-    borderRadius: 999,
-    backgroundColor: 'rgba(255,255,255,0.12)',
-    overflow: 'hidden',
-  },
-  storageFill: {
-    height: '100%',
-    borderRadius: 999,
-    backgroundColor: colors.primary600,
-  },
-  list: {
-    gap: 4,
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    borderRadius: 12,
-    backgroundColor: colors.surface2,
-  },
-  rowPressed: {
-    backgroundColor: colors.surface3,
-  },
-  rowLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.contentPrimary,
-  },
-  chev: {
-    fontSize: 18,
-    color: colors.contentTertiary,
-  },
-})

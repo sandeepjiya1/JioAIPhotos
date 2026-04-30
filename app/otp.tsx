@@ -8,6 +8,7 @@ import { PressableScale } from '@/components/motion/PressableScale'
 import { JioLogo } from '@/components/molecules/JioLogo'
 import { LegalText } from '@/components/molecules/LegalText'
 import { OTPInput } from '@/components/molecules/OTPInput'
+import { replaceToOnboarding } from '@/lib/authNavigation'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
@@ -51,7 +52,7 @@ export default function OTPScreen() {
       setLoading(true)
       await new Promise((r) => setTimeout(r, 800))
       setAuthenticated(true)
-      router.replace('/onboarding')
+      replaceToOnboarding()
     }
     void verify()
   }, [otp, loading, setAuthenticated])

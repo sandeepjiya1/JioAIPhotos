@@ -1,7 +1,7 @@
 import type { ImageResizeMode, ImageStyle, StyleProp } from 'react-native'
 import { Image, StyleSheet, View } from 'react-native'
 import { resolveHomeImage } from '../../../assets/home/registry'
-import { colors } from '@/theme/colors'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 /**
  * Bundled static image from `assets/home/registry.ts`.
@@ -17,9 +17,10 @@ export function ResolvedImage({
   style?: StyleProp<ImageStyle>
   resizeMode?: ImageResizeMode
 }) {
+  const colors = useThemeColors()
   const src = resolveHomeImage(webPath)
   if (!src) {
-    return <View style={[styles.fallback, style]} />
+    return <View style={[styles.fallback, { backgroundColor: colors.surface3 }, style]} />
   }
   return (
     <View style={[styles.box, style]} collapsable={false}>
@@ -41,7 +42,5 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  fallback: {
-    backgroundColor: colors.surface3,
-  },
+  fallback: {},
 })

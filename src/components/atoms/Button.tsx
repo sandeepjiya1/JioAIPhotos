@@ -1,8 +1,10 @@
 import type { ReactNode } from 'react'
+import { useMemo } from 'react'
 import { ActivityIndicator, StyleSheet, Text, type ViewStyle } from 'react-native'
 import { PressableScale } from '@/components/motion/PressableScale'
 import { useLayoutScale } from '@/hooks/useLayoutScale'
-import { colors } from '@/theme/colors'
+import type { AppThemeColors } from '@/theme/palettes'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 export type ButtonVariant = 'primary' | 'secondary' | 'outline' | 'danger'
 export type ButtonSize = 'pill' | 'md' | 'sm'
@@ -18,31 +20,33 @@ export interface ButtonProps {
   accessibilityLabel?: string
 }
 
-const variantStyles: Record<ButtonVariant, { base: ViewStyle; pressed: ViewStyle; text: string }> = {
-  primary: {
-    base: { backgroundColor: colors.primary600 },
-    pressed: { backgroundColor: colors.primary700 },
-    text: colors.contentPrimary,
-  },
-  secondary: {
-    base: { backgroundColor: colors.surface3 },
-    pressed: { backgroundColor: colors.surface4 },
-    text: colors.contentPrimary,
-  },
-  outline: {
-    base: {
-      backgroundColor: 'transparent',
-      borderWidth: 1,
-      borderColor: colors.onBorder,
+function variantStyles(colors: AppThemeColors): Record<ButtonVariant, { base: ViewStyle; pressed: ViewStyle; text: string }> {
+  return {
+    primary: {
+      base: { backgroundColor: colors.primary600 },
+      pressed: { backgroundColor: colors.primary700 },
+      text: colors.contentPrimary,
     },
-    pressed: { backgroundColor: 'rgba(255,255,255,0.06)' },
-    text: colors.contentPrimary,
-  },
-  danger: {
-    base: { backgroundColor: colors.dangerBg },
-    pressed: { backgroundColor: colors.dangerPressed },
-    text: colors.contentPrimary,
-  },
+    secondary: {
+      base: { backgroundColor: colors.buttonSecondaryBg },
+      pressed: { backgroundColor: colors.buttonSecondaryBgPressed },
+      text: colors.contentPrimary,
+    },
+    outline: {
+      base: {
+        backgroundColor: 'transparent',
+        borderWidth: 1,
+        borderColor: colors.onBorder,
+      },
+      pressed: { backgroundColor: colors.outlinePressed },
+      text: colors.contentPrimary,
+    },
+    danger: {
+      base: { backgroundColor: colors.dangerBg },
+      pressed: { backgroundColor: colors.dangerPressed },
+      text: colors.contentPrimary,
+    },
+  }
 }
 
 export function Button({
@@ -55,8 +59,9 @@ export function Button({
   onPress,
   accessibilityLabel,
 }: ButtonProps) {
+  const colors = useThemeColors()
   const { ms } = useLayoutScale()
-  const vs = variantStyles[variant]
+  const vs = useMemo(() => variantStyles(colors)[variant], [colors, variant])
   const height = size === 'pill' ? ms(48) : size === 'md' ? ms(48) : ms(36)
   const radius = size === 'pill' ? 999 : size === 'md' ? ms(12) : ms(10)
   const fontSize = size === 'sm' ? ms(14) : ms(16)

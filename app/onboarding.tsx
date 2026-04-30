@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, { FadeIn, FadeOut, runOnJS } from 'react-native-reanimated'
@@ -10,6 +10,7 @@ import { ChevronRight } from '@/components/molecules/ChevronRight'
 import { ProgressDots } from '@/components/molecules/ProgressDots'
 import { OnboardingSlideArt } from '@/components/onboarding/OnboardingSlideArt'
 import { PressableScale } from '@/components/motion/PressableScale'
+import { replaceToPermissionIntro } from '@/lib/authNavigation'
 import { useAuthStore } from '@/store/authStore'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
@@ -21,9 +22,16 @@ const SWIPE_X = 52
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
   const reducedMotion = usePrefersReducedMotion()
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const setHasSeenOnboarding = useAuthStore((s) => s.setHasSeenOnboarding)
   const t = useTranslation()
   const [current, setCurrent] = useState(0)
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.replace('/login')
+    }
+  }, [isAuthenticated])
   const slides = t.onboarding_slides
   const slide = slides[current]!
 
@@ -41,7 +49,7 @@ export default function OnboardingScreen() {
 
   const finish = useCallback(() => {
     setHasSeenOnboarding(true)
-    router.replace('/permission')
+    replaceToPermissionIntro()
   }, [setHasSeenOnboarding])
 
   const goNext = useCallback(() => {
@@ -113,31 +121,18 @@ export default function OnboardingScreen() {
           <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} />
         </Animated.View>
 
-        <View style={styles.buttonGroup} accessibilityRole="none">
-          <View style={styles.buttonGroupItem}>
-            <Button
-              variant="outline"
-              size="pill"
-              fullWidth
-              onPress={() => void finish()}
-              accessibilityLabel={t.onboarding_try_now}
-            >
-              {t.onboarding_try_now}
-            </Button>
-          </View>
-          <View style={styles.buttonGroupItem}>
-            <Button
-              variant="primary"
-              size="pill"
-              fullWidth
-              onPress={goNext}
-              accessibilityLabel={
-                current < slides.length - 1 ? t.onboarding_next_slide_aria : t.onboarding_finish_aria
-              }
-            >
-              {t.onboarding_next}
-            </Button>
-          </View>
+        <View style={styles.buttonWrap} accessibilityRole="none">
+          <Button
+            variant="primary"
+            size="pill"
+            fullWidth
+            onPress={goNext}
+            accessibilityLabel={
+              current < slides.length - 1 ? t.onboarding_next_slide_aria : t.onboarding_finish_aria
+            }
+          >
+            {t.onboarding_next}
+          </Button>
         </View>
       </View>
     </View>
@@ -206,14 +201,7 @@ const styles = StyleSheet.create({
     color: colors.contentSecondary,
     maxWidth: 360,
   },
-  buttonGroup: {
-    flexDirection: 'row',
-    alignItems: 'stretch',
-    gap: 12,
+  buttonWrap: {
     paddingTop: 8,
-  },
-  buttonGroupItem: {
-    flex: 1,
-    minWidth: 0,
   },
 })

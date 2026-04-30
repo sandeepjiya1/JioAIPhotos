@@ -33,12 +33,120 @@ import {
 } from '@/features/home/homeContent'
 import { HomeScreenSkeleton } from '@/features/home/HomeScreenSkeleton'
 import { useHomeScreenImagesReady } from '@/features/home/useHomeScreenImagesReady'
-import { colors } from '@/theme/colors'
+import type { AppThemeColors } from '@/theme/palettes'
 import { moderateSize } from '@/theme/layoutScale'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 const MEM_DESIGN_CARD_W = 253
 const MEM_DESIGN_CONTENT_W = 328
 const MEM_DESIGN_IMG_H = 141.961
+
+function createHomeStyles(colors: AppThemeColors) {
+  return StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.surface0,
+      minHeight: 0,
+    },
+    scroll: {
+      flex: 1,
+      minHeight: 0,
+    },
+    section: {},
+    aiAvatarSectionTitle: {
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    photoSection: {
+      paddingHorizontal: 0,
+    },
+    photoSectionHeader: {},
+    memoriesSectionTitle: {
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    sectionHeadRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+    },
+    sectionTitle: {
+      flex: 1,
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    photosSectionTitle: {
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    sectionAction: {
+      flexShrink: 0,
+    },
+    viewAll: {
+      fontWeight: '600',
+      color: colors.primary600,
+    },
+    sectionSub: {
+      color: colors.sectionSubtleText,
+    },
+    memHRail: {
+      flexDirection: 'row',
+    },
+    greetGrid: {
+      flexDirection: 'row',
+      flexWrap: 'nowrap',
+    },
+    greetCell: {
+      overflow: 'hidden',
+      backgroundColor: colors.surface3,
+      position: 'relative',
+    },
+    greetLabel: {
+      position: 'absolute',
+      fontWeight: '700',
+      color: colors.onPhotoHigh,
+      textAlign: 'center',
+    },
+    storageBlock: {},
+    storageBanner: {
+      width: '100%',
+      height: undefined,
+      aspectRatio: 656 / 368,
+      overflow: 'hidden',
+      backgroundColor: colors.surface2,
+    },
+    storageMeta: {},
+    storageLabels: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'baseline',
+    },
+    storageLabel: {
+      fontWeight: '500',
+      color: colors.contentSecondary,
+    },
+    storageNums: {
+      fontWeight: '500',
+      color: colors.contentSecondary,
+      fontVariant: ['tabular-nums'],
+    },
+    storageTrack: {
+      borderRadius: 999,
+      backgroundColor: colors.neutralTrack,
+      overflow: 'hidden',
+    },
+    storageFill: {
+      height: '100%',
+      borderRadius: 999,
+      backgroundColor: colors.primary600,
+    },
+    storageCaption: {
+      fontWeight: '500',
+      color: colors.contentSecondary,
+      textAlign: 'center',
+    },
+  })
+}
 
 function MemoryRailCard({
   item,
@@ -51,6 +159,7 @@ function MemoryRailCard({
   borderRadius: number
   screenWidth: number
 }) {
+  const colors = useThemeColors()
   const imgH = Math.round((width * MEM_DESIGN_IMG_H) / MEM_DESIGN_CARD_W)
   const g = item.overlayGradient
   const sw = screenWidth > 0 ? screenWidth : Dimensions.get('window').width
@@ -59,9 +168,33 @@ function MemoryRailCard({
   const og = moderateSize(4, sw)
   const titleSize = moderateSize(20, sw)
   const dateSize = moderateSize(10, sw)
+  const local = useMemo(
+    () =>
+      StyleSheet.create({
+        memCard: {
+          overflow: 'hidden',
+          backgroundColor: colors.surface3,
+        },
+        memImageWrap: {
+          width: '100%',
+          position: 'relative',
+          overflow: 'hidden',
+        },
+        memOverlayText: {
+          position: 'absolute',
+        },
+        memTitleOverlay: {
+          fontWeight: '900',
+        },
+        memDateOverlay: {
+          fontWeight: '400',
+        },
+      }),
+    [colors],
+  )
   return (
-    <View style={[styles.memCard, { width, borderRadius }]}>
-      <View style={[styles.memImageWrap, { height: imgH, borderRadius }]}>
+    <View style={[local.memCard, { width, borderRadius }]}>
+      <View style={[local.memImageWrap, { height: imgH, borderRadius }]}>
         <ResolvedImage webPath={item.image} style={StyleSheet.absoluteFillObject} resizeMode="cover" />
         <LinearGradient
           pointerEvents="none"
@@ -73,7 +206,7 @@ function MemoryRailCard({
         />
         <View
           style={[
-            styles.memOverlayText,
+            local.memOverlayText,
             {
               left: ol,
               right: ol,
@@ -83,12 +216,22 @@ function MemoryRailCard({
           ]}
         >
           <Text
-            style={[styles.memTitleOverlay, { fontSize: titleSize, lineHeight: titleSize }]}
+            style={[
+              local.memTitleOverlay,
+              { fontSize: titleSize, lineHeight: titleSize, color: colors.onPhotoHigh },
+            ]}
             numberOfLines={2}
           >
             {item.title}
           </Text>
-          <Text style={[styles.memDateOverlay, { fontSize: dateSize, lineHeight: dateSize }]}>{item.date}</Text>
+          <Text
+            style={[
+              local.memDateOverlay,
+              { fontSize: dateSize, lineHeight: dateSize, color: colors.onPhotoMedium },
+            ]}
+          >
+            {item.date}
+          </Text>
         </View>
       </View>
     </View>
@@ -106,15 +249,36 @@ function SectionHeader({
   titleStyle?: StyleProp<TextStyle>
   rowStyle?: object
 }) {
+  const colors = useThemeColors()
+  const row = useMemo(
+    () =>
+      StyleSheet.create({
+        sectionHeadRow: {
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        },
+        sectionTitle: {
+          flex: 1,
+          fontWeight: '900',
+          color: colors.contentPrimary,
+        },
+        sectionAction: { flexShrink: 0 },
+      }),
+    [colors],
+  )
+
   return (
-    <View style={[styles.sectionHeadRow, rowStyle]}>
-      <Text style={[styles.sectionTitle, titleStyle]}>{title}</Text>
-      {action ? <View style={styles.sectionAction}>{action}</View> : null}
+    <View style={[row.sectionHeadRow, rowStyle]}>
+      <Text style={[row.sectionTitle, titleStyle]}>{title}</Text>
+      {action ? <View style={row.sectionAction}>{action}</View> : null}
     </View>
   )
 }
 
 export default function HomeScreen() {
+  const colors = useThemeColors()
+  const styles = useMemo(() => createHomeStyles(colors), [colors])
   const [iplHeroIndex, setIplHeroIndex] = useState(0)
   const { width: winW, height: winH } = useWindowDimensions()
   const insets = useSafeAreaInsets()
@@ -273,9 +437,9 @@ export default function HomeScreen() {
                 />
                 <LinearGradient
                   pointerEvents="none"
-                  colors={['transparent', 'rgba(0,0,0,0.4)', 'rgba(0,0,0,0.88)']}
+                  colors={['transparent', colors.greetingGradientMid, colors.greetingGradientEnd]}
                   locations={[0, 0.42, 1]}
-                  style={StyleSheet.absoluteFill}
+                  style={StyleSheet.absoluteFillObject}
                 />
                 <Text
                   style={[
@@ -440,128 +604,3 @@ export default function HomeScreen() {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.surface0,
-    minHeight: 0,
-  },
-  scroll: {
-    flex: 1,
-    minHeight: 0,
-  },
-  section: {},
-  aiAvatarSectionTitle: {
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  photoSection: {
-    paddingHorizontal: 0,
-  },
-  photoSectionHeader: {},
-  memoriesSectionTitle: {
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  sectionHeadRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  sectionTitle: {
-    flex: 1,
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  photosSectionTitle: {
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  sectionAction: {
-    flexShrink: 0,
-  },
-  viewAll: {
-    fontWeight: '600',
-    color: colors.primary600,
-  },
-  sectionSub: {
-    color: 'rgba(255,255,255,0.45)',
-  },
-  memHRail: {
-    flexDirection: 'row',
-  },
-  memCard: {
-    overflow: 'hidden',
-    backgroundColor: colors.surface3,
-  },
-  memImageWrap: {
-    width: '100%',
-    position: 'relative',
-    overflow: 'hidden',
-  },
-  memOverlayText: {
-    position: 'absolute',
-  },
-  memTitleOverlay: {
-    fontWeight: '900',
-    color: '#ffffff',
-  },
-  memDateOverlay: {
-    fontWeight: '400',
-    color: 'rgba(255,255,255,0.92)',
-  },
-  greetGrid: {
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-  },
-  greetCell: {
-    overflow: 'hidden',
-    backgroundColor: colors.surface3,
-    position: 'relative',
-  },
-  greetLabel: {
-    position: 'absolute',
-    fontWeight: '700',
-    color: '#fff',
-    textAlign: 'center',
-  },
-  storageBlock: {},
-  storageBanner: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 656 / 368,
-    overflow: 'hidden',
-    backgroundColor: colors.surface2,
-  },
-  storageMeta: {},
-  storageLabels: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-  },
-  storageLabel: {
-    fontWeight: '500',
-    color: colors.contentSecondary,
-  },
-  storageNums: {
-    fontWeight: '500',
-    color: colors.contentSecondary,
-    fontVariant: ['tabular-nums'],
-  },
-  storageTrack: {
-    borderRadius: 999,
-    backgroundColor: '#ebebec',
-    overflow: 'hidden',
-  },
-  storageFill: {
-    height: '100%',
-    borderRadius: 999,
-    backgroundColor: colors.primary600,
-  },
-  storageCaption: {
-    fontWeight: '500',
-    color: colors.contentSecondary,
-    textAlign: 'center',
-  },
-})

@@ -36,7 +36,6 @@ export interface Translations {
   legal_privacy: string
 
   onboarding_skip: string
-  onboarding_try_now: string
   onboarding_next: string
   onboarding_next_slide_aria: string
   onboarding_finish_aria: string
@@ -66,6 +65,8 @@ export interface Translations {
   nav_ai_camera: string
   nav_files: string
   nav_create: string
+
+  profile_light_mode: string
 }
 
 const en: Translations = {
@@ -99,7 +100,6 @@ const en: Translations = {
   legal_privacy: 'Privacy Policy.',
 
   onboarding_skip: 'Skip',
-  onboarding_try_now: 'Try Now',
   onboarding_next: 'Next',
   onboarding_next_slide_aria: 'Next slide',
   onboarding_finish_aria: 'Finish and open app',
@@ -145,6 +145,8 @@ const en: Translations = {
   nav_ai_camera: 'AI Camera',
   nav_files: 'Files',
   nav_create: 'Create',
+
+  profile_light_mode: 'Light mode',
 }
 
 const hi: Translations = {
@@ -179,7 +181,6 @@ const hi: Translations = {
   legal_privacy: 'गोपनीयता नीति से सहमत होते हैं।',
 
   onboarding_skip: 'छोड़ें',
-  onboarding_try_now: 'अभी आज़माएं',
   onboarding_next: 'अगला',
   onboarding_next_slide_aria: 'अगली स्लाइड',
   onboarding_finish_aria: 'समाप्त करें और ऐप खोलें',
@@ -225,6 +226,8 @@ const hi: Translations = {
   nav_ai_camera: 'AI कैमरा',
   nav_files: 'फ़ाइलें',
   nav_create: 'बनाएं',
+
+  profile_light_mode: 'लाइट मोड',
 }
 
 export const translations: Record<Locale, Translations> = { en, hi }

@@ -107,9 +107,9 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
   ],
 }
 
-/** Send Wishes — one row of three tiles */
+/** Greetings — one row of three tiles */
 export const HOME_GREETINGS_SECTION: HomeRichSection<HomeGreetingCard> = {
-  title: 'Send Wishes',
+  title: 'Greetings',
   subtitle: 'Get ready-to-share greetings for every day and every moment.',
   items: [
     {

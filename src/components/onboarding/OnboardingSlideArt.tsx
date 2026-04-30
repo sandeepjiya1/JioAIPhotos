@@ -56,6 +56,9 @@ function resolveWebImageUri(source: ImageSourcePropType): string | undefined {
  *
  * RN Web’s `Image` wraps content in `overflow: hidden` + background-image; on web we use a real
  * `<img>` + `object-fit: contain` when a URI is available.
+ *
+ * Baked-in journey canvas (`#001D2E`-ish) in the slide PNGs is cleared to alpha with
+ * `npm run onboarding:knockout-bg` (re-run after re-exporting art from Figma).
  */
 export function OnboardingSlideArt({ index }: { index: number }) {
   const src = SLIDES[index % SLIDES.length]!
@@ -147,5 +150,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'visible',
+    backgroundColor: 'transparent',
   },
 })

@@ -4,14 +4,16 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import { JioProductMark } from '@/components/molecules/JioProductMark'
 import { useLayoutScale } from '@/hooks/useLayoutScale'
+import { useThemeStore } from '@/store/themeStore'
 import { resolveHomeImage } from '../../../assets/home/registry'
 import { HOME_HEADER } from '@/features/home/homeContent'
-import { colors } from '@/theme/colors'
+import { useThemeColors } from '@/theme/useThemeColors'
 
-const GLASS_TINT = 'rgba(13,42,61,0.52)'
 const BLUR_INTENSITY = 72
 
 export function HomeAppHeader() {
+  const colors = useThemeColors()
+  const appearance = useThemeStore((s) => s.appearance)
   const insets = useSafeAreaInsets()
   const { ms } = useLayoutScale()
   const avatarSrc = resolveHomeImage(HOME_HEADER.avatarSrc)
@@ -26,9 +28,14 @@ export function HomeAppHeader() {
   const hitSlop = ms(10)
 
   return (
-    <View style={[styles.wrap, { paddingTop: insets.top }]}>
-      <BlurView intensity={BLUR_INTENSITY} tint="dark" style={StyleSheet.absoluteFill} />
-      <View style={styles.tint} pointerEvents="none" />
+    <View
+      style={[
+        styles.wrap,
+        { paddingTop: insets.top, borderBottomColor: colors.hairlineOnGlass, backgroundColor: colors.shellUnderlay },
+      ]}
+    >
+      <BlurView intensity={BLUR_INTENSITY} tint={appearance === 'light' ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
+      <View style={[styles.tint, { backgroundColor: colors.glassTint }]} pointerEvents="none" />
       <View style={[styles.row, { minHeight: rowMinH, paddingHorizontal: padH, paddingVertical: padV }]}>
         <View
           style={[styles.brand, { gap: brandGap }]}
@@ -36,7 +43,9 @@ export function HomeAppHeader() {
           accessibilityLabel="Jio Pix"
         >
           <JioProductMark size={avatarSize} />
-          <Text style={[styles.brandText, { fontSize: brandFont, lineHeight: brandFont }]}>Pix</Text>
+          <Text style={[styles.brandText, { fontSize: brandFont, lineHeight: brandFont, color: colors.contentPrimary }]}>
+            Pix
+          </Text>
         </View>
 
         <Pressable
@@ -53,13 +62,16 @@ export function HomeAppHeader() {
                 width: avatarSize,
                 height: avatarSize,
                 borderRadius: avatarRadius,
+                backgroundColor: colors.surface3,
               },
             ]}
           >
             {avatarSrc ? (
               <Image source={avatarSrc} style={styles.avatarImg} resizeMode="cover" />
             ) : (
-              <Text style={[styles.avatarLetter, { fontSize: letterFont }]}>{HOME_HEADER.avatarFallback}</Text>
+              <Text style={[styles.avatarLetter, { fontSize: letterFont, color: colors.contentPrimary }]}>
+                {HOME_HEADER.avatarFallback}
+              </Text>
             )}
           </View>
         </Pressable>
@@ -73,36 +85,28 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(255,255,255,0.12)',
-    backgroundColor: 'rgba(0,29,46,0.35)',
   },
   tint: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: GLASS_TINT,
   },
   row: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
-  /** Figma: 2px between product mark and wordmark — gap applied inline. */
   brand: {
     flexDirection: 'row',
     alignItems: 'center',
   },
-  /** Figma Label L / Bold — dark shell uses on-colour high. */
   brandText: {
     fontWeight: '700',
-    color: colors.contentPrimary,
   },
   avatarPress: {
     borderRadius: 999,
     overflow: 'hidden',
   },
-  /** Figma Avatar slot — size applied inline. */
   avatarInner: {
     overflow: 'hidden',
-    backgroundColor: colors.surface3,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -112,7 +116,6 @@ const styles = StyleSheet.create({
   },
   avatarLetter: {
     fontWeight: '800',
-    color: colors.contentPrimary,
   },
   pressed: {
     opacity: 0.75,

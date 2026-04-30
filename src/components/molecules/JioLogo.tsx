@@ -1,6 +1,6 @@
 import { View } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
-import { colors } from '@/theme/colors'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 export type JioLogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'splash'
 
@@ -23,6 +23,7 @@ export interface JioLogoProps {
 }
 
 export function JioLogo({ size = 'md' }: JioLogoProps) {
+  const colors = useThemeColors()
   const d = DIAMETER[size]
   const inner = d * WORDMARK_RATIO
 

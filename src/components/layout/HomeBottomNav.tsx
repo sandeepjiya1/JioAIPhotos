@@ -6,8 +6,9 @@ import { router, usePathname } from 'expo-router'
 import { PressableScale } from '@/components/motion/PressableScale'
 import { NavBarGlyph, type BottomNavGlyph } from '@/components/navigation/NavBarGlyph'
 import { useTranslation } from '@/hooks/useTranslation'
-import { colors } from '@/theme/colors'
+import { useThemeStore } from '@/store/themeStore'
 import { BASE_DESIGN_WIDTH, moderateSize } from '@/theme/layoutScale'
+import { useThemeColors } from '@/theme/useThemeColors'
 
 type NavId = 'home' | 'create' | 'photos'
 
@@ -24,9 +25,6 @@ const GLYPH: Record<NavId, BottomNavGlyph> = {
   create: 'create',
   photos: 'photos',
 }
-
-const ON_MEDIUM = 'rgba(255,255,255,0.77)'
-const ON_HIGH = '#ffffff'
 
 /**
  * Bottom nav metrics derived from window width — keep in sync with `HomeBottomNav` visuals.
@@ -60,12 +58,23 @@ function isActive(pathname: string, href: string): boolean {
 }
 
 export function HomeBottomNav() {
+  const colors = useThemeColors()
+  const appearance = useThemeStore((s) => s.appearance)
   const insets = useSafeAreaInsets()
   const pathname = usePathname()
   const { width: winW } = useWindowDimensions()
   const t = useTranslation()
   const ww = winW > 0 ? winW : Dimensions.get('window').width
   const L = useMemo(() => getHomeBottomNavLayout(ww), [ww])
+
+  const shellStyle = useMemo(
+    () => ({
+      borderTopColor: colors.hairlineOnGlass,
+      backgroundColor: colors.navShellBg,
+      shadowColor: colors.shadowColor,
+    }),
+    [colors],
+  )
 
   const label: Record<NavId, string> = {
     home: t.nav_home,
@@ -74,9 +83,9 @@ export function HomeBottomNav() {
   }
 
   return (
-    <View style={styles.shell} accessibilityRole="tablist" accessibilityLabel="Main navigation">
-      <BlurView intensity={72} tint="dark" style={StyleSheet.absoluteFill} />
-      <View style={styles.tint} pointerEvents="none" />
+    <View style={[styles.shell, shellStyle]} accessibilityRole="tablist" accessibilityLabel="Main navigation">
+      <BlurView intensity={72} tint={appearance === 'light' ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
+      <View style={[styles.tint, { backgroundColor: colors.glassTint }]} pointerEvents="none" />
       <View
         style={[
           styles.track,
@@ -91,7 +100,7 @@ export function HomeBottomNav() {
         {NAV_IDS.map((id) => {
           const href = HREF[id]
           const active = isActive(pathname, href)
-          const glyphColor = active ? colors.primary600 : ON_MEDIUM
+          const glyphColor = active ? colors.primary600 : colors.contentSecondary
 
           return (
             <PressableScale
@@ -120,7 +129,9 @@ export function HomeBottomNav() {
                   style={[
                     styles.label,
                     { fontSize: L.labelFont, lineHeight: L.labelLine },
-                    active ? styles.labelActive : styles.labelIdle,
+                    active
+                      ? { fontWeight: '600' as const, color: colors.primary600 }
+                      : { fontWeight: '500' as const, color: colors.contentSecondary },
                   ]}
                   numberOfLines={1}
                 >
@@ -139,9 +150,6 @@ const styles = StyleSheet.create({
   shell: {
     overflow: 'visible',
     borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: 'rgba(255,255,255,0.12)',
-    backgroundColor: 'rgba(13,42,61,0.45)',
-    shadowColor: '#000',
     shadowOffset: { width: 0, height: -6 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -149,7 +157,6 @@ const styles = StyleSheet.create({
   },
   tint: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: 'rgba(13,42,61,0.52)',
   },
   track: {
     flexDirection: 'row',
@@ -179,13 +186,5 @@ const styles = StyleSheet.create({
   label: {
     maxWidth: '100%',
     textAlign: 'center',
-  },
-  labelIdle: {
-    fontWeight: '500',
-    color: ON_MEDIUM,
-  },
-  labelActive: {
-    fontWeight: '600',
-    color: ON_HIGH,
   },
 })
