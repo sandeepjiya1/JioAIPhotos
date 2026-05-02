@@ -67,6 +67,14 @@ export interface Translations {
   nav_create: string
 
   profile_light_mode: string
+  profile_homepage_options: string
+  profile_home_option1: string
+  profile_home_option1_hint: string
+
+  /** Family Hub rail — add-member CTA (Figma `1305:22278`). */
+  family_hub_add_member: string
+  /** Accessibility title for add-member control (longer than visible `family_hub_add_member` label). */
+  family_hub_add_member_aria: string
 }
 
 const en: Translations = {
@@ -147,6 +155,12 @@ const en: Translations = {
   nav_create: 'Create',
 
   profile_light_mode: 'Light mode',
+  profile_homepage_options: 'Homepage options',
+  profile_home_option1: 'Option 1',
+  profile_home_option1_hint: 'New AI Avatars rail (Figma 1305:22351). Off restores the classic IPL hero.',
+
+  family_hub_add_member: 'Add',
+  family_hub_add_member_aria: 'Add family member',
 }
 
 const hi: Translations = {
@@ -228,6 +242,13 @@ const hi: Translations = {
   nav_create: 'बनाएं',
 
   profile_light_mode: 'लाइट मोड',
+  profile_homepage_options: 'होमपेज विकल्प',
+  profile_home_option1: 'विकल्प 1',
+  profile_home_option1_hint:
+    'नया AI अवतार रेल (Figma 1305:22351)। बंद करने पर क्लासिक IPL हीरो वापस मिलेगा।',
+
+  family_hub_add_member: 'जोड़ें',
+  family_hub_add_member_aria: 'परिवार का सदस्य जोड़ें',
 }
 
 export const translations: Record<Locale, Translations> = { en, hi }

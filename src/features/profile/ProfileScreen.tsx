@@ -18,9 +18,11 @@ import { Button } from '@/components/atoms/Button'
 import { useTranslation } from '@/hooks/useTranslation'
 import { resolveHomeImage } from '../../../assets/home/registry'
 import { useAuthStore } from '@/store/authStore'
+import { useHomePreferencesStore } from '@/store/homePreferencesStore'
 import { useThemeStore } from '@/store/themeStore'
 import type { AppThemeColors } from '@/theme/palettes'
 import { useThemeColors } from '@/theme/useThemeColors'
+import { HOME_STORAGE_PROGRESS_VISUAL } from '@/features/home/homeContent'
 
 const AVATAR_WEB = '/assets/figma/6cd0e6362a73050667423418aae84ecb14f0f736.png'
 
@@ -102,15 +104,19 @@ function createProfileStyles(colors: AppThemeColors) {
       fontVariant: ['tabular-nums'],
     },
     storageTrack: {
+      position: 'relative',
       height: 8,
       borderRadius: 999,
-      backgroundColor: colors.storageTrackBg,
+      backgroundColor: HOME_STORAGE_PROGRESS_VISUAL.track,
       overflow: 'hidden',
     },
     storageFill: {
-      height: '100%',
+      position: 'absolute',
+      left: 0,
+      top: 0.29,
+      bottom: 0.29,
       borderRadius: 999,
-      backgroundColor: colors.primary600,
+      backgroundColor: HOME_STORAGE_PROGRESS_VISUAL.fill,
     },
     themeRow: {
       flexDirection: 'row',
@@ -127,6 +133,25 @@ function createProfileStyles(colors: AppThemeColors) {
       color: colors.contentPrimary,
       flex: 1,
       paddingRight: 12,
+    },
+    optionTitle: {
+      fontSize: 14,
+      fontWeight: '600',
+      color: colors.contentPrimary,
+    },
+    optionHint: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '400',
+      color: colors.contentSecondary,
+    },
+    sectionHeading: {
+      fontSize: 13,
+      fontWeight: '700',
+      color: colors.contentTertiary,
+      textTransform: 'uppercase',
+      letterSpacing: 0.6,
+      marginBottom: 4,
     },
     list: {
       gap: 4,
@@ -161,6 +186,8 @@ export default function ProfileScreen() {
   const styles = useMemo(() => createProfileStyles(colors), [colors])
   const appearance = useThemeStore((s) => s.appearance)
   const setLightModeEnabled = useThemeStore((s) => s.setLightModeEnabled)
+  const homeHeroVariant = useHomePreferencesStore((s) => s.homeHeroVariant)
+  const setHomeHeroOption1Enabled = useHomePreferencesStore((s) => s.setHomeHeroOption1Enabled)
   const phoneNumber = useAuthStore((s) => s.phoneNumber)
   const logout = useAuthStore((s) => s.logout)
   const insets = useSafeAreaInsets()
@@ -199,10 +226,15 @@ export default function ProfileScreen() {
         <View style={styles.storageCard}>
           <View style={styles.storageLabels}>
             <Text style={styles.storageMuted}>Storage</Text>
-            <Text style={styles.storageNums}>14.2 GB / 50 GB</Text>
+            <Text style={styles.storageNums}>2 GB / 50 GB</Text>
           </View>
           <View style={styles.storageTrack}>
-            <View style={[styles.storageFill, { width: `${(14.2 / 50) * 100}%` }]} />
+            <View
+              style={[
+                styles.storageFill,
+                { width: `${(2 / 50) * 100}%`, minWidth: 12 },
+              ]}
+            />
           </View>
           <Button variant="outline" size="sm" onPress={() => {}} accessibilityLabel="Get more storage">
             Get more storage
@@ -219,6 +251,24 @@ export default function ProfileScreen() {
             ios_backgroundColor={colors.surface3}
             accessibilityLabel={t.profile_light_mode}
           />
+        </View>
+
+        <View style={{ gap: 8 }}>
+          <Text style={styles.sectionHeading}>{t.profile_homepage_options}</Text>
+          <View style={styles.themeRow}>
+            <View style={{ flex: 1, paddingRight: 12, gap: 4 }}>
+              <Text style={styles.optionTitle}>{t.profile_home_option1}</Text>
+              <Text style={styles.optionHint}>{t.profile_home_option1_hint}</Text>
+            </View>
+            <Switch
+              value={homeHeroVariant === 'option1'}
+              onValueChange={setHomeHeroOption1Enabled}
+              trackColor={{ false: colors.surface3, true: colors.primary200 }}
+              thumbColor={homeHeroVariant === 'option1' ? colors.primary600 : colors.contentTertiary}
+              ios_backgroundColor={colors.surface3}
+              accessibilityLabel={t.profile_home_option1}
+            />
+          </View>
         </View>
 
         <View style={styles.list}>

@@ -1,10 +1,13 @@
 import { getGreetingDetailImageWebPaths } from '@/features/greetings/greetingDetailContent'
 import {
+  HOME_CRICKET_THEME_FOOTER,
+  HOME_FAMILY_HUB_SECTION,
   HOME_GREETINGS_SECTION,
   HOME_HEADER,
+  HOME_IPL_THEME_BANNER,
   HOME_MEMORIES_SECTION,
   HOME_PHOTOS_SECTION,
-  HOME_STORAGE_BANNER_IMAGE,
+  HOME_TRENDING_SECTION,
 } from '@/features/home/homeContent'
 import { getHomeIplImageWebPaths } from '@/features/home/HomeIplRail'
 
@@ -27,9 +30,19 @@ export function getHomeScreenImageWebPaths(): string[] {
   }
 
   add(HOME_HEADER.avatarSrc)
-  add(HOME_STORAGE_BANNER_IMAGE)
-  for (const m of HOME_MEMORIES_SECTION.items) add(m.image)
+  for (const layer of HOME_IPL_THEME_BANNER.layers) add(layer.webPath)
+  for (const m of HOME_MEMORIES_SECTION.items) {
+    if (m.kind === 'memory-video') add(m.image)
+    else {
+      add(m.frameImage)
+      add(m.thumbImage)
+    }
+  }
   for (const g of HOME_GREETINGS_SECTION.items) add(g.image)
+  for (const m of HOME_FAMILY_HUB_SECTION.members) add(m.image)
+  add(HOME_CRICKET_THEME_FOOTER.backgroundArt)
+  add(HOME_CRICKET_THEME_FOOTER.playersArt)
+  for (const t of HOME_TRENDING_SECTION.items) add(t.image)
   for (const ph of HOME_PHOTOS_SECTION.items) add(ph.src)
   for (const p of getHomeIplImageWebPaths()) add(p)
   for (const p of getGreetingDetailImageWebPaths()) add(p)

@@ -186,7 +186,7 @@ Rich screens compose atoms/molecules with feature modules, e.g.:
 
 ### Auth & state
 
-- **Zustand** — [`authStore`](../src/store/authStore.ts), [`themeStore`](../src/store/themeStore.ts).
+- **Zustand** — [`authStore`](../src/store/authStore.ts), [`themeStore`](../src/store/themeStore.ts), [`homePreferencesStore`](../src/store/homePreferencesStore.ts) (home hero variant: Figma Option 1 vs legacy IPL rail).
 - **Navigation helpers** — [`src/lib/authNavigation.ts`](../src/lib/authNavigation.ts).
 
 ### Copy & locales
@@ -217,6 +217,7 @@ Rich screens compose atoms/molecules with feature modules, e.g.:
 | Permission intro | `/permission` | [`PreAppPermissionScreen`](../src/features/permissions/PreAppPermissionScreen.tsx) |
 | Home hub | `/home/*` | [`HomeScreen`](../src/features/home/HomeScreen.tsx), tabs, placeholders |
 | Greeting detail | `/home/greeting/[id]` | [`GreetingDetailScreen`](../src/features/greetings/GreetingDetailScreen.tsx) — Figma `839:10412` |
+| Home hero (AI Avatars) | `/home` | [`HomeIplRail`](../src/features/home/HomeIplRail.tsx) switches [`HomeIplRailOption1`](../src/features/home/HomeIplRailOption1.tsx) (Figma `1305:22351`) vs [`HomeIplRailLegacy`](../src/features/home/HomeIplRailLegacy.tsx) via Profile → Homepage options |
 
 Deep links under `/permission/gallery` and `/permission/notifications` redirect home.
 
@@ -243,6 +244,7 @@ When you add or rename **tokens**, **motion** constants, or **shared components*
 | Language hero `683:15305` | `app/language.tsx`, `palettes` language hero tokens |
 | Permission icons `683:15443`, `683:15463`, `683:15470` | `src/features/permissions/*Svg.ts` |
 | Greetings detail `839:10412` (Jio AI Cloud — Temp) | `src/features/greetings/GreetingDetailScreen.tsx`, `greetingDetailContent.ts` |
+| AI Avatars hero `1305:22351` (JioAIPhotos — Journeys) | `HomeIplRailOption1.tsx`, `HomeIplRailLegacy.tsx` |
 
 ---
 

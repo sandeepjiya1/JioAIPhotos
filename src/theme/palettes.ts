@@ -68,6 +68,9 @@ export const darkPalette = {
   /** Neutral track behind primary fill (e.g. home storage bar) */
   neutralTrack: '#ebebec',
 
+  /** Family Hub add-member pill fill (Figma `1305:22279`) — dark blue on canvas */
+  familyHubAddCtaBg: '#1A1E26',
+
   sectionSubtleText: 'rgba(255,255,255,0.45)',
 
   /** Text on top of photos / video tiles (always light for contrast on imagery). */
@@ -128,6 +131,9 @@ export const lightPalette = {
   authFooterRule: 'rgba(10,31,46,0.08)',
 
   neutralTrack: 'rgba(10,31,46,0.12)',
+
+  /** Family Hub add-member pill (Figma `1305:22279`) — dark blue on light canvas */
+  familyHubAddCtaBg: '#0a1f2e',
 
   sectionSubtleText: 'rgba(10,31,46,0.48)',
 

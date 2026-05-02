@@ -43,6 +43,15 @@ const DETAIL_OVERRIDES: Partial<
     }
   >
 > = {
+  'greet-good-morning': {
+    salutation: 'Dear Guest',
+    fromLabel: 'From Jio AI Photos',
+    carouselImages: [
+      '/assets/figma/eb20eed3a2990d15241e4c20cd4c42bac53062d3.png',
+      '/assets/figma/5c958752d2ada746764d0c855c950c6be3b8ad7a.png',
+    ],
+    thumbnailStrip: DEFAULT_THUMBS,
+  },
   'greet-holi': {
     salutation: 'Dear Guest',
     fromLabel: 'From Sanjiv Tuli',
@@ -52,12 +61,12 @@ const DETAIL_OVERRIDES: Partial<
     ],
     thumbnailStrip: DEFAULT_THUMBS,
   },
-  'greet-morning': {
+  'greet-hanuman': {
     salutation: 'Dear Guest',
     fromLabel: 'From Jio AI Photos',
     carouselImages: [
-      '/assets/figma/5c958752d2ada746764d0c855c950c6be3b8ad7a.png',
-      '/assets/figma/b69e1f2044286b5156fd1d8b21a96c5656bdbd30.png',
+      '/assets/figma/26c7f11d872efe58387ce948fe645eb8f5eb7783.png',
+      '/assets/hanumanji-greetings.png',
     ],
     thumbnailStrip: DEFAULT_THUMBS,
   },

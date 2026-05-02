@@ -10,19 +10,45 @@ export interface HomeMemoryOverlayGradient {
   end: { x: number; y: number }
 }
 
-export interface HomeMemoryCard {
+/** Portrait video memory — home rail shows play only (Figma Journeys `1305:22378`). */
+export interface HomeMemoryVideoCard {
+  kind: 'memory-video'
   id: string
   image: string
   title: string
   date: string
-  /** Figma Memories_Section (1131:118028) — bottom tint on thumbnail */
+  /** Bottom tint on full-screen / list layouts */
   overlayGradient: HomeMemoryOverlayGradient
 }
+
+/** Backup CTA tile in the memories rail — art from Figma `1573:17958`. */
+export interface HomeMemoryBackupCtaCard {
+  kind: 'memory-backup-cta'
+  id: string
+  title: string
+  ctaLabel: string
+  /** Decorative background (full-bleed under content). */
+  frameImage: string
+  /** Center hero thumb (`Slot/size14/Image` in Figma). */
+  thumbImage: string
+}
+
+export type HomeMemoriesSectionItem = HomeMemoryVideoCard | HomeMemoryBackupCtaCard
+
+/** @deprecated Alias — use `HomeMemoryVideoCard`. */
+export type HomeMemoryCard = HomeMemoryVideoCard
 
 export interface HomeGreetingCard {
   id: string
   image: string
   /** Wish category label (bottom overlay on grid tiles). */
+  label: string
+}
+
+/** Figma Journeys `1437:25272` — Trending horizontal rail tile */
+export interface HomeTrendingTile {
+  id: string
+  image: string
   label: string
 }
 
@@ -46,20 +72,49 @@ export const HOME_SHOW_SECTION_SUBTITLES = false
 /** IPL hero rail — section heading on home */
 export const HOME_IPL_AVATARS_SECTION_TITLE = 'Your AI Avatars' as const
 
+export interface HomeIplThemeBannerLayer {
+  id: string
+  webPath: string
+  left: string
+  width: string
+  height: string
+  top: string
+  zIndex: number
+}
+
+/** Pixel size of `ipl-theme-banner-header.png` — banner height should be `windowWidth × (height/width)` so the art is full-bleed width without horizontal crop. */
+export const HOME_IPL_THEME_BANNER_PIXEL_SIZE = { width: 1024, height: 193 } as const
+
+/** IPL theme strip above AI Avatars rail — `ipl-theme-banner-header.png` (1024×193). */
+export const HOME_IPL_THEME_BANNER = {
+  layers: [
+    {
+      id: 'ipl-banner-full',
+      webPath: '/assets/figma/ipl-theme-banner-header.png?v=20260502b',
+      left: '0%',
+      width: '100%',
+      height: '100%',
+      top: '0%',
+      zIndex: 0,
+    },
+  ],
+} as const satisfies { layers: readonly HomeIplThemeBannerLayer[] }
+
 export const HOME_HEADER = {
   avatarSrc: '/assets/figma/6cd0e6362a73050667423418aae84ecb14f0f736.png',
   avatarFallback: 'U',
 } as const
 
-/** Figma Memories_Section (1131:118028) */
-export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
+/** Figma Journeys Memories_Section (`1305:22378`) — 158×281 @ 360, 10px gap, 12px radius; two video tiles + backup CTA. */
+export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoriesSectionItem> = {
   title: 'Memories',
   subtitle: 'Your photos and videos come together to watch and share anytime.',
   items: [
     {
+      kind: 'memory-video',
       id: 'mem-1',
-      image: '/assets/mem-varanasi-1597bc99.png?v=20260429b',
-      title: 'Varanasi trip',
+      image: '/assets/figma/e5b5044012be637aada2b15e130f343123f94800.png',
+      title: 'Jaipur trip',
       date: '20 June 2026',
       overlayGradient: {
         colors: ['rgba(235,101,104,0)', 'rgba(156,18,21,0.82)', 'rgb(139,0,2)'],
@@ -69,9 +124,10 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
       },
     },
     {
+      kind: 'memory-video',
       id: 'mem-2',
-      image: '/assets/figma/9c3be8ec82a701547f20afe3432e1123d6e09a4a.png',
-      title: "Rahan's Bday",
+      image: '/assets/figma/f88b2b8b93d22abe86755de6a30de5e084faaff5.png',
+      title: 'Celebrations',
       date: '26 June 2026',
       overlayGradient: {
         colors: ['rgba(6,35,115,0)', 'rgb(6,35,115)'],
@@ -81,50 +137,66 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoryCard> = {
       },
     },
     {
-      id: 'mem-3',
-      image: '/assets/figma/e5ed6df5cb304c15b0443f6e03cd8446e5b2b912.png',
-      title: 'Happy Anniversary',
-      date: '20 June 2026',
-      overlayGradient: {
-        colors: ['rgba(235,211,101,0)', 'rgb(139,93,0)'],
-        locations: [0.55, 0.98],
-        start: { x: 0.5, y: 0 },
-        end: { x: 0.5, y: 1 },
-      },
-    },
-    {
-      id: 'mem-4',
-      image: '/assets/figma/be35d34a24d15524a9c0126750ae432b82dab795.png',
-      title: "Ruhi's Wedding",
-      date: '20 June 2026',
-      overlayGradient: {
-        colors: ['rgba(0,0,0,0)', 'rgba(106,0,35,0.663)', 'rgba(139,0,46,0.87)'],
-        locations: [0.33, 0.66, 0.97],
-        start: { x: 0.5, y: 0 },
-        end: { x: 0.5, y: 1 },
-      },
+      kind: 'memory-backup-cta',
+      id: 'mem-backup-cta',
+      title: 'Enable backup to start generating your memories',
+      ctaLabel: 'Backup now',
+      frameImage: '/assets/figma/fd43e8ed4d436012bb3abc60c7f765778e0597e4.png',
+      thumbImage: '/assets/figma/70f4b8885c3abe3d2790b8369c8df0e1c3547398.png',
     },
   ],
 }
 
-/** Greetings — one row of three tiles */
+/** Figma Journeys Trending_Section (`1437:25272`) — 102×136 @ 360, 10px gap; art matches frame composites (single hero per tile). */
+export const HOME_TRENDING_SECTION: HomeRichSection<HomeTrendingTile> = {
+  title: 'Trending',
+  items: [
+    {
+      id: 'trend-dhurandhar',
+      label: 'Dhurandhar',
+      image: '/assets/figma/657e248134a12fab651ac8e67bed14dc2f5e190a.png',
+    },
+    {
+      id: 'trend-republic-1',
+      label: 'Republic Day',
+      image: '/assets/figma/bb58655a57d80a328c43b89c58da982691332c16.png',
+    },
+    {
+      id: 'trend-republic-2',
+      label: 'Republic Day',
+      image: '/assets/figma/d0dcd90132612641a0109cc9bb9b63ddd311016b.png',
+    },
+    {
+      id: 'trend-hanuman',
+      label: 'Hanuman Ji',
+      image: '/assets/figma/26c7f11d872efe58387ce948fe645eb8f5eb7783.png',
+    },
+  ],
+}
+
+/** Greetings — Figma Journeys `1305:22363` horizontal rail (102×136 @ 360). */
 export const HOME_GREETINGS_SECTION: HomeRichSection<HomeGreetingCard> = {
   title: 'Greetings',
   subtitle: 'Get ready-to-share greetings for every day and every moment.',
   items: [
+    {
+      id: 'greet-good-morning',
+      label: 'Good Morning',
+      image: '/assets/figma/eb20eed3a2990d15241e4c20cd4c42bac53062d3.png',
+    },
     {
       id: 'greet-holi',
       label: 'Happy Holi',
       image: '/assets/figma/2e6ff07eac6f4148a03df5e6ae992fbdd23c2f3e.png',
     },
     {
-      id: 'greet-morning',
-      label: 'Good Morning',
-      image: '/assets/figma/5c958752d2ada746764d0c855c950c6be3b8ad7a.png',
+      id: 'greet-hanuman',
+      label: 'Hanuman Ji',
+      image: '/assets/figma/26c7f11d872efe58387ce948fe645eb8f5eb7783.png',
     },
     {
       id: 'greet-birthday',
-      label: 'Birthday',
+      label: 'Happy Birthday',
       image: '/assets/greeting-birthday-floral.png',
     },
   ],
@@ -152,7 +224,49 @@ export const HOME_PHOTOS_SECTION: HomeRichSection<HomePhotoTile> = {
   ],
 }
 
-export const HOME_STORAGE_BANNER = { used: 14.2, total: 50 } as const
+/** Figma Journeys `1305:22464` — storage row + bar + caption (no hero art). */
+export const HOME_STORAGE_INDICATOR = {
+  used: 2,
+  total: 50,
+  caption: 'Save up to 10,000 photos and videos',
+} as const
 
-/** Figma storage promo art (bundled via `assets/home/registry.ts`). */
-export const HOME_STORAGE_BANNER_IMAGE = '/assets/figma/storage-promotion-banner.png?v=20260428a' as const
+/** Figma Journeys `1247:19059` (track) / `1247:19060` (fill). */
+export const HOME_STORAGE_PROGRESS_VISUAL = {
+  track: '#ebebec',
+  fill: 'rgba(40, 139, 193, 1)',
+} as const
+
+export interface HomeFamilyHubMember {
+  id: string
+  name: string
+  image: string
+}
+
+/** Figma Journeys `1305:22445` — Family Hub rail + `Storage_Indicator` below. */
+export const HOME_FAMILY_HUB_SECTION = {
+  title: 'Family Hub',
+  subtitle: 'Add up to 4 members & unlock 200GB',
+  members: [
+    {
+      id: 'fh-seema',
+      name: 'Seema',
+      /** Bundled `assets/home/family-hub-avatar-seema.png` — run `npm run figma:family-hub-avatar` to re-fetch from Figma. */
+      image: '/assets/home/family-hub-avatar-seema.png?v=20260502b',
+    },
+  ],
+} as const satisfies {
+  title: string
+  subtitle: string
+  members: readonly HomeFamilyHubMember[]
+}
+
+/** Figma Journeys `1305:22633` — CricketTheme_Footer (stadium art @ 20% + headline + line-art). */
+export const HOME_CRICKET_THEME_FOOTER = {
+  line1: 'With Love',
+  line2: 'From Jio',
+  /** Stadium / pitch decorative art (Figma export `5294009c…`). */
+  backgroundArt: '/assets/figma/5294009c1233bb4e55e46c6da41f71a9264d0e70.png?v=20260501a',
+  /** Figma `1305:22637` Layer_1 — rasterized from SVG for RN. */
+  playersArt: '/assets/figma/cricket-theme-footer-players.png?v=20260501a',
+} as const

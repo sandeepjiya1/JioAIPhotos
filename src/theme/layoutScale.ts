@@ -15,3 +15,13 @@ export function moderateSize(size: number, screenWidth: number, factor = 0.5): n
   const scaled = scaleSize(size, screenWidth)
   return Math.max(1, Math.round(size + (scaled - size) * factor))
 }
+
+/**
+ * Scale a value from a Figma frame width (e.g. **360** for Journeys home) to the device.
+ * Use when the node spec is in px @360 (not the default 390pt reference).
+ */
+export function scaleSizeFromDesign(size: number, screenWidth: number, designWidth: number): number {
+  const dw = designWidth > 0 ? designWidth : 360
+  const sw = screenWidth > 0 ? screenWidth : dw
+  return Math.max(1, Math.round((size * sw) / dw))
+}

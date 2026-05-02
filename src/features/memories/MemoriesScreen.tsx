@@ -5,7 +5,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { TopBar } from '@/components/layout/TopBar'
 import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { ResolvedImage } from '@/features/home/ResolvedImage'
-import { HOME_MEMORIES_SECTION } from '@/features/home/homeContent'
+import { HOME_MEMORIES_SECTION, type HomeMemoryVideoCard } from '@/features/home/homeContent'
 import { colors } from '@/theme/colors'
 import { moderateSize } from '@/theme/layoutScale'
 
@@ -20,6 +20,11 @@ export default function MemoriesScreen() {
   const sectionPad = moderateSize(16, ww)
   const memRadius = moderateSize(10, ww)
   const scrollPadTop = moderateSize(16, ww)
+
+  const memoryVideoItems = useMemo(
+    () => HOME_MEMORIES_SECTION.items.filter((m): m is HomeMemoryVideoCard => m.kind === 'memory-video'),
+    [],
+  )
 
   const cardW = useMemo(() => {
     const w = winW > 0 ? winW : Dimensions.get('window').width
@@ -45,7 +50,7 @@ export default function MemoriesScreen() {
         ]}
         showsVerticalScrollIndicator={false}
       >
-        {HOME_MEMORIES_SECTION.items.length === 0 ? (
+        {memoryVideoItems.length === 0 ? (
           <View style={styles.empty}>
             <View style={styles.emptyIcon}>
               <Text style={styles.emptyEmoji}>🕐</Text>
@@ -59,7 +64,7 @@ export default function MemoriesScreen() {
               <Text style={styles.sectionDesc}>Relive your best moments</Text>
             </View>
             <View style={styles.stack}>
-              {HOME_MEMORIES_SECTION.items.map((m) => (
+              {memoryVideoItems.map((m) => (
                 <View key={m.id} style={[styles.card, { width: cardW, borderRadius: memRadius }]}>
                   <View style={[styles.cardImage, { height: cardImgH, borderRadius: memRadius }]}>
                     <ResolvedImage
