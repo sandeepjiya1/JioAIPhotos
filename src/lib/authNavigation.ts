@@ -11,3 +11,12 @@ export function replaceToOnboarding() {
 export function replaceToPermissionIntro() {
   router.replace('/permission')
 }
+
+/**
+ * Navigate to the home shell without leaving auth-flow screens under the root stack.
+ * Otherwise iOS/Android back gestures can return to login after `replace('/home')` alone.
+ */
+export function replaceToHome() {
+  router.dismissAll()
+  router.replace('/home')
+}

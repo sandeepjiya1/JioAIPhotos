@@ -48,7 +48,19 @@ function RootLayoutBody() {
                 gestureEnabled: true,
                 fullScreenGestureEnabled: Platform.OS === 'ios',
               }}
-            />
+            >
+              {/**
+               * Home is the post-auth shell; disable interactive pop so users cannot swipe back to login
+               * when the auth stack was cleared with `replaceToHome` (see `authNavigation.ts`).
+               */}
+              <Stack.Screen
+                name="home"
+                options={{
+                  gestureEnabled: false,
+                  ...(Platform.OS === 'ios' ? { fullScreenGestureEnabled: false } : {}),
+                }}
+              />
+            </Stack>
           </AuthHydrationGate>
         </QueryClientProvider>
       </SafeAreaProvider>

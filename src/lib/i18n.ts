@@ -66,6 +66,36 @@ export interface Translations {
   nav_files: string
   nav_create: string
 
+  /** Create tab bottom sheet (Figma Pod1 `2385:11793`). */
+  create_sheet_title: string
+  create_sheet_close_aria: string
+  create_sheet_dismiss_aria: string
+  create_sheet_greetings_title: string
+  create_sheet_greetings_subtitle: string
+  create_sheet_avatar_title: string
+  create_sheet_avatar_subtitle: string
+
+  /** AI Avatar home (Figma Pod1 `2385:10969`). */
+  ai_avatar_home_back_aria: string
+  ai_avatar_home_credits_aria: string
+  ai_avatar_home_hero_headline: string
+  ai_avatar_home_hero_subtitle: string
+  ai_avatar_faceoff_kicker: string
+  ai_avatar_faceoff_title: string
+  ai_avatar_jerseys_kicker: string
+  ai_avatar_jerseys_title: string
+  /** Cricket Jerseys detail (`2385:10384`). */
+  ai_avatar_jerseys_portal_hint_jersey: string
+  ai_avatar_jerseys_portal_hint_cricket: string
+  ai_avatar_jerseys_upload_cta: string
+  ai_avatar_jerseys_whatsapp: string
+  ai_avatar_bridal_kicker: string
+  ai_avatar_bridal_title: string
+  ai_avatar_corporate_kicker: string
+  ai_avatar_corporate_title: string
+  ai_avatar_royal_kicker: string
+  ai_avatar_royal_title: string
+
   profile_light_mode: string
   profile_homepage_options: string
   profile_home_option1: string
@@ -117,14 +147,10 @@ const en: Translations = {
       title: 'Watch your photos as a slideshow',
       subtitle: 'They come together so you can watch and share anytime.',
     },
-    /** Onboarding card art: Figma `683:15397` (jersey + “Your Name” mock). */
+    /** Onboarding card art: Figma `1590:20584` (jersey + “Your Name” mock). */
     {
-      title: 'Your name. Your kit.',
-      subtitle: 'AI turns your photos into jersey moments for every celebration—in seconds.',
-    },
-    {
-      title: 'Get more storage\nwith family',
-      subtitle: 'Invite your family and get more than 5GB storage.',
+      title: 'Make photos for any moment',
+      subtitle: 'For birthdays, festivals, and more in seconds.',
     },
   ],
 
@@ -153,6 +179,35 @@ const en: Translations = {
   nav_ai_camera: 'AI Camera',
   nav_files: 'Files',
   nav_create: 'Create',
+
+  create_sheet_title: 'Choose what to create',
+  create_sheet_close_aria: 'Close',
+  create_sheet_dismiss_aria: 'Dismiss',
+  create_sheet_greetings_title: 'Greetings',
+  create_sheet_greetings_subtitle: 'Birthday, wishes & many more',
+  create_sheet_avatar_title: 'AI Avatar',
+  create_sheet_avatar_subtitle: 'Dressed into cricket avatar & more',
+
+  ai_avatar_home_back_aria: 'Go back',
+  ai_avatar_home_credits_aria: 'Credits balance',
+  ai_avatar_home_hero_headline: 'Reimagine Yourself',
+  ai_avatar_home_hero_subtitle: 'Try different styles, roles, and personalities with AI',
+  ai_avatar_faceoff_kicker: 'Cricket Faceoff',
+  ai_avatar_faceoff_title: 'Wear your team’s jersey with your friend',
+  ai_avatar_jerseys_kicker: 'Cricket Jerseys',
+  ai_avatar_jerseys_title: 'Wear your favourite team’s jersey',
+  ai_avatar_jerseys_portal_hint_jersey:
+    'Upload your photo to reveal your  cricket jersey AI avatars',
+  ai_avatar_jerseys_portal_hint_cricket:
+    'Upload your photo to reveal your  cricket AI avatars',
+  ai_avatar_jerseys_upload_cta: 'Upload your photo',
+  ai_avatar_jerseys_whatsapp: 'Whatsapp',
+  ai_avatar_bridal_kicker: 'Bridal makeup',
+  ai_avatar_bridal_title: 'Transform your look into brides/grooms',
+  ai_avatar_corporate_kicker: 'Corporate look',
+  ai_avatar_corporate_title: 'Get the Corporate look avatar',
+  ai_avatar_royal_kicker: 'Royal look',
+  ai_avatar_royal_title: 'Get the royal look avatar',
 
   profile_light_mode: 'Light mode',
   profile_homepage_options: 'Homepage options',
@@ -204,14 +259,10 @@ const hi: Translations = {
       title: 'अपनी फ़ोटो को स्लाइडशो में देखें',
       subtitle: 'वे एक साथ आते हैं ताकि आप कभी भी देख और शेयर कर सकें।',
     },
-    /** Onboarding card art: Figma `683:15397` (jersey + “Your Name” mock). */
+    /** Onboarding card art: Figma `1590:20584` (jersey + “Your Name” mock). */
     {
-      title: 'आपका नाम, आपकी जर्सी',
-      subtitle: 'AI आपकी फ़ोटो से हर जश्न के लिए सेकंडों में जर्सी लुक बनाता है।',
-    },
-    {
-      title: 'परिवार के साथ\nज्यादा स्टोरेज पाएं',
-      subtitle: 'अपने परिवार को आमंत्रित करें और 5GB से अधिक स्टोरेज पाएं।',
+      title: 'हर पल के लिए फ़ोटो बनाएं',
+      subtitle: 'जन्मदिन, त्योहार और बहुत कुछ—सेकंडों में।',
     },
   ],
 
@@ -240,6 +291,34 @@ const hi: Translations = {
   nav_ai_camera: 'AI कैमरा',
   nav_files: 'फ़ाइलें',
   nav_create: 'बनाएं',
+
+  create_sheet_title: 'क्या बनाना है, चुनें',
+  create_sheet_close_aria: 'बंद करें',
+  create_sheet_dismiss_aria: 'रद्द करें',
+  create_sheet_greetings_title: 'ग्रीटिंग्स',
+  create_sheet_greetings_subtitle: 'जन्मदिन, शुभकामनाएँ और बहुत कुछ',
+  create_sheet_avatar_title: 'AI अवतार',
+  create_sheet_avatar_subtitle: 'क्रिकेट अवतार और बहुत कुछ',
+
+  ai_avatar_home_back_aria: 'वापस जाएँ',
+  ai_avatar_home_credits_aria: 'क्रेडिट बैलेंस',
+  ai_avatar_home_hero_headline: 'खुद को नए रूप में देखें',
+  ai_avatar_home_hero_subtitle: 'AI के साथ अलग-अलग स्टाइल, भूमिकाएँ और व्यक्तित्व आज़माएँ',
+  ai_avatar_faceoff_kicker: 'क्रिकेट फेसऑफ़',
+  ai_avatar_faceoff_title: 'दोस्त के साथ अपनी टीम की जर्सी पहनें',
+  ai_avatar_jerseys_kicker: 'क्रिकेट जर्सी',
+  ai_avatar_jerseys_title: 'अपनी पसंदीदा टीम की जर्सी पहनें',
+  ai_avatar_jerseys_portal_hint_jersey:
+    'अपनी क्रिकेट जर्सी AI अवतार देखने के लिए अपनी फ़ोटो अपलोड करें',
+  ai_avatar_jerseys_portal_hint_cricket: 'अपने क्रिकेट AI अवतार देखने के लिए अपनी फ़ोटो अपलोड करें',
+  ai_avatar_jerseys_upload_cta: 'अपनी फ़ोटो अपलोड करें',
+  ai_avatar_jerseys_whatsapp: 'WhatsApp',
+  ai_avatar_bridal_kicker: 'ब्राइडल मेकअप',
+  ai_avatar_bridal_title: 'दुल्हन/दूल्हे जैसा लुक पाएँ',
+  ai_avatar_corporate_kicker: 'कॉर्पोरेट लुक',
+  ai_avatar_corporate_title: 'कॉर्पोरेट लुक अवतार पाएँ',
+  ai_avatar_royal_kicker: 'रॉयल लुक',
+  ai_avatar_royal_title: 'रॉयल लुक अवतार पाएँ',
 
   profile_light_mode: 'लाइट मोड',
   profile_homepage_options: 'होमपेज विकल्प',

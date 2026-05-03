@@ -1,11 +1,12 @@
 import { useCallback, useEffect, useMemo } from 'react'
-import { ScrollView, StyleSheet, Text, View } from 'react-native'
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { SvgXml } from 'react-native-svg'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/atoms/Button'
 import { useTranslation } from '@/hooks/useTranslation'
+import { replaceToHome } from '@/lib/authNavigation'
 import { requestMediaLibraryAndNotifications } from '@/lib/nativePermissions'
 import { useAuthStore } from '@/store/authStore'
 import { useThemeStore } from '@/store/themeStore'
@@ -64,7 +65,10 @@ const heroArtStyles = StyleSheet.create({
   },
 })
 
-function createPermissionStyles(colors: AppThemeColors) {
+function createPermissionStyles(
+  colors: AppThemeColors,
+  opts: { compact: boolean; sheetGap: number; sheetPaddingTop: number; headlineSize: number },
+) {
   return StyleSheet.create({
     root: {
       flex: 1,
@@ -79,27 +83,26 @@ function createPermissionStyles(colors: AppThemeColors) {
       flex: 1,
       borderTopLeftRadius: 32,
       borderTopRightRadius: 32,
-      paddingTop: 56,
-      gap: 43,
-      minHeight: 400,
+      paddingTop: opts.sheetPaddingTop,
+      gap: opts.sheetGap,
     },
     headline: {
-      fontSize: 28,
-      lineHeight: 32,
+      fontSize: opts.headlineSize,
+      lineHeight: opts.headlineSize + 4,
       fontWeight: '900',
       color: colors.contentPrimary,
       textAlign: 'left',
-      paddingVertical: 10,
+      paddingVertical: opts.compact ? 6 : 10,
     },
     rows: {
-      gap: 23,
+      gap: opts.compact ? 16 : 23,
       flex: 1,
     },
     row: {
       flexDirection: 'row',
       alignItems: 'flex-start',
       gap: 10,
-      paddingVertical: 10,
+      paddingVertical: opts.compact ? 6 : 10,
     },
     rowIcon: {
       width: 32,
@@ -127,8 +130,9 @@ function createPermissionStyles(colors: AppThemeColors) {
     },
     actions: {
       gap: 12,
-      marginTop: 8,
+      marginTop: opts.compact ? 4 : 8,
       width: '100%',
+      flexShrink: 0,
     },
     actionPrimary: {
       alignSelf: 'stretch',
@@ -141,13 +145,25 @@ function createPermissionStyles(colors: AppThemeColors) {
 
 export function PreAppPermissionScreen() {
   const colors = useThemeColors()
-  const styles = useMemo(() => createPermissionStyles(colors), [colors])
+  const { height: windowHeight } = useWindowDimensions()
   const appearance = useThemeStore((s) => s.appearance)
   const insets = useSafeAreaInsets()
   const t = useTranslation()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const hasSeenOnboarding = useAuthStore((s) => s.hasSeenOnboarding)
   const setHasCompletedPermissionIntro = useAuthStore((s) => s.setHasCompletedPermissionIntro)
+
+  const usableHeight = Math.max(0, windowHeight - insets.top - insets.bottom)
+
+  const layout = useMemo(() => {
+    const compact = usableHeight < 620
+    const sheetGap = usableHeight < 540 ? 20 : usableHeight < 680 ? 28 : usableHeight < 800 ? 36 : 43
+    const sheetPaddingTop = usableHeight < 540 ? 28 : usableHeight < 680 ? 44 : 56
+    const headlineSize = usableHeight < 540 ? 22 : usableHeight < 620 ? 24 : 28
+    return { compact, sheetGap, sheetPaddingTop, headlineSize }
+  }, [usableHeight])
+
+  const styles = useMemo(() => createPermissionStyles(colors, layout), [colors, layout])
 
   /** For now: do not auto-skip this screen when `hasCompletedPermissionIntro` is already true. */
   useEffect(() => {
@@ -163,13 +179,13 @@ export function PreAppPermissionScreen() {
 
   const goHome = useCallback(() => {
     setHasCompletedPermissionIntro(true)
-    router.replace('/home')
+    replaceToHome()
   }, [setHasCompletedPermissionIntro])
 
   const onAllow = useCallback(async () => {
     setHasCompletedPermissionIntro(true)
     await requestMediaLibraryAndNotifications()
-    router.replace('/home')
+    replaceToHome()
   }, [setHasCompletedPermissionIntro])
 
   if (!isAuthenticated || !hasSeenOnboarding) {
@@ -188,6 +204,7 @@ export function PreAppPermissionScreen() {
         contentContainerStyle={[
           styles.scrollContent,
           {
+            minHeight: windowHeight,
             paddingTop: Math.max(insets.top, 12) + 8,
             paddingBottom: Math.max(insets.bottom, 24),
           },

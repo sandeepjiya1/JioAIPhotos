@@ -132,8 +132,8 @@ export const lightPalette = {
 
   neutralTrack: 'rgba(10,31,46,0.12)',
 
-  /** Family Hub add-member pill (Figma `1305:22279`) — dark blue on light canvas */
-  familyHubAddCtaBg: '#0a1f2e',
+  /** Family Hub add-member pill — Figma `1395:17588` / `1395:17589` (`colour/surface` → `#e7e9ff` on light canvas) */
+  familyHubAddCtaBg: '#e7e9ff',
 
   sectionSubtleText: 'rgba(10,31,46,0.48)',
 

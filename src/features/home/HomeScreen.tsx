@@ -171,7 +171,7 @@ function createHomeStyles(colors: AppThemeColors) {
       color: colors.contentPrimary,
       textAlign: 'center',
     },
-    /** Figma `1305:22279` — dark blue pill; icon uses `primary600` */
+    /** Add-member tile fill — `familyHubAddCtaBg` (dark: `1305:22279`; light: `1395:17588` surface `#e7e9ff`). */
     familyAddCircle: {
       backgroundColor: colors.familyHubAddCtaBg,
       alignItems: 'center',
@@ -618,7 +618,7 @@ export default function HomeScreen() {
         cricketFooterMarginTop: ms(22),
         cricketFooterPadH: ms(17),
         cricketFooterPadTop: ms(32),
-        /** Figma `1305:22633` uses large pb; on app home that stacked with tab-bar scroll inset — use 0, rely on `homeBottomTabScrollPaddingBottom`. */
+        /** Figma `1305:22633` uses large pb; stack already sits above tab bar — use 0 here; scroll tail comes from `homeBottomTabScrollPaddingBottom`. */
         cricketFooterPadBottom: 0,
         cricketFooterTitleSize: ms(28.79),
         cricketFooterTitleLine: ms(28.79),

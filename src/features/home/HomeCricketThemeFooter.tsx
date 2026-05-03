@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View } from 'react-native'
 import { ResolvedImage } from '@/features/home/ResolvedImage'
 import { HOME_CRICKET_THEME_FOOTER } from '@/features/home/homeContent'
+import { useThemeStore } from '@/store/themeStore'
 import { useThemeColors } from '@/theme/useThemeColors'
 
 /** Figma `1305:22633` — decorative layer crop on stadium art */
@@ -20,10 +21,15 @@ export type HomeCricketThemeFooterLayout = {
 
 /**
  * Figma Journeys `1305:22633` — CricketTheme_Footer: stadium art at 20% opacity, “With Love / From Jio”,
- * IPL line-art mark (SVG `1305:22637` rasterized).
+ * IPL line-art mark: dark `1305:22637`, light `1395:17608` (rasterized for RN).
  */
 export function HomeCricketThemeFooter({ lx }: { lx: HomeCricketThemeFooterLayout }) {
   const colors = useThemeColors()
+  const appearance = useThemeStore((s) => s.appearance)
+  const playersArt =
+    appearance === 'light'
+      ? HOME_CRICKET_THEME_FOOTER.playersArtLight
+      : HOME_CRICKET_THEME_FOOTER.playersArtDark
   /** Balance top/bottom so the title + art row sits vertically centered in the footer band (Figma pad was top-heavy with `padBottom: 0`). */
   const padV = (lx.padTop + lx.padBottom) / 2
   const titleStyle = [
@@ -68,7 +74,7 @@ export function HomeCricketThemeFooter({ lx }: { lx: HomeCricketThemeFooterLayou
 
         <View style={[styles.playersMark, { width: lx.playersW, height: lx.playersH }]}>
           <ResolvedImage
-            webPath={HOME_CRICKET_THEME_FOOTER.playersArt}
+            webPath={playersArt}
             resizeMode="contain"
             style={styles.playersImage}
           />

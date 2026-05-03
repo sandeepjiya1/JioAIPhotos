@@ -85,12 +85,27 @@ export interface HomeIplThemeBannerLayer {
 /** Pixel size of `ipl-theme-banner-header.png` — banner height should be `windowWidth × (height/width)` so the art is full-bleed width without horizontal crop. */
 export const HOME_IPL_THEME_BANNER_PIXEL_SIZE = { width: 1024, height: 193 } as const
 
-/** IPL theme strip above AI Avatars rail — `ipl-theme-banner-header.png` (1024×193). */
+/** IPL theme strip above AI Avatars rail — dark: `ipl-theme-banner-header.png` (1024×193). */
 export const HOME_IPL_THEME_BANNER = {
   layers: [
     {
       id: 'ipl-banner-full',
-      webPath: '/assets/figma/ipl-theme-banner-header.png?v=20260502b',
+      webPath: '/assets/home/ipl-theme-banner-header.png?v=20260502b',
+      left: '0%',
+      width: '100%',
+      height: '100%',
+      top: '0%',
+      zIndex: 0,
+    },
+  ],
+} as const satisfies { layers: readonly HomeIplThemeBannerLayer[] }
+
+/** Light mode — `Theme_Header_IPL_Lightmode` / 1024×193 (same aspect as dark). */
+export const HOME_IPL_THEME_BANNER_LIGHT = {
+  layers: [
+    {
+      id: 'ipl-banner-full',
+      webPath: '/assets/home/ipl-theme-banner-header-light.png?v=20260502d',
       left: '0%',
       width: '100%',
       height: '100%',
@@ -267,6 +282,8 @@ export const HOME_CRICKET_THEME_FOOTER = {
   line2: 'From Jio',
   /** Stadium / pitch decorative art (Figma export `5294009c…`). */
   backgroundArt: '/assets/figma/5294009c1233bb4e55e46c6da41f71a9264d0e70.png?v=20260501a',
-  /** Figma `1305:22637` Layer_1 — rasterized from SVG for RN. */
-  playersArt: '/assets/figma/cricket-theme-footer-players.png?v=20260501a',
+  /** Figma `1305:22637` Layer_1 — dark canvas; rasterized from SVG for RN. */
+  playersArtDark: '/assets/home/cricket-theme-footer-players.png?v=20260502c',
+  /** Figma `1395:17608` Layer_1 — light canvas (SVG `3e4713e4…` → PNG). */
+  playersArtLight: '/assets/home/cricket-theme-footer-players-light.png?v=20260502c',
 } as const

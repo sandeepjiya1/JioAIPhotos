@@ -1,11 +1,18 @@
 <!doctype html>
 <!--
-  Figma 683:15397 — OnboardingCard3 (jersey / “Your Name” stack + side rails).
+  Figma 1590:20584 — OnboardingCard3. Center card nodes: 1590:20588 (jersey), 1590:20594 (avatar),
+  1590:20597 (“Your Name”), 1590:20593 (dashed badge), 1590:20590 (name bar).
   Regenerate PNG: bash scripts/capture-onboarding-slides-1-3-art.sh
 -->
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Anton+SC&display=swap"
+      rel="stylesheet"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
       body {
@@ -28,42 +35,55 @@
   </head>
   <body>
     <div class="stage">
-      <div class="relative w-[405px] h-[336px] overflow-visible" data-node-id="683:15397">
+      <div class="relative w-[405px] h-[336px] overflow-visible" data-node-id="1590:20584">
+        <!-- 1590:20586 — clip frame; center stack from Figma Dev Mode -->
         <div
           class="absolute h-[273.422px] left-[102.44px] overflow-clip rounded-[12.065px] top-[62.59px] w-[154.967px]"
+          data-node-id="1590:20586"
         >
-          <div class="absolute left-[-15.51px] top-0 w-[170.478px] h-[273.423px]">
-            <div
-              class="absolute h-[273.423px] left-0 rounded-[10.341px] top-0 w-[154.967px] overflow-hidden"
-            >
-              <img
-                alt=""
-                class="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[10.341px] size-full"
-                src="../assets/onboarding/figma-slides-1-3/12d4922fbff63a57cba88c47e890d80a43e9c623.png"
-              />
-            </div>
-            <div class="absolute left-[-15.51px] top-[206.83px] w-[170.634px] h-[80px]">
-              <div
-                class="absolute bg-[#b90012] h-[45.675px] left-0 rounded-bl-[92.349px] rounded-br-[9.618px] top-[34.47px] w-[170.634px]"
-              ></div>
-              <div
-                class="absolute bg-[#b90012] border-[0.474px] border-white border-dashed h-[79.285px] left-[8.62px] rounded-[47.21px] top-0 w-[77.523px]"
-              ></div>
-              <div class="absolute h-[77.561px] left-[12.06px] top-[5.17px] w-[75.837px] overflow-hidden rounded-full">
-                <img
-                  alt=""
-                  class="absolute inset-0 max-w-none object-cover pointer-events-none size-full"
-                  src="../assets/onboarding/figma-slides-1-3/d5bd4a4d033c0c9a36f9ac4a3c648c8ae22a4df7.png"
-                />
-              </div>
-              <p
-                class="absolute text-white not-italic left-[78.42px] top-[44.95px] w-[64.634px] text-[12.212px] leading-[7.185px]"
-                style="font-family: ui-sans-serif, system-ui, sans-serif; font-weight: 700"
-              >
-                Your Name
-              </p>
-            </div>
+          <!-- 1590:20588 — jersey image -->
+          <div
+            class="absolute h-[273.423px] left-0 overflow-hidden rounded-[10.341px] top-0 w-[154.967px]"
+            data-node-id="1590:20588"
+          >
+            <img
+              alt=""
+              class="absolute inset-0 max-w-none object-cover pointer-events-none rounded-[10.341px] size-full"
+              src="../assets/onboarding/figma-slides-1-3/12d4922fbff63a57cba88c47e890d80a43e9c623.png"
+            />
           </div>
+          <!-- 1590:20590 — curved name bar -->
+          <div
+            class="absolute bg-[#b90012] h-[45.675px] left-[-15.51px] rounded-bl-[92.349px] rounded-br-[9.618px] top-[241.3px] w-[170.634px]"
+            data-node-id="1590:20590"
+          ></div>
+          <!-- 1590:20593 — dashed circular badge (under avatar in z-order) -->
+          <div
+            class="absolute bg-[#b90012] border-[0.474px] border-white border-dashed h-[79.285px] left-[-6.89px] rounded-[47.21px] top-[206.83px] w-[77.523px]"
+            data-node-id="1590:20593"
+          ></div>
+          <!-- 1590:20594 — avatar -->
+          <div
+            class="absolute h-[77.561px] left-[-3.45px] overflow-hidden rounded-full top-[212px] w-[75.837px]"
+            data-node-id="1590:20594"
+          >
+            <img
+              alt=""
+              class="absolute inset-0 max-w-none object-cover pointer-events-none size-full"
+              src="../assets/onboarding/figma-slides-1-3/d5bd4a4d033c0c9a36f9ac4a3c648c8ae22a4df7.png"
+            />
+          </div>
+          <!-- 1590:20597 — “Your Name” (Anton SC per Figma) -->
+          <p
+            class="absolute h-[9.48px] leading-[7.185px] left-[78.42px] not-italic text-[12.212px] text-white top-[250.78px] w-[64.634px]"
+            data-node-id="1590:20597"
+            style="
+              font-family: 'Anton SC', ui-sans-serif, system-ui, sans-serif;
+              font-feature-settings: 'liga' 0;
+            "
+          >
+            Your Name
+          </p>
         </div>
         <div class="absolute flex flex-col gap-[7.756px] left-[28.33px] top-[94px] w-[66.358px]">
           <div class="h-[100.829px] relative rounded-[6.033px] shrink-0 w-full overflow-hidden">

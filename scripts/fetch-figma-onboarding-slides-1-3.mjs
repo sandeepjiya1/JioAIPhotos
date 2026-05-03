@@ -7,7 +7,7 @@
  * Nodes:
  *   683-15351 → assets/onboarding/onboarding-slide-1.png
  *   683-15374 → assets/onboarding/onboarding-slide-2.png
- *   683-15397 → assets/onboarding/onboarding-slide-3.png
+ *   1590-20584 → assets/onboarding/onboarding-slide-3.png (OnboardingCard3 — was 683-15397)
  */
 import { writeFileSync, mkdirSync } from 'node:fs'
 import { dirname, join } from 'node:path'
@@ -23,7 +23,7 @@ const FILE_KEY = 'Q6e4kgKYBFpulMyKnPVHb8'
 const JOBS = [
   { nodeHyphen: '683-15351', outFile: 'onboarding-slide-1.png' },
   { nodeHyphen: '683-15374', outFile: 'onboarding-slide-2.png' },
-  { nodeHyphen: '683-15397', outFile: 'onboarding-slide-3.png' },
+  { nodeHyphen: '1590-20584', outFile: 'onboarding-slide-3.png' },
 ]
 
 if (!token) {

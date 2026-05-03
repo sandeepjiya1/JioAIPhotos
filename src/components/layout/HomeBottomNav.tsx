@@ -6,6 +6,7 @@ import { router, usePathname } from 'expo-router'
 import { PressableScale } from '@/components/motion/PressableScale'
 import { NavBarGlyph, type BottomNavGlyph } from '@/components/navigation/NavBarGlyph'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useCreateSheetStore } from '@/store/createSheetStore'
 import { useThemeStore } from '@/store/themeStore'
 import { BASE_DESIGN_WIDTH, moderateSize } from '@/theme/layoutScale'
 import { useThemeColors } from '@/theme/useThemeColors'
@@ -24,6 +25,18 @@ const GLYPH: Record<NavId, BottomNavGlyph> = {
   home: 'home',
   create: 'create',
   photos: 'photos',
+}
+
+/**
+ * Whether the home shell bottom tab bar should render for this pathname.
+ * **Only** the main Home tab (`/home`) and Photos (`/home/photos`, including nested segments)
+ * show the bar; stack routes (AI Avatar, Jerseys, Search, Profile, …) do not.
+ */
+export function isHomeBottomNavVisibleForPathname(pathname: string): boolean {
+  const p = pathname.replace(/\/$/, '') || '/'
+  if (p === '/home') return true
+  if (p === '/home/photos' || p.startsWith('/home/photos/')) return true
+  return false
 }
 
 /**
@@ -46,10 +59,16 @@ export function getHomeBottomNavLayout(screenWidth: number) {
   }
 }
 
-/** Scroll `paddingBottom` so content clears tab bar + home indicator (physical safe area unchanged). */
+/**
+ * Scroll `paddingBottom` for screens inside the home `Stack` (`app/home/_layout`).
+ * The bottom nav is a **sibling below** that stack, so the scroll area already ends above the bar.
+ * Only add a short tail and device inset — do not add nav height again (avoids a large empty
+ * overscroll band under the last section, e.g. Cricket theme footer on Home).
+ */
 export function homeBottomTabScrollPaddingBottom(safeBottom: number, screenWidth: number): number {
-  const L = getHomeBottomNavLayout(screenWidth)
-  return L.trackPadTop + L.rowHeight + Math.max(safeBottom, 4) + L.bottomChromeExtra
+  const w = screenWidth > 0 ? screenWidth : BASE_DESIGN_WIDTH
+  const tail = moderateSize(16, w)
+  return tail + Math.max(safeBottom, 0)
 }
 
 function isActive(pathname: string, href: string): boolean {
@@ -62,6 +81,8 @@ export function HomeBottomNav() {
   const appearance = useThemeStore((s) => s.appearance)
   const insets = useSafeAreaInsets()
   const pathname = usePathname()
+  const createSheetOpen = useCreateSheetStore((s) => s.open)
+  const openCreateSheet = useCreateSheetStore((s) => s.openSheet)
   const { width: winW } = useWindowDimensions()
   const t = useTranslation()
   const ww = winW > 0 ? winW : Dimensions.get('window').width
@@ -82,6 +103,8 @@ export function HomeBottomNav() {
     photos: t.nav_photos,
   }
 
+  if (!isHomeBottomNavVisibleForPathname(pathname)) return null
+
   return (
     <View style={[styles.shell, shellStyle]} accessibilityRole="tablist" accessibilityLabel="Main navigation">
       <BlurView intensity={72} tint={appearance === 'light' ? 'light' : 'dark'} style={StyleSheet.absoluteFill} />
@@ -99,7 +122,10 @@ export function HomeBottomNav() {
       >
         {NAV_IDS.map((id) => {
           const href = HREF[id]
-          const active = isActive(pathname, href)
+          const active =
+            id === 'create'
+              ? createSheetOpen || isActive(pathname, href)
+              : isActive(pathname, href)
           const glyphColor = active ? colors.primary600 : colors.contentSecondary
 
           return (
@@ -108,7 +134,13 @@ export function HomeBottomNav() {
               accessibilityRole="button"
               accessibilityLabel={label[id]}
               accessibilityState={{ selected: active }}
-              onPress={() => router.replace(href)}
+              onPress={() => {
+                if (id === 'create') {
+                  openCreateSheet()
+                  return
+                }
+                router.replace(href)
+              }}
               layout="fill"
               style={[
                 styles.item,

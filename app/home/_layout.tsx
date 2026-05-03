@@ -2,6 +2,7 @@ import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Platform, View } from 'react-native'
 import { HomeBottomNav } from '@/components/layout/HomeBottomNav'
+import { CreateBottomSheet } from '@/components/layout/CreateBottomSheet'
 import { useThemeStore } from '@/store/themeStore'
 import { homeTabFadeDurationMs } from '@/theme/motion'
 import { useThemeColors } from '@/theme/useThemeColors'
@@ -26,6 +27,7 @@ export default function HomeLayout() {
         />
       </View>
       <HomeBottomNav />
+      <CreateBottomSheet />
     </View>
   )
 }

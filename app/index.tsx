@@ -14,6 +14,7 @@ import Animated, {
 } from 'react-native-reanimated'
 import { JioLogo } from '@/components/molecules/JioLogo'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
+import { replaceToHome } from '@/lib/authNavigation'
 import { colors } from '@/theme/colors'
 import { motionDuration, motionEasing } from '@/theme/motion'
 
@@ -31,8 +32,13 @@ export default function SplashScreen() {
       <Animated.View
         entering={FadeIn.duration(reducedMotion ? motionDuration.fast : 600)}
         style={styles.logoWrap}
+        accessible
+        accessibilityLabel="Jio Pix"
       >
-        <JioLogo size="splash" />
+        <JioLogo size="splash" accessible={false} />
+        <Text style={styles.pixMark} accessible={false}>
+          Pix
+        </Text>
       </Animated.View>
 
       <View style={styles.dots} accessibilityElementsHidden>
@@ -43,7 +49,7 @@ export default function SplashScreen() {
 
       {__DEV__ ? (
         <View style={styles.devRow}>
-          <Pressable style={styles.devBtn} onPress={() => router.replace('/home')}>
+          <Pressable style={styles.devBtn} onPress={() => replaceToHome()}>
             <Text style={styles.devBtnLabel}>Dev: home</Text>
           </Pressable>
         </View>
@@ -88,8 +94,17 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   logoWrap: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 10,
+  },
+  pixMark: {
+    fontSize: 38,
+    lineHeight: 42,
+    fontWeight: '700',
+    color: colors.contentPrimary,
+    letterSpacing: -0.5,
   },
   dots: {
     position: 'absolute',

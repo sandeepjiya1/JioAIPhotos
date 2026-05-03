@@ -14,14 +14,14 @@ import {
 // core resolver so module-scope aspect math and web `<img>` URIs work on every platform.
 import resolveAssetSource from 'react-native/Libraries/Image/resolveAssetSource'
 
+/** Three slides shown; slide-4 PNG kept in repo for when the family-storage step is re-enabled. */
 const SLIDES: ImageSourcePropType[] = [
   require('../../../assets/onboarding/onboarding-slide-1.png'),
   require('../../../assets/onboarding/onboarding-slide-2.png'),
   require('../../../assets/onboarding/onboarding-slide-3.png'),
-  require('../../../assets/onboarding/onboarding-slide-4.png'),
 ]
 
-/** Slides 1–3: Figma JioAIPhotos Journeys nodes 683:15351, 683:15374, 683:15397 (see scripts/onboarding-slide-{1,2,3}-figma-art.html). Regenerate 910×1024 PNGs: npm run onboarding:slides-1-3:figma-art (Chrome), or npm run figma:onboarding-slides-1-3 with FIGMA_ACCESS_TOKEN. */
+/** Slides 1–3: Figma nodes 683:15351, 683:15374, 1590:20584 (OnboardingCard3; see scripts/onboarding-slide-{1,2,3}-figma-art.html). Regenerate 910×1024 PNGs: npm run onboarding:slides-1-3:figma-art (Chrome), or `FIGMA_ACCESS_TOKEN=… npm run figma:onboarding-slides-1-3`. */
 /** Fallback if Metro has not registered dimensions yet. */
 const FALLBACK_ASPECT_WH = 910 / 1024
 
@@ -50,10 +50,6 @@ function resolveWebImageUri(source: ImageSourcePropType): string | undefined {
 }
 
 /**
- * Slide 4 art was historically exported at 360×405 while Figma layers bleed lower (negative inset
- * on avatars), so the PNG was clipped. Regenerate with `npm run onboarding:slide-4:figma-art`
- * (Figma Desktop open) or `npm run figma:onboarding-slide-4` (FIGMA_ACCESS_TOKEN).
- *
  * RN Web’s `Image` wraps content in `overflow: hidden` + background-image; on web we use a real
  * `<img>` + `object-fit: contain` when a URI is available.
  *

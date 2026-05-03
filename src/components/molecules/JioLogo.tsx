@@ -9,7 +9,8 @@ const DIAMETER: Record<JioLogoSize, number> = {
   sm: 24,
   md: 32,
   lg: 48,
-  splash: 128,
+  /** In-app splash only (`app/index.tsx`). */
+  splash: 88,
 }
 
 /** Same path as web `JioLogo`; scale ≈ 99.2% of circle (brand lockup). */
@@ -20,17 +21,19 @@ const WORDMARK_RATIO = 0.775 * (32 / 25)
 
 export interface JioLogoProps {
   size?: JioLogoSize
+  /** When false, omit standalone a11y (e.g. splash lockup with “Pix” beside the mark). */
+  accessible?: boolean
 }
 
-export function JioLogo({ size = 'md' }: JioLogoProps) {
+export function JioLogo({ size = 'md', accessible = true }: JioLogoProps) {
   const colors = useThemeColors()
   const d = DIAMETER[size]
   const inner = d * WORDMARK_RATIO
 
   return (
     <View
-      accessibilityRole="image"
-      accessibilityLabel="Jio"
+      accessibilityRole={accessible ? 'image' : undefined}
+      accessibilityLabel={accessible ? 'Jio' : undefined}
       style={{
         width: d,
         height: d,
