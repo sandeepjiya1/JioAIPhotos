@@ -4,8 +4,27 @@ import { Platform, View } from 'react-native'
 import { HomeBottomNav } from '@/components/layout/HomeBottomNav'
 import { CreateBottomSheet } from '@/components/layout/CreateBottomSheet'
 import { useThemeStore } from '@/store/themeStore'
-import { homeTabFadeDurationMs } from '@/theme/motion'
+import { homeJourneyStackAnimationMs, homeTabFadeDurationMs } from '@/theme/motion'
 import { useThemeColors } from '@/theme/useThemeColors'
+
+const tabFadeDuration =
+  Platform.OS === 'ios' ? homeTabFadeDurationMs.ios : homeTabFadeDurationMs.default
+
+const tabStackOptions = {
+  animation: 'fade' as const,
+  animationDuration: tabFadeDuration,
+  gestureEnabled: true,
+}
+
+/** Pushes from Home (and Photos tab): native card on iOS, timed slide on Android. */
+const journeyStackOptions =
+  Platform.OS === 'ios'
+    ? { animation: 'default' as const, gestureEnabled: true }
+    : {
+        animation: 'slide_from_right' as const,
+        animationDuration: homeJourneyStackAnimationMs,
+        gestureEnabled: true,
+      }
 
 export default function HomeLayout() {
   const colors = useThemeColors()
@@ -18,13 +37,21 @@ export default function HomeLayout() {
           screenOptions={{
             headerShown: false,
             contentStyle: { backgroundColor: colors.surface0 },
-            /** Tab switches use `router.replace` — fade duration is longer on iOS so the cross-fade is visible. */
-            animation: 'fade',
-            animationDuration:
-              Platform.OS === 'ios' ? homeTabFadeDurationMs.ios : homeTabFadeDurationMs.default,
-            gestureEnabled: true,
+            ...tabStackOptions,
           }}
-        />
+        >
+          <Stack.Screen name="index" options={tabStackOptions} />
+          <Stack.Screen name="photos" options={tabStackOptions} />
+          <Stack.Screen name="create" options={tabStackOptions} />
+          <Stack.Screen name="ai-avatar" options={journeyStackOptions} />
+          <Stack.Screen name="ai-avatar-jerseys" options={journeyStackOptions} />
+          <Stack.Screen name="memories" options={journeyStackOptions} />
+          <Stack.Screen name="search" options={journeyStackOptions} />
+          <Stack.Screen name="profile" options={journeyStackOptions} />
+          <Stack.Screen name="files" options={journeyStackOptions} />
+          <Stack.Screen name="ai-camera" options={journeyStackOptions} />
+          <Stack.Screen name="greeting/[id]" options={journeyStackOptions} />
+        </Stack>
       </View>
       <HomeBottomNav />
       <CreateBottomSheet />

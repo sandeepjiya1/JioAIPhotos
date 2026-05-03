@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react'
 import {
   Dimensions,
-  Pressable,
   ScrollView,
   StyleSheet,
   Text,
@@ -10,7 +9,13 @@ import {
   type StyleProp,
   type TextStyle,
 } from 'react-native'
-import Animated, { useAnimatedScrollHandler, useSharedValue } from 'react-native-reanimated'
+import Animated, {
+  FadeIn,
+  FadeInUp,
+  FadeOut,
+  useAnimatedScrollHandler,
+  useSharedValue,
+} from 'react-native-reanimated'
 import { LinearGradient } from 'expo-linear-gradient'
 import { BlurView } from 'expo-blur'
 import { router } from 'expo-router'
@@ -19,6 +24,7 @@ import Svg, { Path } from 'react-native-svg'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/atoms/Button'
 import { AnimatedSection, ScrollRevealSection } from '@/components/motion'
+import { PressableScale } from '@/components/motion/PressableScale'
 import { homeBottomTabScrollPaddingBottom } from '@/components/layout/HomeBottomNav'
 import { HomeAppHeader } from '@/features/home/HomeAppHeader'
 import { HomeCricketThemeFooter } from '@/features/home/HomeCricketThemeFooter'
@@ -42,10 +48,12 @@ import {
 } from '@/features/home/homeContent'
 import { HomeScreenSkeleton } from '@/features/home/HomeScreenSkeleton'
 import { useHomeScreenImagesReady } from '@/features/home/useHomeScreenImagesReady'
-import { useThemeStore } from '@/store/themeStore'
+import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
+import { useThemeStore } from '@/store/themeStore'
 import type { AppThemeColors } from '@/theme/palettes'
 import { moderateSize, scaleSizeFromDesign } from '@/theme/layoutScale'
+import { homeShellEnterDurationMs, motionDuration, motionEasing } from '@/theme/motion'
 import { useThemeColors } from '@/theme/useThemeColors'
 
 /** Figma Journeys home (`1305:22445` rail, avatar `1305:22455` / `1305:22276`) — frame width for px specs. */
@@ -275,9 +283,10 @@ function MemoryJourneysVideoCard({
   const playDiscTint =
     appearance === 'light' ? 'rgba(255,255,255,0.32)' : 'rgba(12,13,16,0.32)'
   return (
-    <Pressable
+    <PressableScale
       accessibilityRole="button"
       accessibilityLabel={`${item.title}, ${item.date}, play memory`}
+      layout="fill"
       onPress={() => router.push('/home/memories')}
       style={{ width, height }}
     >
@@ -317,7 +326,7 @@ function MemoryJourneysVideoCard({
           </View>
         </View>
       </View>
-    </Pressable>
+    </PressableScale>
   )
 }
 
@@ -464,9 +473,10 @@ function MemoryJourneysBackupCtaCard({
             <Text style={[local.title, { fontSize: titleSize, lineHeight: titleLine }]}>{item.title}</Text>
           </View>
         </View>
-        <Pressable
+        <PressableScale
           accessibilityRole="button"
           accessibilityLabel={item.ctaLabel}
+          layout="auto"
           onPress={() => router.push('/permission')}
           style={[
             local.cta,
@@ -479,7 +489,7 @@ function MemoryJourneysBackupCtaCard({
           ]}
         >
           <Text style={[local.ctaLabel, { fontSize: ctaLabelSize, lineHeight: ctaLabelLine }]}>{item.ctaLabel}</Text>
-        </Pressable>
+        </PressableScale>
       </View>
     </View>
   )
@@ -533,6 +543,12 @@ export default function HomeScreen() {
   const scrollY = useSharedValue(0)
   const viewportH = useSharedValue(Math.max(1, Dimensions.get('window').height))
   const t = useTranslation()
+  const reducedMotion = usePrefersReducedMotion()
+
+  const homeFeedEntering = useMemo(() => {
+    if (reducedMotion) return FadeIn.duration(motionDuration.fast)
+    return FadeInUp.duration(homeShellEnterDurationMs + 40).easing(motionEasing.outCubic)
+  }, [reducedMotion])
 
   useEffect(() => {
     viewportH.value = Math.max(1, winH)
@@ -649,7 +665,16 @@ export default function HomeScreen() {
     return (
       <View style={styles.root}>
         <StatusBar style="light" />
-        <HomeScreenSkeleton />
+        {!reducedMotion ? (
+          <Animated.View
+            style={{ flex: 1, minHeight: 0 }}
+            exiting={FadeOut.duration(260).easing(motionEasing.outCubic)}
+          >
+            <HomeScreenSkeleton />
+          </Animated.View>
+        ) : (
+          <HomeScreenSkeleton />
+        )}
       </View>
     )
   }
@@ -657,7 +682,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
-      <HomeAppHeader />
+      <Animated.View entering={homeFeedEntering} style={{ flex: 1, minHeight: 0 }}>
+        <HomeAppHeader />
       <Animated.ScrollView
         style={styles.scroll}
         contentContainerStyle={{
@@ -670,7 +696,7 @@ export default function HomeScreen() {
         onScroll={onScroll}
         scrollEventThrottle={16}
       >
-        <AnimatedSection delayMs={72}>
+        <AnimatedSection delayMs={44}>
           <View style={{ marginTop: lx.aiSectionMarginTop, gap: lx.iplBannerToRailGap }}>
             <HomeIplThemeBanner height={lx.iplThemeBannerHeight} />
             <View
@@ -728,10 +754,11 @@ export default function HomeScreen() {
             contentContainerStyle={[styles.greetHRail, { gap: lx.greetRailGap }]}
           >
             {HOME_GREETINGS_SECTION.items.map((item) => (
-              <Pressable
+              <PressableScale
                 key={item.id}
                 accessibilityRole="button"
                 accessibilityLabel={`${item.label}, open greeting`}
+                layout="fill"
                 onPress={() => router.push(`/home/greeting/${item.id}`)}
                 style={{ width: greetCardW }}
               >
@@ -776,7 +803,7 @@ export default function HomeScreen() {
                     {item.label}
                   </Text>
                 </View>
-              </Pressable>
+              </PressableScale>
             ))}
           </ScrollView>
           {HOME_SHOW_SECTION_SUBTITLES && HOME_GREETINGS_SECTION.subtitle ? (
@@ -915,10 +942,11 @@ export default function HomeScreen() {
             contentContainerStyle={[styles.greetHRail, { gap: lx.greetRailGap }]}
           >
             {HOME_TRENDING_SECTION.items.map((item) => (
-              <Pressable
+              <PressableScale
                 key={item.id}
                 accessibilityRole="button"
                 accessibilityLabel={`${item.label}, trending`}
+                layout="fill"
                 onPress={() => router.push('/home/create')}
                 style={{ width: greetCardW }}
               >
@@ -963,7 +991,7 @@ export default function HomeScreen() {
                     {item.label}
                   </Text>
                 </View>
-              </Pressable>
+              </PressableScale>
             ))}
           </ScrollView>
         </ScrollRevealSection>
@@ -1038,8 +1066,11 @@ export default function HomeScreen() {
             </View>
             <View style={[styles.familyAvatarRow, { gap: lx.familyRailGap }]}>
               {HOME_FAMILY_HUB_SECTION.members.map((member) => (
-                <Pressable
+                <PressableScale
                   key={member.id}
+                  accessibilityRole="button"
+                  accessibilityLabel={member.name}
+                  layout="auto"
                   onPress={() => router.push('/home/profile')}
                   style={[styles.familyMemberCol, { gap: lx.familyAvatarStackGap }]}
                   hitSlop={lx.hitSlop}
@@ -1069,17 +1100,15 @@ export default function HomeScreen() {
                   >
                     {member.name}
                   </Text>
-                </Pressable>
+                </PressableScale>
               ))}
-              <Pressable
+              <PressableScale
                 accessibilityRole="button"
                 accessibilityLabel={t.family_hub_add_member_aria}
+                layout="auto"
                 onPress={() => router.push('/home/profile')}
                 hitSlop={lx.hitSlop}
-                style={({ pressed }) => [
-                  styles.familyMemberCol,
-                  { gap: lx.familyAvatarStackGap, opacity: pressed ? 0.88 : 1 },
-                ]}
+                style={[styles.familyMemberCol, { gap: lx.familyAvatarStackGap }]}
               >
                 <View
                   style={[
@@ -1106,7 +1135,7 @@ export default function HomeScreen() {
                 >
                   {t.family_hub_add_member}
                 </Text>
-              </Pressable>
+              </PressableScale>
             </View>
           </View>
 
@@ -1166,6 +1195,7 @@ export default function HomeScreen() {
           />
         </ScrollRevealSection>
       </Animated.ScrollView>
+      </Animated.View>
     </View>
   )
 }

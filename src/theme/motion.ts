@@ -15,9 +15,16 @@ export const stackTransitionMs = motionDuration.normal
  * iOS needs a longer fade than Android for the transition to read clearly.
  */
 export const homeTabFadeDurationMs = {
-  ios: 360,
-  default: motionDuration.fast,
+  /** Tab cross-fade (Home ↔ Photos) — slightly longer reads smoother on device. */
+  ios: 380,
+  default: 240,
 } as const
+
+/** Native-stack duration for journey pushes from the home shell (Android). iOS uses `default` push. */
+export const homeJourneyStackAnimationMs = motionDuration.slow
+
+/** Skeleton → feed first paint (Reanimated layout, ms). */
+export const homeShellEnterDurationMs = 420
 
 /** Reanimated easing presets (UI-thread). */
 export const motionEasing = {

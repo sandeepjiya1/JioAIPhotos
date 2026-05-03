@@ -1,13 +1,23 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
-import Animated, { FadeIn, FadeOut, runOnJS } from 'react-native-reanimated'
+import Animated, {
+  FadeIn,
+  FadeInLeft,
+  FadeInRight,
+  FadeInUp,
+  FadeOut,
+  FadeOutLeft,
+  FadeOutRight,
+  runOnJS,
+} from 'react-native-reanimated'
 import { router } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Button } from '@/components/atoms/Button'
 import { ChevronRight } from '@/components/molecules/ChevronRight'
 import { ProgressDots } from '@/components/molecules/ProgressDots'
+import { OnboardingArtBounceWrap } from '@/components/onboarding/OnboardingArtBounceWrap'
 import { OnboardingSlideArt } from '@/components/onboarding/OnboardingSlideArt'
 import { PressableScale } from '@/components/motion/PressableScale'
 import { replaceToPermissionIntro } from '@/lib/authNavigation'
@@ -15,9 +25,11 @@ import { useAuthStore } from '@/store/authStore'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
-import { motionDuration } from '@/theme/motion'
+import { motionDuration, motionEasing } from '@/theme/motion'
 
 const SWIPE_X = 52
+
+type OnboardingArtDir = 'init' | 'forward' | 'backward'
 
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
@@ -26,6 +38,7 @@ export default function OnboardingScreen() {
   const setHasSeenOnboarding = useAuthStore((s) => s.setHasSeenOnboarding)
   const t = useTranslation()
   const [current, setCurrent] = useState(0)
+  const [artDir, setArtDir] = useState<OnboardingArtDir>('init')
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -35,10 +48,23 @@ export default function OnboardingScreen() {
   const slides = t.onboarding_slides
   const slide = slides[current]!
 
-  const artEntering = useMemo(
-    () => (reducedMotion ? FadeIn.duration(motionDuration.fast) : FadeIn.duration(380).springify()),
-    [reducedMotion],
-  )
+  const artEntering = useMemo(() => {
+    if (reducedMotion) return FadeIn.duration(motionDuration.fast)
+    if (artDir === 'init') {
+      return FadeInUp.duration(440).easing(motionEasing.outCubic)
+    }
+    if (artDir === 'forward') {
+      return FadeInRight.duration(400).easing(motionEasing.outCubic)
+    }
+    return FadeInLeft.duration(400).easing(motionEasing.outCubic)
+  }, [reducedMotion, artDir])
+
+  const artExiting = useMemo(() => {
+    if (reducedMotion) return undefined
+    if (artDir === 'forward') return FadeOutLeft.duration(280).easing(motionEasing.outCubic)
+    if (artDir === 'backward') return FadeOutRight.duration(280).easing(motionEasing.outCubic)
+    return FadeOut.duration(220).easing(motionEasing.outCubic)
+  }, [reducedMotion, artDir])
   const copyEntering = useMemo(
     () =>
       reducedMotion
@@ -54,6 +80,7 @@ export default function OnboardingScreen() {
 
   const goNext = useCallback(() => {
     if (current < slides.length - 1) {
+      setArtDir('forward')
       setCurrent((c) => c + 1)
     } else {
       void finish()
@@ -61,13 +88,27 @@ export default function OnboardingScreen() {
   }, [current, finish, slides.length])
 
   const goPrev = useCallback(() => {
-    setCurrent((c) => (c > 0 ? c - 1 : c))
-  }, [])
+    if (current > 0) {
+      setArtDir('backward')
+      setCurrent((c) => c - 1)
+    }
+  }, [current])
 
-  const pan = Gesture.Pan().onEnd((e) => {
-    if (e.translationX < -SWIPE_X) runOnJS(goNext)()
-    else if (e.translationX > SWIPE_X) runOnJS(goPrev)()
-  })
+  const onDotPress = useCallback(
+    (index: number) => {
+      if (index === current) return
+      setArtDir(index > current ? 'forward' : 'backward')
+      setCurrent(index)
+    },
+    [current],
+  )
+
+  const pan = Gesture.Pan()
+    .activeOffsetX([-32, 32])
+    .onEnd((e) => {
+      if (e.translationX < -SWIPE_X) runOnJS(goNext)()
+      else if (e.translationX > SWIPE_X) runOnJS(goPrev)()
+    })
 
   return (
     <View style={styles.root}>
@@ -93,10 +134,12 @@ export default function OnboardingScreen() {
         <Animated.View
           key={`art-${current}`}
           entering={artEntering}
-          exiting={reducedMotion ? undefined : FadeOut.duration(200)}
+          exiting={artExiting}
           style={styles.artArea}
         >
-          <OnboardingSlideArt index={current} />
+          <OnboardingArtBounceWrap>
+            <OnboardingSlideArt index={current} />
+          </OnboardingArtBounceWrap>
         </Animated.View>
       </GestureDetector>
 
@@ -118,7 +161,7 @@ export default function OnboardingScreen() {
           }
           style={styles.dotsWrap}
         >
-          <ProgressDots total={slides.length} current={current} onDotPress={setCurrent} />
+          <ProgressDots total={slides.length} current={current} onDotPress={onDotPress} />
         </Animated.View>
 
         <View style={styles.buttonWrap} accessibilityRole="none">
