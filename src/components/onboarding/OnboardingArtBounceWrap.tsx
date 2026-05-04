@@ -22,10 +22,14 @@ export function OnboardingArtBounceWrap({ children }: { children: ReactNode }) {
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants"
       onPressIn={() => {
-        if (!reduced) scale.value = withSpring(0.96, motionSpring.press)
+        if (!reduced) {
+          // eslint-disable-next-line react-hooks/immutability -- Reanimated SharedValue (UI thread)
+          scale.value = withSpring(0.96, motionSpring.press)
+        }
       }}
       onPressOut={() => {
         if (reduced) {
+          // eslint-disable-next-line react-hooks/immutability -- Reanimated SharedValue
           scale.value = 1
           return
         }

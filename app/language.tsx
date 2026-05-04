@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import type { ImageSourcePropType } from 'react-native'
-import { Image, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, Image, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
 import { LinearGradient } from 'expo-linear-gradient'
 import { router } from 'expo-router'
@@ -13,6 +13,7 @@ import type { Locale } from '@/lib/i18n'
 import { translations } from '@/lib/i18n'
 import type { AppThemeColors } from '@/theme/palettes'
 import { motionDuration } from '@/theme/motion'
+import { moderateSize } from '@/theme/layoutScale'
 import { useThemeColors } from '@/theme/useThemeColors'
 
 /**
@@ -22,38 +23,40 @@ import { useThemeColors } from '@/theme/useThemeColors'
  */
 const LANGUAGE_HERO = require('../assets/home/language-collage.png') as ImageSourcePropType
 
-function createLanguageStyles(colors: AppThemeColors) {
+function createLanguageStyles(colors: AppThemeColors, ww: number) {
+  const ms = (n: number) => moderateSize(n, ww)
+  const textMax = Math.min(ms(520), ww - ms(24))
   return StyleSheet.create({
     mainCol: {
       flex: 1,
-      minHeight: 280,
-      paddingTop: 8,
+      minHeight: ms(280),
+      paddingTop: ms(8),
     },
     heroText: {
       alignItems: 'center',
-      gap: 8,
-      paddingBottom: 12,
+      gap: ms(8),
+      paddingBottom: ms(12),
     },
     headline: {
       textAlign: 'center',
-      fontSize: 26,
-      lineHeight: 30,
+      fontSize: ms(26),
+      lineHeight: ms(30),
       fontWeight: '900',
       color: colors.contentPrimary,
-      maxWidth: 520,
+      maxWidth: textMax,
     },
     subtitle: {
       textAlign: 'center',
-      fontSize: 15,
-      lineHeight: 20,
+      fontSize: ms(15),
+      lineHeight: ms(20),
       color: colors.contentSecondary,
-      maxWidth: 520,
+      maxWidth: textMax,
     },
     art: {
       flex: 1,
-      minHeight: 160,
-      marginHorizontal: -8,
-      borderRadius: 16,
+      minHeight: ms(160),
+      marginHorizontal: -ms(8),
+      borderRadius: ms(16),
       overflow: 'hidden',
       backgroundColor: colors.surface0,
     },
@@ -63,16 +66,16 @@ function createLanguageStyles(colors: AppThemeColors) {
       height: '100%',
     },
     footerInner: {
-      gap: 16,
+      gap: ms(16),
     },
     choose: {
-      fontSize: 14,
+      fontSize: ms(14),
       fontWeight: '600',
       color: colors.contentPrimary,
     },
     grid: {
       flexDirection: 'row',
-      gap: 12,
+      gap: ms(12),
     },
     gridCell: {
       flex: 1,
@@ -83,7 +86,9 @@ function createLanguageStyles(colors: AppThemeColors) {
 
 export default function LanguageScreen() {
   const colors = useThemeColors()
-  const styles = useMemo(() => createLanguageStyles(colors), [colors])
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const styles = useMemo(() => createLanguageStyles(colors, ww), [colors, ww])
   const setLanguage = useAuthStore((s) => s.setLanguage)
   const [uiLang, setUiLang] = useState<Locale>(() => useAuthStore.getState().selectedLanguage)
 
@@ -118,7 +123,7 @@ export default function LanguageScreen() {
               end={{ x: 0.52, y: 1 }}
               style={StyleSheet.absoluteFillObject}
             />
-            <Image source={LANGUAGE_HERO} style={styles.artImage} resizeMode="cover" accessibilityIgnoresInvertColors             />
+            <Image source={LANGUAGE_HERO} style={styles.artImage} resizeMode="cover" accessibilityIgnoresInvertColors />
             {/* Figma `683:15305` overlay: linear-gradient(186.674deg, transparent 17.98%, rgba(0,0,0,0.616) 47.37%, rgb(12,13,16) 91.988%) */}
             <LinearGradient
               pointerEvents="none"

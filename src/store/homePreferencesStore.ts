@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { create } from 'zustand'
 import { createJSONStorage, persist } from 'zustand/middleware'
 
-/** Home hero under “Your AI Avatars” — Profile → Homepage Options. */
+/** Home hero IPL rail (banner + team chips) — Profile → Homepage Options. */
 export type HomeHeroVariant = 'legacy' | 'option1'
 
 interface HomePreferencesState {

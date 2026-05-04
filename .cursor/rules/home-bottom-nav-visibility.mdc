@@ -8,13 +8,13 @@ alwaysApply: false
 
 The glass **`HomeBottomNav`** in `app/home/_layout.tsx` is the main tab strip (Home · Create · Photos). It must **only** be visible when the user is on:
 
-- **Home tab**: pathname `/home` or `/home/` (see `isHomeBottomNavVisibleForPathname` in `HomeBottomNav.tsx`).
+- **Home tab**: pathname `/home` or `/home/` (see the pathname predicate in `HomeBottomNav.tsx`).
 - **Photos tab**: `/home/photos` and any nested path under `/home/photos/…`.
 
 For **every other** route under the home `Stack` (e.g. `ai-avatar`, `ai-avatar-jerseys`, `search`, `profile`, `greeting`, …), the bar is **hidden** so those screens are full-bleed like Figma detail flows.
 
 When adding a new `app/home/*.tsx` screen:
 
-1. If it is **not** the home feed or photos library, **do not** expect the BNB — the default is hidden unless you extend `isHomeBottomNavVisibleForPathname` and product agrees.
+1. If it is **not** the home feed or photos library, **do not** expect the BNB — the default is hidden unless you extend that pathname predicate in `HomeBottomNav.tsx` and product agrees.
 2. Do not mount a duplicate tab bar on those screens.
 3. Scroll `paddingBottom` should **not** assume the BNB height below the stack; the layout already reserves space only when the bar renders. Use `homeBottomTabScrollPaddingBottom` only where the tab bar is shown, or local inset + tail for full-bleed screens.

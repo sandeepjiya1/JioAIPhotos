@@ -1,7 +1,7 @@
 /**
  * Home AI Avatars hero — **Figma JioAIPhotos — Journeys** `1305:22351`.
  * Five portrait cards in a horizontal rail; center column slightly wider/taller.
- * Section title comes from `HomeScreen` (`SectionHeader` + `HOME_IPL_AVATARS_SECTION_TITLE`).
+ * Section title for the IPL rail is omitted on home (banner + rail only).
  *
  * Carousel: centered when it fits; when wider than the viewport, starts scrolled to the middle
  * so users can pan left/right symmetrically (web + native).

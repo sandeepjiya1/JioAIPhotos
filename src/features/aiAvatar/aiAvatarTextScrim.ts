@@ -10,15 +10,6 @@ export const TEXT_SCRIM_BLACK = [
 
 export const TEXT_SCRIM_LOCATIONS = [0, 0.48, 1] as const
 
-/** Same stop pattern as TEXT_SCRIM_BLACK; kept for call sites that want a named “soft” variant. */
-export const TEXT_SCRIM_SOFT_BLACK = [
-  'rgba(0, 0, 0, 0.8)',
-  'rgba(0, 0, 0, 0.2)',
-  'rgba(0, 0, 0, 0)',
-] as const
-
-export const TEXT_SCRIM_SOFT_LOCATIONS = [0, 0.48, 1] as const
-
 /**
  * Figma `2385:11025` — Cricket Jerseys card overlay
  * `linear-gradient(269.802deg, rgba(0,29,46,0) 0.12%, rgba(27,28,32,0.7) 99.8%)`.

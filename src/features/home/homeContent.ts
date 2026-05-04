@@ -35,9 +35,6 @@ export interface HomeMemoryBackupCtaCard {
 
 export type HomeMemoriesSectionItem = HomeMemoryVideoCard | HomeMemoryBackupCtaCard
 
-/** @deprecated Alias — use `HomeMemoryVideoCard`. */
-export type HomeMemoryCard = HomeMemoryVideoCard
-
 export interface HomeGreetingCard {
   id: string
   image: string
@@ -69,8 +66,10 @@ export interface HomeRichSection<T> {
 
 export const HOME_SHOW_SECTION_SUBTITLES = false
 
-/** IPL hero rail — section heading on home */
-export const HOME_IPL_AVATARS_SECTION_TITLE = 'Your AI Avatars' as const
+/** Section title above the IPL theme banner + team rail (`HomeScreen` first content block). */
+export const HOME_IPL_AVATARS_SECTION_TITLE = 'Trending Today'
+
+/** IPL hero rail — theme banner + team chips (`HOME_IPL_*`). */
 
 export interface HomeIplThemeBannerLayer {
   id: string
@@ -164,7 +163,7 @@ export const HOME_MEMORIES_SECTION: HomeRichSection<HomeMemoriesSectionItem> = {
 
 /** Figma Journeys Trending_Section (`1437:25272`) — 102×136 @ 360, 10px gap; art matches frame composites (single hero per tile). */
 export const HOME_TRENDING_SECTION: HomeRichSection<HomeTrendingTile> = {
-  title: 'Trending',
+  title: 'AI Avatars',
   items: [
     {
       id: 'trend-dhurandhar',

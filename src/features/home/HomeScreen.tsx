@@ -47,7 +47,11 @@ import {
   type HomeMemoryVideoCard,
 } from '@/features/home/homeContent'
 import { HomeScreenSkeleton } from '@/features/home/HomeScreenSkeleton'
-import { useHomeScreenImagesReady } from '@/features/home/useHomeScreenImagesReady'
+import {
+  markHomeShellContentDisplayed,
+  shouldAnimateHomeShellEntrance,
+  useHomeScreenImagesReady,
+} from '@/features/home/useHomeScreenImagesReady'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
 import { useThemeStore } from '@/store/themeStore'
@@ -550,6 +554,13 @@ export default function HomeScreen() {
     return FadeInUp.duration(homeShellEnterDurationMs + 40).easing(motionEasing.outCubic)
   }, [reducedMotion])
 
+  /** One shell entrance per cold home mount; after prefetch cache, remounts are instant. */
+  const playShellEntranceOnce = useMemo(() => shouldAnimateHomeShellEntrance(), [])
+
+  useEffect(() => {
+    if (homeImagesReady) markHomeShellContentDisplayed()
+  }, [homeImagesReady])
+
   useEffect(() => {
     viewportH.value = Math.max(1, winH)
   }, [winH, viewportH])
@@ -682,7 +693,10 @@ export default function HomeScreen() {
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
-      <Animated.View entering={homeFeedEntering} style={{ flex: 1, minHeight: 0 }}>
+      <Animated.View
+        entering={playShellEntranceOnce ? homeFeedEntering : undefined}
+        style={{ flex: 1, minHeight: 0 }}
+      >
         <HomeAppHeader />
       <Animated.ScrollView
         style={styles.scroll}

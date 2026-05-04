@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
+import { ActivityIndicator, Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
 import { router, useLocalSearchParams } from 'expo-router'
 import { AuthLayout } from '@/components/layout/AuthLayout'
@@ -12,6 +12,7 @@ import { replaceToOnboarding } from '@/lib/authNavigation'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 import { motionDuration } from '@/theme/motion'
 
 const OTP_LENGTH = 6
@@ -26,7 +27,61 @@ function usePhoneParam(): string {
   }, [phone])
 }
 
+function makeOtpStyles(ww: number) {
+  const ms = (n: number) => moderateSize(n, ww)
+  return StyleSheet.create({
+    footerCol: {
+      gap: ms(24),
+    },
+    spinnerRow: {
+      height: ms(48),
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    hint: {
+      fontSize: ms(12),
+      textAlign: 'center',
+      color: colors.contentTertiary,
+    },
+    block: {
+      gap: ms(28),
+      paddingTop: ms(10),
+    },
+    topBlock: {
+      gap: ms(20),
+    },
+    heading: {
+      fontSize: ms(26),
+      lineHeight: ms(30),
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    sent: {
+      fontSize: ms(14),
+      lineHeight: ms(20),
+      color: colors.contentPrimary,
+    },
+    sentStrong: {
+      fontWeight: '700',
+    },
+    changeBtn: {
+      alignSelf: 'flex-start',
+      paddingVertical: ms(4),
+    },
+    changeLabel: {
+      fontSize: ms(14),
+      fontWeight: '700',
+      color: colors.contentPrimary,
+    },
+  })
+}
+
 export default function OTPScreen() {
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const styles = useMemo(() => makeOtpStyles(ww), [ww])
+  const changeHitSlop = useMemo(() => moderateSize(8, ww), [ww])
+
   const phone = usePhoneParam()
   const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
   const t = useTranslation()
@@ -94,7 +149,7 @@ export default function OTPScreen() {
           </Text>
           <PressableScale
             onPress={() => router.replace('/login')}
-            hitSlop={8}
+            hitSlop={changeHitSlop}
             style={styles.changeBtn}
             layout="auto"
           >
@@ -107,49 +162,3 @@ export default function OTPScreen() {
     </AuthLayout>
   )
 }
-
-const styles = StyleSheet.create({
-  footerCol: {
-    gap: 24,
-  },
-  spinnerRow: {
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  hint: {
-    fontSize: 12,
-    textAlign: 'center',
-    color: colors.contentTertiary,
-  },
-  block: {
-    gap: 28,
-    paddingTop: 10,
-  },
-  topBlock: {
-    gap: 20,
-  },
-  heading: {
-    fontSize: 26,
-    lineHeight: 30,
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  sent: {
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.contentPrimary,
-  },
-  sentStrong: {
-    fontWeight: '700',
-  },
-  changeBtn: {
-    alignSelf: 'flex-start',
-    paddingVertical: 4,
-  },
-  changeLabel: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.contentPrimary,
-  },
-})

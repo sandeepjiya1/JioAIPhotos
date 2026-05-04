@@ -32,7 +32,7 @@ const GLYPH: Record<NavId, BottomNavGlyph> = {
  * **Only** the main Home tab (`/home`) and Photos (`/home/photos`, including nested segments)
  * show the bar; stack routes (AI Avatar, Jerseys, Search, Profile, …) do not.
  */
-export function isHomeBottomNavVisibleForPathname(pathname: string): boolean {
+function isHomeBottomNavVisibleForPathname(pathname: string): boolean {
   const p = pathname.replace(/\/$/, '') || '/'
   if (p === '/home') return true
   if (p === '/home/photos' || p.startsWith('/home/photos/')) return true
@@ -42,7 +42,7 @@ export function isHomeBottomNavVisibleForPathname(pathname: string): boolean {
 /**
  * Bottom nav metrics derived from window width — keep in sync with `HomeBottomNav` visuals.
  */
-export function getHomeBottomNavLayout(screenWidth: number) {
+function getHomeBottomNavLayout(screenWidth: number) {
   const w = screenWidth > 0 ? screenWidth : BASE_DESIGN_WIDTH
   return {
     trackMaxW: moderateSize(512, w),

@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { useMemo, useState } from 'react'
+import { Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { FadeInDown } from 'react-native-reanimated'
 import { router } from 'expo-router'
 import { AuthLayout } from '@/components/layout/AuthLayout'
@@ -11,9 +11,42 @@ import { PhoneInput } from '@/components/molecules/PhoneInput'
 import { useAuthStore } from '@/store/authStore'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 import { motionDuration } from '@/theme/motion'
 
+function makeLoginStyles(ww: number) {
+  const ms = (n: number) => moderateSize(n, ww)
+  return StyleSheet.create({
+    footerCol: {
+      gap: ms(24),
+    },
+    block: {
+      gap: ms(28),
+      paddingTop: ms(10),
+    },
+    topBlock: {
+      gap: ms(20),
+    },
+    heading: {
+      fontSize: ms(26),
+      lineHeight: ms(30),
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    sub: {
+      fontSize: ms(14),
+      lineHeight: ms(20),
+      fontWeight: '400',
+      color: colors.contentSecondary,
+    },
+  })
+}
+
 export default function LoginScreen() {
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const styles = useMemo(() => makeLoginStyles(ww), [ww])
+
   const setPhone = useAuthStore((s) => s.setPhone)
   const t = useTranslation()
   const [phone, setLocalPhone] = useState('')
@@ -52,28 +85,3 @@ export default function LoginScreen() {
     </AuthLayout>
   )
 }
-
-const styles = StyleSheet.create({
-  footerCol: {
-    gap: 24,
-  },
-  block: {
-    gap: 28,
-    paddingTop: 10,
-  },
-  topBlock: {
-    gap: 20,
-  },
-  heading: {
-    fontSize: 26,
-    lineHeight: 30,
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  sub: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: '400',
-    color: colors.contentSecondary,
-  },
-})

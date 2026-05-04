@@ -1,8 +1,10 @@
+import { useEffect } from 'react'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import { Platform, View } from 'react-native'
-import { HomeBottomNav } from '@/components/layout/HomeBottomNav'
 import { CreateBottomSheet } from '@/components/layout/CreateBottomSheet'
+import { HomeBottomNav } from '@/components/layout/HomeBottomNav'
+import { startHomeScreenImageWarmup } from '@/features/home/useHomeScreenImagesReady'
 import { useThemeStore } from '@/store/themeStore'
 import { homeJourneyStackAnimationMs, homeTabFadeDurationMs } from '@/theme/motion'
 import { useThemeColors } from '@/theme/useThemeColors'
@@ -29,6 +31,11 @@ const journeyStackOptions =
 export default function HomeLayout() {
   const colors = useThemeColors()
   const appearance = useThemeStore((s) => s.appearance)
+
+  useEffect(() => {
+    startHomeScreenImageWarmup()
+  }, [])
+
   return (
     <View style={{ flex: 1, backgroundColor: colors.surface0, overflow: 'visible' }}>
       <StatusBar style={appearance === 'light' ? 'dark' : 'light'} />

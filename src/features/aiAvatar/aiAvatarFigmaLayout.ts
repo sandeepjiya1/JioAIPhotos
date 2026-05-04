@@ -1,5 +1,5 @@
 /** Figma Pod1 category cards use a 160px-wide module (`2385:11001`, `2385:11020`, …). */
-export const FIGMA_CATEGORY_CARD_W = 160
+const FIGMA_CATEGORY_CARD_W = 160
 
 /** In-card text inset from card edges (design px, multiply by `aiAvatarCategoryScale`). */
 export const CARD_TEXT_INSET_DP = 16

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, Text, useWindowDimensions, View } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
   FadeIn,
@@ -25,13 +25,91 @@ import { useAuthStore } from '@/store/authStore'
 import { usePrefersReducedMotion } from '@/hooks/usePrefersReducedMotion'
 import { useTranslation } from '@/hooks/useTranslation'
 import { colors } from '@/theme/colors'
+import { moderateSize } from '@/theme/layoutScale'
 import { motionDuration, motionEasing } from '@/theme/motion'
-
-const SWIPE_X = 52
 
 type OnboardingArtDir = 'init' | 'forward' | 'backward'
 
+function makeOnboardingStyles(ww: number) {
+  const ms = (n: number) => moderateSize(n, ww)
+  return StyleSheet.create({
+    root: {
+      flex: 1,
+      backgroundColor: colors.surface0,
+      minHeight: 0,
+    },
+    skipWrap: {
+      position: 'absolute',
+      left: 0,
+      right: 0,
+      zIndex: 10,
+      flexDirection: 'row',
+      justifyContent: 'flex-end',
+      paddingRight: ms(20),
+    },
+    skip: {
+      minHeight: ms(44),
+      paddingVertical: ms(8),
+      paddingLeft: ms(12),
+    },
+    skipInner: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: ms(4),
+    },
+    skipText: {
+      fontSize: ms(14),
+      fontWeight: '700',
+      color: colors.contentPrimary,
+    },
+    artArea: {
+      flex: 1,
+      minHeight: 0,
+      marginTop: ms(56),
+      overflow: 'visible',
+    },
+    footer: {
+      paddingHorizontal: ms(24),
+      paddingTop: ms(16),
+      gap: ms(16),
+    },
+    copyBlock: {
+      alignItems: 'center',
+      gap: ms(8),
+    },
+    dotsWrap: {
+      alignItems: 'center',
+    },
+    title: {
+      textAlign: 'center',
+      fontSize: ms(22),
+      lineHeight: ms(28),
+      fontWeight: '900',
+      color: colors.contentPrimary,
+    },
+    subtitle: {
+      textAlign: 'center',
+      fontSize: ms(14),
+      lineHeight: ms(20),
+      color: colors.contentSecondary,
+      maxWidth: Math.min(ms(360), ww - ms(24)),
+    },
+    buttonWrap: {
+      paddingTop: ms(8),
+    },
+  })
+}
+
 export default function OnboardingScreen() {
+  const { width: winW } = useWindowDimensions()
+  const ww = winW > 0 ? winW : Dimensions.get('window').width
+  const styles = useMemo(() => makeOnboardingStyles(ww), [ww])
+  const swipeX = useMemo(() => moderateSize(52, ww), [ww])
+  const panActive = useMemo(() => moderateSize(32, ww), [ww])
+  const skipHitSlop = useMemo(() => moderateSize(12, ww), [ww])
+  const chevronSz = useMemo(() => moderateSize(16, ww), [ww])
+  const footerPadBottom = useMemo(() => moderateSize(20, ww), [ww])
+
   const insets = useSafeAreaInsets()
   const reducedMotion = usePrefersReducedMotion()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
@@ -103,21 +181,25 @@ export default function OnboardingScreen() {
     [current],
   )
 
-  const pan = Gesture.Pan()
-    .activeOffsetX([-32, 32])
-    .onEnd((e) => {
-      if (e.translationX < -SWIPE_X) runOnJS(goNext)()
-      else if (e.translationX > SWIPE_X) runOnJS(goPrev)()
-    })
+  const pan = useMemo(
+    () =>
+      Gesture.Pan()
+        .activeOffsetX([-panActive, panActive])
+        .onEnd((e) => {
+          if (e.translationX < -swipeX) runOnJS(goNext)()
+          else if (e.translationX > swipeX) runOnJS(goPrev)()
+        }),
+    [goNext, goPrev, panActive, swipeX],
+  )
 
   return (
     <View style={styles.root}>
       <StatusBar style="light" />
 
-      <View style={[styles.skipWrap, { top: Math.max(insets.top, 8) }]}>
+      <View style={[styles.skipWrap, { top: Math.max(insets.top, moderateSize(8, ww)) }]}>
         <PressableScale
           onPress={() => void finish()}
-          hitSlop={12}
+          hitSlop={skipHitSlop}
           style={styles.skip}
           accessibilityRole="button"
           accessibilityLabel="Skip onboarding"
@@ -125,7 +207,7 @@ export default function OnboardingScreen() {
         >
           <View style={styles.skipInner}>
             <Text style={styles.skipText}>{t.onboarding_skip}</Text>
-            <ChevronRight size={16} color={colors.contentPrimary} />
+            <ChevronRight size={chevronSz} color={colors.contentPrimary} />
           </View>
         </PressableScale>
       </View>
@@ -143,7 +225,7 @@ export default function OnboardingScreen() {
         </Animated.View>
       </GestureDetector>
 
-      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+      <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, footerPadBottom) }]}>
         <Animated.View
           key={`copy-${current}`}
           entering={copyEntering}
@@ -182,69 +264,3 @@ export default function OnboardingScreen() {
   )
 }
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: colors.surface0,
-    minHeight: 0,
-  },
-  skipWrap: {
-    position: 'absolute',
-    left: 0,
-    right: 0,
-    zIndex: 10,
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    paddingRight: 20,
-  },
-  skip: {
-    minHeight: 44,
-    paddingVertical: 8,
-    paddingLeft: 12,
-  },
-  skipInner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  skipText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: colors.contentPrimary,
-  },
-  artArea: {
-    flex: 1,
-    minHeight: 0,
-    marginTop: 56,
-    overflow: 'visible',
-  },
-  footer: {
-    paddingHorizontal: 24,
-    paddingTop: 16,
-    gap: 16,
-  },
-  copyBlock: {
-    alignItems: 'center',
-    gap: 8,
-  },
-  dotsWrap: {
-    alignItems: 'center',
-  },
-  title: {
-    textAlign: 'center',
-    fontSize: 22,
-    lineHeight: 28,
-    fontWeight: '900',
-    color: colors.contentPrimary,
-  },
-  subtitle: {
-    textAlign: 'center',
-    fontSize: 14,
-    lineHeight: 20,
-    color: colors.contentSecondary,
-    maxWidth: 360,
-  },
-  buttonWrap: {
-    paddingTop: 8,
-  },
-})
